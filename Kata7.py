@@ -94,6 +94,7 @@ import calendar #has all the relevant data for the months of the year
 # Find months that have 5 fridays, saturdays, and sundays in a given year
 
 jan2019 = calendar.monthcalendar(2019,1) # this will write out the days of a given month January 2019, weeks start with monday
+####Apparently this shit takes too long. times out on codewars. must optimize
 def solve(begYear, endYear):
     yearList = list(range(begYear,endYear+1))
     monthList = list(range(1,13))
