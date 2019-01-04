@@ -94,21 +94,28 @@ import calendar #has all the relevant data for the months of the year
 # Find months that have 5 fridays, saturdays, and sundays in a given year
 
 jan2019 = calendar.monthcalendar(2019,1) # this will write out the days of a given month January 2019, weeks start with monday
-begYear = 2016
-endYear = 2020
-yearList = list(range(begYear,endYear+1))
-monthList = list(range(1,13))
-
-for i in yearList:
-    for n in monthList:
-        yearmonthCombo = [i,n]
-        print(yearmonthCombo)
-        yearmonthTest = calendar.monthcalendar(yearmonthCombo[0],yearmonthCombo[1])
-        for p in yearmonthTest:
-            if 0 in p[4:]:
-                print(f"The month {n} of the year {i} is Not Extended")
-            else:
+def solve(begYear, endYear):
+    yearList = list(range(begYear,endYear+1))
+    monthList = list(range(1,13))
+    extendedMonthsList = []
+    for i in yearList: #check each year
+        for n in monthList: #check each month
+            yearmonthCombo = [i,n]
+            yearmonthTest = calendar.monthcalendar(yearmonthCombo[0],yearmonthCombo[1]) # get the list of days for that month
+            monthWeekends = [] #create empty list to contain the weekend values from the calender
+            for p in yearmonthTest: #populate the list of weekend values
+                monthWeekends.append(p[4:])
+            monthWeekendsList = [item for sublist in monthWeekends for item in sublist]  # convert the list of lists to a single list
+            if 0 in monthWeekendsList: #check for weekends with a zero (not full weekend)
                 continue
+            elif len(monthWeekendsList) < 13: #no short months allowed
+                continue
+            else: # no zeroes means its an extended weekend month
+                extendedMonthsList.append(yearmonthCombo[1])
+    firstMonth = calendar.month_abbr[extendedMonthsList[0]]
+    lastMonth = calendar.month_abbr[extendedMonthsList[-1]]
+    countMonths = len(extendedMonthsList)
+    return firstMonth, lastMonth, countMonths
 
-if 0 in jan2019[4:]:
-    print("not extended")
+solve(2016,2020) # good
+solve(1900,1950) # good
