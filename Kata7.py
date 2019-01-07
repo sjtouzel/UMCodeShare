@@ -92,31 +92,31 @@ def is_square(n):
 # Find the first and last month in a range of years that have 5 weekends and count how many months have 5 weekends in the range
 import calendar #has all the relevant data for the months of the year
 # Find months that have 5 fridays, saturdays, and sundays in a given year
-
 jan2019 = calendar.monthcalendar(2019,1) # this will write out the days of a given month January 2019, weeks start with monday
-####Apparently this shit takes too long. times out on codewars. must optimize
+####Apparently this shit takes too long. times out on codewars. must optimize. Couldn't get it to run fast enough
 def solve(begYear, endYear):
-    yearList = list(range(begYear,endYear+1))
-    monthList = list(range(1,13))
     extendedMonthsList = []
-    for i in yearList: #check each year
-        for n in monthList: #check each month
+    for i in list(range(begYear,endYear+1)): #check each year
+        for n in list(range(1,13)): #check each month
             yearmonthCombo = [i,n]
             yearmonthTest = calendar.monthcalendar(yearmonthCombo[0],yearmonthCombo[1]) # get the list of days for that month
             monthWeekends = [] #create empty list to contain the weekend values from the calender
             for p in yearmonthTest: #populate the list of weekend values
                 monthWeekends.append(p[4:])
             monthWeekendsList = [item for sublist in monthWeekends for item in sublist]  # convert the list of lists to a single list
-            if 0 in monthWeekendsList: #check for weekends with a zero (not full weekend)
-                continue
-            elif len(monthWeekendsList) < 13: #no short months allowed
-                continue
-            else: # no zeroes means its an extended weekend month
+            if monthWeekendsList[0] is 1 and monthWeekendsList[-1] is 31:
                 extendedMonthsList.append(yearmonthCombo[1])
-    firstMonth = calendar.month_abbr[extendedMonthsList[0]]
-    lastMonth = calendar.month_abbr[extendedMonthsList[-1]]
-    countMonths = len(extendedMonthsList)
-    return firstMonth, lastMonth, countMonths
+            else:
+                continue
+    return calendar.month_abbr[extendedMonthsList[0]], calendar.month_abbr[extendedMonthsList[-1]], len(
+        extendedMonthsList)
+### apparently this shit here is way faster:
+from calendar import month_abbr
+from datetime import datetime
+def solve(a,b):
+  res = [month_abbr[month]
+      for year in range(a, b+1)
+      for month in [1,3,5,7,8,10,12]
+      if datetime(year, month, 1).weekday() == 4]
+  return (res[0],res[-1], len(res))
 
-solve(2016,2020) # good
-solve(1900,1950) # good
