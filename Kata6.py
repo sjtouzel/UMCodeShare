@@ -156,3 +156,46 @@ def find_outlier(int):
     odds = [x for x in int if x%2!=0]
     evens= [x for x in int if x%2==0]
     return odds[0] if len(odds)<len(evens) else evens[0]
+
+# build a function that parses out a long spaceless string into individual real words
+VALID_WORDS = ['good', 'luck']
+
+def max_match(sentence):
+    wordList = [] # create a list to hold all the words or letters
+    if sentence in VALID_WORDS: # if the string is a word already
+        wordList.append(sentence)
+    else:
+        testSentence = sentence
+        while len(testSentence) > 1:
+            for n in range(0,len(testSentence)):
+                print("checking ", testSentence[:-n])
+                if testSentence[:-n] in VALID_WORDS: # remove the last letter from the string and see if the string is a word
+                    wordList.append(testSentence[:-n]) # if it is, add it to the word list
+                    testSentence = testSentence[-n:] # and start the process over with what's left over
+                    print(testSentence)
+                    break
+                # elif len(testSentence[:-n]) == 1:
+                #     wordList.append(testSentence[:-n])
+                #     testSentence = testSentence[-n:]  # and start the process over with what's left over
+                #     break
+                elif len(testSentence) == 1:
+                    wordList.append(testSentence[0])
+                    testSentence = testSentence[-n:]  # and start the process over with what's left over
+                    break
+                else:
+                    continue
+    return wordList
+
+def printWordMinusOneLetter(string):
+    for n in range(0,len(string)+1):
+        print(string[:-n])
+
+printWordMinusOneLetter('butts')
+
+max_match('goodbuck')
+
+test = 'butts'
+test[:-2]
+test[-2:]
+len(test)
+rangetest = range(1,len(test))
