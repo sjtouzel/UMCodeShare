@@ -160,42 +160,50 @@ def find_outlier(int):
 # build a function that parses out a long spaceless string into individual real words
 VALID_WORDS = ['good', 'luck']
 
-def max_match(sentence):
+def max_match(sentence): # this shit works but apparently it needs to go faster
     wordList = [] # create a list to hold all the words or letters
     if sentence in VALID_WORDS: # if the string is a word already
-        wordList.append(sentence)
-    else:
+        wordList.append(sentence) # add is to the word list
+    else: # if it's not in the word list we do this to find the longest word and iterate through the whole sentence
         testSentence = sentence
-        while len(testSentence) > 1:
-            for n in range(0,len(testSentence)):
-                print("checking ", testSentence[:-n])
-                if testSentence[:-n] in VALID_WORDS: # remove the last letter from the string and see if the string is a word
-                    wordList.append(testSentence[:-n]) # if it is, add it to the word list
-                    testSentence = testSentence[-n:] # and start the process over with what's left over
-                    print(testSentence)
-                    break
-                # elif len(testSentence[:-n]) == 1:
-                #     wordList.append(testSentence[:-n])
-                #     testSentence = testSentence[-n:]  # and start the process over with what's left over
-                #     break
-                elif len(testSentence) == 1:
-                    wordList.append(testSentence[0])
-                    testSentence = testSentence[-n:]  # and start the process over with what's left over
-                    break
-                else:
-                    continue
+        while len(testSentence) != 1: # while the word is longer than one letter do the following
+            if testSentence in VALID_WORDS: # check to make sure the new word isn't in the set
+                wordList.append(testSentence)
+                testSentence = ''
+                break
+            else: # if the new word isn't in the set
+                for n in range(1,len(testSentence)):
+                    if len(testSentence)-n == 1: #if it's the last letter to test
+                        wordList.append(testSentence[0]) # we append the letter to the wordList
+                        testSentence = testSentence[-n:]  # and start the process over with what's left over
+                        break
+                    elif testSentence[:-n] in VALID_WORDS: # remove the last letter from the string and see if the string is a word
+                        wordList.append(testSentence[:-n]) # if it is, add it to the word list
+                        testSentence = testSentence[-n:] # and start the process over with what's left over
+                        break
+                    else:
+                        continue
+        if len(testSentence) > 0:
+            wordList.append(testSentence[0])
     return wordList
 
-def printWordMinusOneLetter(string):
-    for n in range(0,len(string)+1):
-        print(string[:-n])
+#second attempt
+def max_match(sentence):
+    wordList = []  # create a list to hold all the words or letters
+    # check the first 12 characters only, then rebuild the string with the left overs and grab the next 12 character stretch
 
-printWordMinusOneLetter('butts')
 
-max_match('goodbuck')
 
-test = 'butts'
-test[:-2]
-test[-2:]
-len(test)
-rangetest = range(1,len(test))
+
+
+
+
+
+zipp = "butts"
+zipp[:-1]
+testing = 'handkerchief'
+len(testing)
+testing.split(3)
+
+n=5
+[testing[i:i+n] for i in range(0,len(testing),n)]
