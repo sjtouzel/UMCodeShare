@@ -187,23 +187,24 @@ def max_match(sentence): # this shit works but apparently it needs to go faster
             wordList.append(testSentence[0])
     return wordList
 
-#second attempt
-def max_match(sentence):
-    wordList = []  # create a list to hold all the words or letters
-    # check the first 12 characters only, then rebuild the string with the left overs and grab the next 12 character stretch
+#best solution
+def max_match(s):
+    result = []
 
+    while s:
+        for size in range(len(s), 0, -1):
+            word = s[:size]
+            if word in VALID_WORDS:
+                break
 
+        result.append(word)
+        s = s[size:]
 
+    return result
 
+#another solution
+import re
 
+PATTERN   = re.compile(r'|'.join(sorted(VALID_WORDS, key=len, reverse=True))+"|.")
+max_match = PATTERN.findall
 
-
-
-zipp = "butts"
-zipp[:-1]
-testing = 'handkerchief'
-len(testing)
-testing.split(3)
-
-n=5
-[testing[i:i+n] for i in range(0,len(testing),n)]

@@ -110,13 +110,34 @@ def solve(begYear, endYear):
                 continue
     return calendar.month_abbr[extendedMonthsList[0]], calendar.month_abbr[extendedMonthsList[-1]], len(
         extendedMonthsList)
+
 ### apparently this shit here is way faster:
 from calendar import month_abbr
 from datetime import datetime
 def solve(a,b):
-  res = [month_abbr[month]
-      for year in range(a, b+1)
-      for month in [1,3,5,7,8,10,12]
-      if datetime(year, month, 1).weekday() == 4]
-  return (res[0],res[-1], len(res))
+    res = [month_abbr[month]
+    for year in range(a, b+1)
+    for month in [1,3,5,7,8,10,12]
+    if datetime(year, month, 1).weekday() == 4]
+    return res[0],res[-1], len(res)
 
+
+# create a function that will decode a numerical representation of letters into words given a key value
+import string
+def decode(code, key):
+    decoded = [] # create an empty list to hold all the decoded letters
+    letterDict = dict(zip(range(1,27), string.ascii_lowercase))# establish the dictionary, numbers to be converted to letters
+    #convert the key to a string so we can access each number to subtract from our code
+    strKey = str(key)
+    #repeat the string for the entire length of the code
+    newKey = (strKey * ((len(code) // len(strKey)) + 1))[:len(code)]
+    #Iterate through the code values
+    for i in range(0,len(code)):
+        decoded.append(letterDict.get(code[i] - int(newKey[i])))
+    #now rejoin the decoded letters and return it
+    return ''.join(decoded)
+
+#best method
+def decode(code, key):
+    key = str(key)
+    return "".join([chr(code[i] + 96 - int(key[i % len(key)])) for i in range(0, len(code))])
