@@ -26,7 +26,7 @@ def palindrome_chain_length(n):
 palindrome_chain_length(47)
 47 +74
 
-# This function will find and return the middle letter or letters from a given string
+# Get the Middle Character - This function will find and return the middle letter or letters from a given string
 def get_middle(s):
     stringLength = len(s)
     if stringLength % 2 == 0:
@@ -89,7 +89,7 @@ def is_square(n):
         return False
         #print ("%s is not a square number") % n
 
-# Find the first and last month in a range of years that have 5 weekends and count how many months have 5 weekends in the range
+# Extended weekends - Find the first and last month in a range of years that have 5 weekends and count how many months have 5 weekends in the range
 import calendar #has all the relevant data for the months of the year
 # Find months that have 5 fridays, saturdays, and sundays in a given year
 jan2019 = calendar.monthcalendar(2019,1) # this will write out the days of a given month January 2019, weeks start with monday
@@ -122,7 +122,7 @@ def solve(a,b):
     return res[0],res[-1], len(res)
 
 
-# create a function that will decode a numerical representation of letters into words given a key value
+# Digital cypher vol 2 - create a function that will decode a numerical representation of letters into words given a key value
 import string
 def decode(code, key):
     decoded = [] # create an empty list to hold all the decoded letters

@@ -1,4 +1,4 @@
-# find the odd or even standout in a list of numbers
+# IQ Test - find the odd or even standout in a list of numbers
 def iq_test(numbers):
     testnumslist = numbers.split() # split the string of numbers into a list of strings
     testnumslist = [int(i) for i in testnumslist] # convert the strings to int type
@@ -16,7 +16,7 @@ def iq_test(numbers):
     return e.index(True) + 1 if e.count(True) == 1 else e.index(False) + 1 # return the index plus 1 of the true item
                 # in the list if there's only one, otherwise return the index plus one of the false item
 
-# Take a string and remove a subset of letters and then re-assemble the string as a sentence
+# Dubstep - Take a string and remove a subset of letters and then re-assemble the string as a sentence
 
 def song_decoder(song):
     wordList = []
@@ -37,7 +37,7 @@ def song_decoder(song):
 
 song_decoder("WUBWEWUBAREWUBWUBTHEWUBCHAMPIONSWUBMYWUBFRIENDWUB")
 
-# Let's make a function that will find all the words in a string that are 5 letters or longer and then turn them backwards
+# Stop gninnipS My sdroW! - Let's make a function that will find all the words in a string that are 5 letters or longer and then turn them backwards
 
 def spin_words(string): # first we'll create a function that checks each word and reverses the big ones
     wordList = [] # create an empty list to hold our edited words
@@ -57,7 +57,7 @@ spin_words("I love Hambone")
 def spin_words(sentence):
     return " ".join([x[::-1] if len(x) >= 5 else x for x in sentence.split(" ")])
 
-# make a function that takes a string and returns the string with every other letter capitalized
+# WeIrD StRiNg CaSe - make a function that takes a string and returns the string with every other letter capitalized
 def to_weird_case(string):
     if " " in string: # check for spaces in the string, then we'll have to split it up
         newStrings = string.split() # this will create an array of each word in the string
@@ -89,7 +89,7 @@ def to_weird_case_word(string):
 def to_weird_case(string):
     return " ".join(to_weird_case_word(str) for str in string.split())
 
-# make sure you get back to your starting point after 10 steps
+# Take a Ten Minute Walk - make sure you get back to your starting point after 10 steps
 def isValidWalk(walk):
     directionDictionary = {'n':1,'e':12,'w':-12,'s':-1 } # create a dictionary that changes values to numbers
     if len(walk) == 10: # make sure there's at least 10 turns so you go for exactly 10 minutes
@@ -107,7 +107,7 @@ def isValidWalk(walk):
 def isValidWalk(walk):
     return len(walk) == 10 and walk.count('n') == walk.count('s') and walk.count('e') == walk.count('w')
 
-# Check two arrays to make sure each number in the second array is the square of a number in the first array
+# Are they the "same"? - Check two arrays to make sure each number in the second array is the square of a number in the first array
 def comp(a1,a2):
     print(a1,a2)
     if a2 is None: # check that a2 is not null
@@ -133,7 +133,7 @@ def comp(array1, array2):
     except: # everything else returns false
         return False
 
-# look for the single odd or even number in an array
+# Find The Parity Outlier - look for the single odd or even number in an array
 def find_outlier(intArray):
     evenCount = 0
     evenNum = 0

@@ -50,7 +50,7 @@ def isSolved(board):
     else:
         return -1
 
-# take a list of numbers and Order them by the sum of the digits
+# Weight for weight - take a list of numbers and Order them by the sum of the digits
 def order_weight(string):  # THIS ONE DIDN'T WORK CAUSE DICTIONARIES CAN'T HAVE DUPLICATE KEYS
     listofweights = string.split() # split the string of weights into individual strings
     dictionaryofweights = {} # create an empty dictionary to hold our weights and digit sums
@@ -84,7 +84,7 @@ def order_weight(_str):
 
 order_weight("123 867 123 498 783")
 
-# Build a function that counts the size of a loop made with nodes
+# Can you get the loop ? - Build a function that counts the size of a loop made with nodes
 def loop_size(node):
     count = 0 # This is an empty counter that will hold the index of our last node in the loop
     listOfNodes = [] # this list will contain each node item we read through
@@ -124,7 +124,7 @@ def loop_size(node):
     return count
 
 
-# Create a Class and give it some class functions to help tell you what's inside the class item
+# PaginationHelper - Create a Class and give it some class functions to help tell you what's inside the class item
 
 class PaginationHelper(object):
 
@@ -211,7 +211,7 @@ class PaginationHelper:
         else:
             return item_index / self.items_per_page
 
-# Create a couple functions that will convert text to base64 and base64 to text
+# Base64 Encoding - Create a couple functions that will convert text to base64 and base64 to text
 def to_base_64(string):
     # we use the encode value to take a string to base64 format
     bayce64eq = string.encode('base64').replace('\n', '') # encode adds some extra shit we need to get rid of
@@ -261,7 +261,7 @@ def from_base_64(string):
         str = str[:-padding]
     return str
 
-# Build an ROT13 decoder - ROT13 is a code that splits the alphabet in half and then stacks the two halves to find the
+# ROT13 - Build an ROT13 decoder - ROT13 is a code that splits the alphabet in half and then stacks the two halves to find the
 # code value for the given letter
 
 message = "EBG13 \n rknzcyr"
@@ -287,7 +287,7 @@ def rot13(message):
 def rot13(message):
   return message.encode('rot13')
 
-# Build Functions that do what they say. ex. five(plus(two())) will return 7
+# Calculating with Functions - Build Functions that do what they say. ex. five(plus(two())) will return 7
 def zero(*args):
     if args:
         if args[0] == "BUTTS":
@@ -433,7 +433,7 @@ def minus(y): return lambda x: x-y
 def times(y): return lambda  x: x*y
 def divided_by(y): return lambda  x: x/y
 
-# build a function that reads a line of input and performs tasks based on string values
+# Simple assembler interpreter - build a function that reads a line of input and performs tasks based on string values
 def simple_assembler(program):
     register = {}
     counter = 0
@@ -477,7 +477,7 @@ def simple_assembler(program):
         i += 1
     return d
 
-# build a function that will find the max sum of a contiguous subsequence in an array or list of integers
+# Maximum subarray sum - build a function that will find the max sum of a contiguous subsequence in an array or list of integers
 # return 0 if all the numbers are negative
 def maxSequence(arr):
     if not arr: # check for empty array
