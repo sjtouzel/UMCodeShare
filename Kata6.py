@@ -205,6 +205,71 @@ def max_match(s):
 #another solution
 import re
 
-PATTERN   = re.compile(r'|'.join(sorted(VALID_WORDS, key=len, reverse=True))+"|.")
+PATTERN = re.compile(r'|'.join(sorted(VALID_WORDS, key=len, reverse=True))+"|.")
 max_match = PATTERN.findall
+
+# Packet Delivery -- Enforcing Constraints - create a class "Package" that represents a package which has a length,
+    # width, height and weight parameter
+    # p.volume is a method your class should have
+    # the following constraints must be met
+    # 0 < length <= 350
+    # 0 < width <= 300
+    # 0 < height <= 150
+    # 0 < weight <= 40
+    # if out of this range it should raise a DimensionsOutOfBoundError with message:
+    # "Package length==351 out of bounds, should be: 0 < length <= 350"
+    # "Package {variable}=={value} out of bounds, should be: {lower} < {variable} <={upper}"
+
+class Package(object):
+
+    # The constructor takes in an array of items and a integer indicating
+    # how many items fit within a single page
+    def __init__(self, length, width, height, weight):
+        self.length = length
+        self.width = width
+        self.height = height
+        self.weight = weight
+
+    # make all the input values conform to constraints
+
+
+    # @property ######################  THIS SHIT AIN'T WORKIN   #######################
+    # def length(self):
+    #     return self._length
+    #
+    # @length.setter
+    # def length(self, l):
+    #     if not (0 < l <= 350): raise Exception("Package length==", l," out of bounds, should be 0 < length <= 350")
+    #     self._length = l
+    #
+    # @property
+    # def width(self):
+    #     return self._width
+    #
+    # @width.setter
+    # def width(self, w):
+    #     if not (0 < w <= 300): raise Exception("Package width==", w, " out of bounds, should be 0 < width <= 300")
+    #     self._width = w
+    #
+    # @property
+    # def height(self):
+    #     return self._height
+    #
+    # @height.setter
+    # def height(self, h):
+    #     if not (0 < h <= 150): raise Exception("Package height==", h, " out of bounds, should be 0 < height <= 150")
+    #     self._height = h
+    #
+    # @property
+    # def weight(self):
+    #     return self._weight
+    #
+    # @weight.setter
+    # def weight(self, w):
+    #     if not (0 < w <= 40): raise Exception("Package weight==", w, " out of bounds, should be 0 < weight <= 40")
+    #     self._weight = w
+
+    # returns the volume of the package
+    def volume(self):
+        return self.length * self.width * self.height
 
