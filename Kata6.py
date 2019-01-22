@@ -219,57 +219,50 @@ max_match = PATTERN.findall
     # if out of this range it should raise a DimensionsOutOfBoundError with message:
     # "Package length==351 out of bounds, should be: 0 < length <= 350"
     # "Package {variable}=={value} out of bounds, should be: {lower} < {variable} <={upper}"
+###couldn't figure this one out, couldn't find any shit online to help solve it, maybe i searched for the wrong shit
 
+####Check This shit out, how does it work
 class Package(object):
+    maxs = {"length": 350, "width": 300, "height": 150, "weight": 40}
 
-    # The constructor takes in an array of items and a integer indicating
-    # how many items fit within a single page
-    def __init__(self, length, width, height, weight):
-        self.length = length
-        self.width = width
-        self.height = height
-        self.weight = weight
+    def __init__(self, l, w, h, wg):
+        self.length = l
+        self.width = w
+        self.height = h
+        self.weight = wg
 
-    # make all the input values conform to constraints
+    def __setattr__(self, att, v):
+        if v <= 0 or v > Package.maxs[att]: raise DimensionsOutOfBoundError(att, v, Package.maxs[att])
+        self.__dict__[att] = v
 
-
-    # @property ######################  THIS SHIT AIN'T WORKIN   #######################
-    # def length(self):
-    #     return self._length
-    #
-    # @length.setter
-    # def length(self, l):
-    #     if not (0 < l <= 350): raise Exception("Package length==", l," out of bounds, should be 0 < length <= 350")
-    #     self._length = l
-    #
-    # @property
-    # def width(self):
-    #     return self._width
-    #
-    # @width.setter
-    # def width(self, w):
-    #     if not (0 < w <= 300): raise Exception("Package width==", w, " out of bounds, should be 0 < width <= 300")
-    #     self._width = w
-    #
-    # @property
-    # def height(self):
-    #     return self._height
-    #
-    # @height.setter
-    # def height(self, h):
-    #     if not (0 < h <= 150): raise Exception("Package height==", h, " out of bounds, should be 0 < height <= 150")
-    #     self._height = h
-    #
-    # @property
-    # def weight(self):
-    #     return self._weight
-    #
-    # @weight.setter
-    # def weight(self, w):
-    #     if not (0 < w <= 40): raise Exception("Package weight==", w, " out of bounds, should be 0 < weight <= 40")
-    #     self._weight = w
-
-    # returns the volume of the package
+    @property
     def volume(self):
         return self.length * self.width * self.height
 
+####Check This shit out, how does it work
+class DimensionsOutOfBoundError(Exception):
+    def __init__(self, dim, val, max):
+        self.str = "Package %s==%d out of bounds, should be: 0 < %s <= %d" % (dim, val, dim, max)
+
+    def __str__(self):
+        return self.str
+
+
+class DimensionsOutOfBoundError(Exception): pass
+
+
+class Package(object):
+    LIMITS = {'length': (0, 350), 'width': (0, 300), 'height': (0, 150), 'weight': (0, 40)}
+
+    def __init__(self, *args):
+        self.length, self.width, self.height, self.weight = args
+
+    @property
+    def volume(self): return self.length * self.width * self.height
+
+    def __setattr__(self, field, val):
+        mi, ma = self.LIMITS[field]
+        if not (mi < val <= ma):
+            raise DimensionsOutOfBoundError(
+                "Package {0}=={1} out of bounds, should be: {2} < {0} <= {3}".format(field, val, mi, ma))
+        self.__dict__[field] = val
