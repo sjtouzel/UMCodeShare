@@ -141,3 +141,16 @@ def decode(code, key):
 def decode(code, key):
     key = str(key)
     return "".join([chr(code[i] + 96 - int(key[i % len(key)])) for i in range(0, len(code))])
+
+
+# The Hotel with Infinite Rooms - make a formula that spits out how many people are staying in a hotel on a given day
+def group_size(S, D):  ####This shit is too slow
+    while D > 0:
+        D = D - S
+        S += 1
+    return S - 1
+
+##Whatever the fuck this is man...
+from math import floor
+def group_size(S, D):
+    return floor((2*D+S*(S-1))**.5+.5)
