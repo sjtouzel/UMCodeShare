@@ -32,3 +32,17 @@ def final_grade(exam, projects):
   if exam > 75 and projects >= 5: return 90
   if exam > 50 and projects >= 2: return 75
   return 0
+
+# Barking mad -
+class Dog():
+    def __init__(self, breed):
+        self.breed = breed
+
+    def bark(self):
+        return "Woof"
+
+# Best method
+class Dog():
+  def __init__(self, breed):
+    self.breed = breed
+    self.bark = lambda: "Woof"
