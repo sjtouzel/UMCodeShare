@@ -1,5 +1,5 @@
-# Title     : TODO
-# Objective : TODO
+# Title     : Kata 8
+# Objective : remember R shit
 # Created by: z02sjt
 # Created on: 2/12/2019
 
