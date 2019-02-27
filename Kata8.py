@@ -46,3 +46,31 @@ class Dog():
   def __init__(self, breed):
     self.breed = breed
     self.bark = lambda: "Woof"
+
+# No zeros for heros - remove trailing zeroes from numbers
+def no_boring_zeros(n):
+    if n != 0:
+        n_string = str(n)
+        n_string = n_string.rstrip("0")
+        return int(n_string)
+    else:
+        return 0
+
+#best method
+def no_boring_zeros(n):
+    try:
+        return int(str(n).rstrip('0'))
+    except ValueError:
+        return 0
+
+# Keep Hydrated! -  we're gonna build a function that returns 1/2 of an input value and then rounds that number down
+def litres(time):
+    return int(0.5 * time)
+
+#best method
+def litres(time):
+    return time // 2
+
+# Abbreviate a Two Word Name -  convert a name into initials
+def abbrevName(name):
+    return ".".join(x[0].upper() for x in name.split(" ") if x)
