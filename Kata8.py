@@ -74,5 +74,3 @@ def litres(time):
 # Abbreviate a Two Word Name -  convert a name into initials
 def abbrevName(name):
     return ".".join(x[0].upper() for x in name.split(" ") if x)
-
-#ramalamadingdong
