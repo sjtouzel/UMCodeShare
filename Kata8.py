@@ -83,4 +83,6 @@ def summation(num):
         num = num - 1
     return sum
 
-summation(5)
+# best method
+def summation(num):
+    return sum(xrange(num + 1))
