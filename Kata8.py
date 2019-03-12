@@ -74,3 +74,13 @@ def litres(time):
 # Abbreviate a Two Word Name -  convert a name into initials
 def abbrevName(name):
     return ".".join(x[0].upper() for x in name.split(" ") if x)
+
+# Grasshopper - Summation -  finds the summation of every number from 1 to num. The number will always be a positive integer greater than 0
+def summation(num):
+    sum = 0
+    while num > 0:
+        sum += num
+        num = num - 1
+    return sum
+
+summation(5)
