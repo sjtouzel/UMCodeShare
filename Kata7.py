@@ -154,3 +154,19 @@ def group_size(S, D):  ####This shit is too slow
 from math import floor
 def group_size(S, D):
     return floor((2*D+S*(S-1))**.5+.5)
+
+# Ranking position - The challenge is sort by points and calulate position for every person. But remember if two or more
+#  persons have same number of points, they should have same position number and sorted by name (name is unique)
+
+def ranking(people):
+    sortedPeople = sorted(people, key=lambda i: (-i['points'], i['name']))
+    for i in range(0,len(sortedPeople)):
+        if i == 0:
+            sortedPeople[i].update({"position": i + 1})
+        elif sortedPeople[i].get('points') == sortedPeople[i-1].get('points'):
+            sortedPeople[i].update({"position":sortedPeople[i-1].get('position')})
+        else:
+            sortedPeople[i].update({"position": i + 1})
+    return sortedPeople
+
+
