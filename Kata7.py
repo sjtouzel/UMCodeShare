@@ -169,4 +169,17 @@ def ranking(people):
             sortedPeople[i].update({"position": i + 1})
     return sortedPeople
 
+# Simple Fun #2: Circle of Numbers - given a total number and a starting number find the number directly opposite
+# of the starting numbers given that the numbers are equally spaced around a circle
+
+def circle_of_numbers(n, fst):
+    halfTotal = n/2
+    oppoNum = fst + halfTotal
+    return oppoNum if oppoNum < n else oppoNum - n
+
+# best method
+
+def circle_of_numbers(n, fst):
+    return (fst + (n/2)) % n
+
 

@@ -86,3 +86,8 @@ def summation(num):
 # best method
 def summation(num):
     return sum(xrange(num + 1))
+
+# Closest elevator - select the closest elevator to a given floor
+
+def elevator(left, right, call):
+    return 'right' if abs(right - call) <= abs(left - call) else 'left'
