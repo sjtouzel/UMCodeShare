@@ -59,7 +59,7 @@ get_sum(0,0)
 
 # best method
 def get_sum(a,b):
-    return sum(xrange(min(a,b), max(a,b)+1))
+    return sum(range(min(a,b), max(a,b)+1))
 
 # Count the number of vowels in a string
 def getCount(inputStr):
