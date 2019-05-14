@@ -91,3 +91,9 @@ def summation(num):
 
 def elevator(left, right, call):
     return 'right' if abs(right - call) <= abs(left - call) else 'left'
+
+# Filter out the geese - take a list of strings and remove all that exist in a given list
+geese = ["African", "Roman Tufted", "Toulouse", "Pilgrim", "Steinbacher"]
+
+def goose_filter(birds):
+    return [x for x in birds if x not in geese]
