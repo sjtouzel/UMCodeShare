@@ -182,4 +182,25 @@ def circle_of_numbers(n, fst):
 def circle_of_numbers(n, fst):
     return (fst + (n/2)) % n
 
+# After(?) Midnight - take a negative or positive integer which represents the number of minutes before or after
+# sunday at midnight and return the current day of the week and the current time in 24hr format ('hh:mm') as a string
+# ex. input = 45 returns 'Sunday 00:45'
 
+import math
+import calendar
+def day_and_time(mins):
+    day = calendar.day_name[int(math.fmod(6 + math.fmod((int(math.floor(mins/ 1440))), 7),7))]
+    if mins >= 0:
+        hours = str((mins//60) % 24).zfill(2)
+        mins = str(mins % 60).zfill(2)
+        time = hours + ':' + mins
+    else:
+        hours = str(24 - abs(mins//60) % 24).zfill(2)
+        mins = str(mins % 60).zfill(2)
+        time = hours + ':' + mins
+    return day + ' ' + time
+
+# best method
+from datetime import timedelta, datetime
+def day_and_time(mins):
+    return "{:%A %H:%M}".format(datetime(2017, 1, 1) + timedelta(minutes = mins))
