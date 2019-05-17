@@ -231,3 +231,7 @@ def add(n):
 
 addone = add(1) # this will pass a function to addone, that will add 1 to whatever number we pass to addone()
 addone(4)
+
+#best method
+def add(n):
+    return lambda x: x + n
