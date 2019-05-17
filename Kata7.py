@@ -204,3 +204,30 @@ def day_and_time(mins):
 from datetime import timedelta, datetime
 def day_and_time(mins):
     return "{:%A %H:%M}".format(datetime(2017, 1, 1) + timedelta(minutes = mins))
+
+# Principal Diagonal | VS | Secondary Diagonal - add up the values of the two diagonals and return whichever one is larger
+def diagonal(matrix):
+    primdiag = 0
+    secdiag = 0
+    for i in range(0,len(matrix[0])):
+        primdiag += matrix[i][i]
+        secdiag += matrix[i][len(matrix)-1-i]
+    if primdiag == secdiag:
+        return "Draw!"
+    else:
+        return "Principal Diagonal win!" if primdiag>secdiag else "Secondary Diagonal win!"
+
+# best method
+def diagonal(matrix):
+    sp, ss = map(sum, zip(*((matrix[x][x], matrix[len(matrix)-1-x][x]) for x in range(len(matrix)))))
+    return "Draw!" if ss == sp else "{} Diagonal win!".format("Principal" if sp > ss else "Secondary")
+
+# Functional Addition - Create a function add(n) which returns a function that always adds n to any number
+    # create a function that returns a function
+def add(n):
+    def additionfun(x):
+        return x + n
+    return additionfun
+
+addone = add(1) # this will pass a function to addone, that will add 1 to whatever number we pass to addone()
+addone(4)

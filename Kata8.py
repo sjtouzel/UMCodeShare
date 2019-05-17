@@ -97,3 +97,9 @@ geese = ["African", "Roman Tufted", "Toulouse", "Pilgrim", "Steinbacher"]
 
 def goose_filter(birds):
     return [x for x in birds if x not in geese]
+
+# Get the mean of an array - return the average of a given list
+import math
+def get_average(marks):
+    return math.floor(sum(marks)/len(marks))
+
