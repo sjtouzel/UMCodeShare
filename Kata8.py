@@ -103,3 +103,10 @@ import math
 def get_average(marks):
     return math.floor(sum(marks)/len(marks))
 
+# Thinkful - Logic Drills: Traffic light - create a function that returns the next value given an initial color of the
+# traffic light
+
+def update_light(current):
+    lightsettings = ["green", "yellow", "red"]
+    return lightsettings[(lightsettings.index(current) + 1) % 3]
+
