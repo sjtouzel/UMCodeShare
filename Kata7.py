@@ -235,3 +235,18 @@ addone(4)
 #best method
 def add(n):
     return lambda x: x + n
+
+# Unlucky Days - Calculate how many Friday 13th's there are in a given year
+from datetime import date
+def unlucky_days(year):
+    daycount = 0
+    for i in range(1,13):
+        dayof13 = date(year,i,13).weekday() # get the weekday for each 13th day of each month
+        if dayof13 == 4: #
+            daycount += 1
+    return daycount
+
+#best method
+from datetime import date
+def unlucky_days(year):
+    return sum(date(year, m, 13).weekday() == 4 for m in range(1, 13))
