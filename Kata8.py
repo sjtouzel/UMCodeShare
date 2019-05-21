@@ -127,3 +127,7 @@ def check_exam(arr1,arr2):
 def check_exam(arr1, arr2):
     return max(0, sum(4 if a == b else -1 for a, b in zip(arr1, arr2) if b))
 
+# noobCode 01:SUPERSIZE ME....or rather,this integer - given an integer, rearrange the digits to make the biggest
+# number possible
+def super_size(n):
+    return int("".join(sorted(list(str(n)),reverse=True)))

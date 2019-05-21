@@ -272,7 +272,4 @@ from itertools import count
 def spinning_rings(inner_max, outer_max):
     return next(i for i in count(1) if i % (outer_max + 1) == -i % (inner_max + 1))
 
-# noobCode 01:SUPERSIZE ME....or rather,this integer - given an integer, rearrange the digits to make the biggest
-# number possible
-def super_size(n):
-    return int("".join(sorted(list(str(n)),reverse=True)))
+
