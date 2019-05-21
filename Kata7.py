@@ -250,3 +250,29 @@ def unlucky_days(year):
 from datetime import date
 def unlucky_days(year):
     return sum(date(year, m, 13).weekday() == 4 for m in range(1, 13))
+
+# Spinning Rings - find when two counts match up when one counts up and the other counts down
+# 0123 vs 0321, while both start counting at 0
+def spinning_rings(inner_max, outer_max):
+    outerlist = list(range(0,outer_max + 1))
+    innerlist = list(range(inner_max, -1, -1))
+    innerlist.insert(0,innerlist.pop(len(innerlist)-1))
+    spincount = 1
+    innernum = innerlist[spincount]
+    outernum = outerlist[spincount]
+    while innernum != outernum:
+        spincount += 1
+        innernum = innerlist[spincount % (len(innerlist))]
+        outernum = outerlist[spincount % (len(outerlist))]
+    return spincount
+
+#best method
+from itertools import count
+
+def spinning_rings(inner_max, outer_max):
+    return next(i for i in count(1) if i % (outer_max + 1) == -i % (inner_max + 1))
+
+# noobCode 01:SUPERSIZE ME....or rather,this integer - given an integer, rearrange the digits to make the biggest
+# number possible
+def super_size(n):
+    return int("".join(sorted(list(str(n)),reverse=True)))

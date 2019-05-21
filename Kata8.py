@@ -110,3 +110,20 @@ def update_light(current):
     lightsettings = ["green", "yellow", "red"]
     return lightsettings[(lightsettings.index(current) + 1) % 3]
 
+# Check the exam - check that two lists match, for each matching item get 4 points, for non-match get -1 point,
+# blank answers get 0 points, if score is <0 return 0
+def check_exam(arr1,arr2):
+    score = 0
+    for i in range(0,len(arr1)):
+        if arr2[i] == "":
+            continue
+        elif arr1[i] == arr2[i]:
+            score += 4
+        else:
+            score += -1
+    return score if score>=0 else 0
+
+# best method
+def check_exam(arr1, arr2):
+    return max(0, sum(4 if a == b else -1 for a, b in zip(arr1, arr2) if b))
+
