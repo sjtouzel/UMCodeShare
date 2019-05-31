@@ -273,3 +273,9 @@ def spinning_rings(inner_max, outer_max):
     return next(i for i in count(1) if i % (outer_max + 1) == -i % (inner_max + 1))
 
 
+# How many arguments - write a function that returns a count of the number of arguments passed into it
+def args_count(*args,**kwargs):
+    return len(args) + len(kwargs)
+
+
+
