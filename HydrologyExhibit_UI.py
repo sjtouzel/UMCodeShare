@@ -45,7 +45,7 @@ arcpy.Dissolve_management(propBoundaryReproj, propBoundaryMerge)# merge multiple
 envelopeBoundary = os.path.join(scratchGDB, "envelopeBoundary_" + dateTag)
 arcpy.MinimumBoundingGeometry_management(propBoundaryMerge, envelopeBoundary, "ENVELOPE", "ALL") # first create a rectangular boundary around everything
 extendedBoundary = os.path.join(outPath, "ExtendedBoundary_" + dateTag)
-arcpy.geoanalytics.CreateBuffers(envelopeBoundary, extendedBoundary, "GEODESIC", "DISTANCE", None, ".5 Miles", None, "ALL", None, None, None, "RELATIONAL_DATA_STORE")
+arcpy.Buffer_analysis(envelopeBoundary, extendedBoundary, ".5 Miles", "FULL", "ROUND", "ALL", None, "PLANAR")
 
 
 # Set stream delineation value (examine raster calc
