@@ -2,14 +2,14 @@ from arcpy import *
 import sys, os, datetime, arcpy
 
 def makeNewFolder(rFolder, fName):
-	
-	'''
+
+	"""
 	Creates a new folder in a given directory with a designated name.
 	Returns a string
-	
+
 	rFolder: root directory where new folder will be created
 	fName: name of new folder
-	'''
+	"""
 	
 	os.mkdir(os.path.join(rFolder, fName))
 	
@@ -18,11 +18,11 @@ def makeNewFolder(rFolder, fName):
 
 def formatFileName(fPath):
 
-	'''
+	"""
 	Returns a formated basename
 
 	fPath: file path to be reformatted
-	'''
+	"""
 
 	# Isolate file name from extension
 	name = os.path.basename(fPath).split('.')[:-1]
@@ -60,16 +60,16 @@ def main():
 	spatialReference = arcpy.GetParameter(1)
 
 	# Write to Log
-	AddMessage('')
-	AddMessage("===================================================================")
+	arcpy.AddMessage('')
+	arcpy.AddMessage("===================================================================")
 	sVersionInfo = 'Batch_KMZ_Converter.py, v20171129'
-	AddMessage('Batch KMZ Converter, {}'.format(sVersionInfo))
-	AddMessage("")
-	AddMessage("Support: mitchell.fyock@tetratech.com, 303-2173724")
-	AddMessage("")
-	AddMessage("Input Folder: {}".format(inputFolder))
-	AddMessage("Projection: {}".format(spatialReference.GCS.name))	
-	AddMessage("===================================================================")
+	arcpy.AddMessage('Batch KMZ Converter, {}'.format(sVersionInfo))
+	arcpy.AddMessage("")
+	arcpy.AddMessage("Support: mitchell.fyock@tetratech.com, 303-2173724")
+	arcpy.AddMessage("")
+	arcpy.AddMessage("Input Folder: {}".format(inputFolder))
+	arcpy.AddMessage("Projection: {}".format(spatialReference.GCS.name))
+	arcpy.AddMessage("===================================================================")
 
 	kmzs = []
 
