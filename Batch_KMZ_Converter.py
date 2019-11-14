@@ -65,7 +65,7 @@ def main():
 	sVersionInfo = 'Batch_KMZ_Converter.py, v20171129'
 	arcpy.AddMessage('Batch KMZ Converter, {}'.format(sVersionInfo))
 	arcpy.AddMessage("")
-	arcpy.AddMessage("Support: mitchell.fyock@tetratech.com, 303-2173724")
+	arcpy.AddMessage("Support: mitchell.fyock@tetratech.com, jtouzel@res.us")
 	arcpy.AddMessage("")
 	arcpy.AddMessage("Input Folder: {}".format(inputFolder))
 	arcpy.AddMessage("Projection: {}".format(spatialReference.GCS.name))
