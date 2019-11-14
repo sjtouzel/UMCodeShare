@@ -56,8 +56,8 @@ Inputs:
 
 def main():
 	# Gather inputs
-	inputFolder = arcpy.GetParameterAsText(0)
-	spatialReference = arcpy.GetParameter(1)
+	inputFolder = r"E:\Dropbox (RES)\@RES GIS\projects\CA\Klamath\DataReceived\AECOM\EagleData_20191113\All Eagle Data - SEND ME\Spatial Data Collected in Field\AECOM Eagle Data"
+	spatialReference = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD 1983 UTM Zone 10N.prj"
 
 	# Write to Log
 	arcpy.AddMessage('')
@@ -89,7 +89,7 @@ def main():
 		# Convert KML/KMZ to GDB
 		arcpy.KMLToLayer_conversion(kmz, newFolder, fileName)
 		gdb = os.path.join(newFolder, '{}.gdb'.format(fileName))
-		env.workspace = gdb
+		arcpy.env.workspace = gdb
 		
 		# Loop through the feature datasets and feature classes
 		for ds in arcpy.ListDatasets('', ''):
