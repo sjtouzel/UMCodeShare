@@ -56,7 +56,7 @@ ExtentString += " " + str(describeBoundaryExtent.extent.XMax)
 ExtentString += " " + str(describeBoundaryExtent.extent.YMax)
 
 ###### Import LiDAR Raster(s) ######
-lidarRasterFolder = r"C:\Users\jtouzel\Downloads\RasterImport"
+lidarRasterFolder = r"C:\Users\jtouzel\Downloads\RasterImport" ### NEEDS TO BE A PARAMETER ### Will be a list of selected rasters
 lidarRasterList = [] # empty list for all of our rasters
 lidarRasterMosaic = "rasterMosaic_" + dateTag
 lidarRasterMosaicPath = os.path.join(scratchGDB, lidarRasterMosaic)

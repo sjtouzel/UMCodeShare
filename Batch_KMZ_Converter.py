@@ -1,5 +1,5 @@
 from arcpy import *
-import sys, os, datetime
+import sys, os, datetime, arcpy
 
 def makeNewFolder(rFolder, fName):
 	
@@ -56,8 +56,8 @@ Inputs:
 
 def main():
 	# Gather inputs
-	inputFolder = GetParameterAsText(0)
-	spatialReference = GetParameter(1)
+	inputFolder = arcpy.GetParameterAsText(0)
+	spatialReference = arcpy.GetParameter(1)
 
 	# Write to Log
 	AddMessage('')
@@ -87,15 +87,15 @@ def main():
 		newFolder = makeNewFolder(root, fileName)
 		
 		# Convert KML/KMZ to GDB
-		conversion.KMLToLayer(kmz, newFolder, fileName)
+		arcpy.KMLToLayer_conversion(kmz, newFolder, fileName)
 		gdb = os.path.join(newFolder, '{}.gdb'.format(fileName))
 		env.workspace = gdb
 		
 		# Loop through the feature datasets and feature classes
-		for ds in ListDatasets('', ''):
-			for i in ListFeatureClasses('', '', ds):
+		for ds in arcpy.ListDatasets('', ''):
+			for i in arcpy.ListFeatureClasses('', '', ds):
 				newFile = os.path.join(newFolder, fileName + '_' + i + '.shp')
-				management.Project(os.path.join(gdb, ds, i), newFile, spatialReference)
+				arcpy.Project_management(os.path.join(gdb, ds, i), newFile, spatialReference)
 
 if __name__ == '__main__':
 	main()
