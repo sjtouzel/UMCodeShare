@@ -79,6 +79,11 @@ streamDelinThreshold = 3.5 ### NEEDS TO BE A PARAMETER ###
 
 
 ############ import all layers and databases ################### REMOVE AFTER DEVELOPEMENT IS DONE
+import os
+from arcpy import env
+import arcpy
+import datetime
+import time
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # looks somethin like this 20181213
 arcpy.env.scratchWorkspace = r"C:"
 scratchGDB = arcpy.env.scratchGDB # Path to newly created gdb.
