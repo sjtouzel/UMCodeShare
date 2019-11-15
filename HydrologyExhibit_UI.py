@@ -77,9 +77,8 @@ FlowAccum = "%scratchGDB%\\FlowAccum"
 FlowAccumRC = "%scratchGDB%\\FlowAccumRC"
 StreamOrder = "%scratchGDB%\\StreamOrder"
 # Fill the DEM
-from arcpy.sa import *
 env.scratchWorkspace = scratchGDB
-arcpy.sa.Fill(lidarRasterClip)
+arcpy.sa.Fill(lidarRasterClip) # Allow for overwrites
 # Calc flow direction
 arcpy.sa.FlowDirection(Fill_2, FlowDirection, "NORMAL", FLOW_Drop, "D8")
 
