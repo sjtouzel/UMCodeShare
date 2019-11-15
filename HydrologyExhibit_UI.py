@@ -67,9 +67,21 @@ arcpy.MosaicToNewRaster_management(lidarRasterList, scratchGDB, lidarRasterMosai
 lidarRasterClip = os.path.join(outPath, "lidarRasterClip_" + dateTag) ### USE THIS FOR ANALYSIS ###
 arcpy.Clip_management(lidarRasterMosaicPath, ExtentString, lidarRasterClip)
 
-# Set stream delineation value (examine raster calc
-# formula to figure out what this number means)
-streamDelinThreshold = 3.5 ### NEEDS TO BE A PARAMETER ###
+###### Run Hydrology Analysis ######
+streamDelinThreshold = 3.5 # Set stream delineation value ### NEEDS TO BE A PARAMETER ###
+# Scratch variables we'll use in our analysis
+Fill_2 = "%scratchGDB%\\Fill"
+FlowDrop = "%scratchGDB%\\FlowDrop"
+FlowDirection = "%scratchGDB%\\FLowDirection"
+FlowAccum = "%scratchGDB%\\FlowAccum"
+FlowAccumRC = "%scratchGDB%\\FlowAccumRC"
+StreamOrder = "%scratchGDB%\\StreamOrder"
+# Fill the DEM
+from arcpy.sa import *
+env.scratchWorkspace = scratchGDB
+arcpy.sa.Fill(lidarRasterClip)
+# Calc flow direction
+arcpy.sa.FlowDirection(Fill_2, FlowDirection, "NORMAL", FLOW_Drop, "D8")
 
 
 
@@ -84,6 +96,7 @@ from arcpy import env
 import arcpy
 import datetime
 import time
+
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # looks somethin like this 20181213
 arcpy.env.scratchWorkspace = r"C:"
 scratchGDB = arcpy.env.scratchGDB # Path to newly created gdb.
@@ -95,7 +108,7 @@ FC_List = arcpy.ListFeatureClasses()
 propBoundary = os.path.join(inputDataGDB, FC_List[0]) # NEEDS TO BE A PARAMETER
 propBoundaryReproj = os.path.join(outPath, FC_List[0] + "Project") # Create the output path for the reprojected layer
 propBoundaryMerge = os.path.join(propBoundaryReproj + "Merge") # create path for merge output ### USE THIS FOR ANALYSIS ###
-envelopeBoundary = os.path.join(scratchGDB, "envelopeBoundary_" + dateTag)
-extendedBoundary = os.path.join(outPath, "ExtendedBoundary_" + dateTag) ### USE THIS FOR ANALYSIS ###
+envelopeBoundary = os.path.join(scratchGDB, "envelopeBoundary_20191112")
+extendedBoundary = os.path.join(outPath, "ExtendedBoundary_20191112") ### USE THIS FOR ANALYSIS ###
 lidarRasterFolder = r"C:\Users\jtouzel\Downloads\RasterImport"
-lidarRasterClip = os.path.join(outPath, "lidarRasterClip_" + dateTag) ### USE THIS FOR ANALYSIS ###
+lidarRasterClip = os.path.join(outPath, "lidarRasterClip_20191112") ### USE THIS FOR ANALYSIS ###
