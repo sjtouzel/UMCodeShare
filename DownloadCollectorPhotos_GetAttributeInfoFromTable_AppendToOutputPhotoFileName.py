@@ -25,7 +25,7 @@ for i in folderlist: # get into each sub-folder
                         AttName = str(item[1])
                         filename = "Count" + str(count) + "_" + photoname + ".jpg" # create the complete file name for each photo
                         print(filename) # see what the name looks like
-                        open(os.path.join(i, filename), 'wb').write(attachment.tobytes())
+                        open(os.path.join(i, filename), 'wb').write(attachment.tobytes()) # write it out
                         del item
                         del filename
                         del attachment
