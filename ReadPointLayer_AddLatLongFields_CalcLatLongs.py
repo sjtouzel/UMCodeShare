@@ -24,11 +24,8 @@ for i in folderlist: # get into each sub-folder
                 for fld in flds: # if they are there we need to delete them
                     if fld == "LAT":
                         arcpy.Delete_management(fc, ["LAT", "LONG"])
-                #path = os.path.join(env.workspace, fc)
+                # add the fields back in and calculate them
                 arcpy.AddField_management(fc, "LAT", "DOUBLE")
                 arcpy.AddField_management(fc, "LONG", "DOUBLE")
-                arcpy.env.outputCoordinateSystem = calcCS
+                arcpy.env.outputCoordinateSystem = calcCS # set the output coordinate system so we can actually get lat long coords
                 arcpy.CalculateGeometryAttributes_management(fc, [["LAT", "POINT_Y"],["LONG", "POINT_X"]])
-
-FC_List = arcpy.ListFeatureClasses()
-arcpy.ListDatasets()
