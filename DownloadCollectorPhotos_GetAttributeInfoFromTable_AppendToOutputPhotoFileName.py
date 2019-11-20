@@ -23,7 +23,7 @@ for i in folderlist: # get into each sub-folder
                                 PhotoComment = str(row2[0])
                                 photoname = PhotoComment.replace(" ", "_") + "_" + str(row2[1]) # create a photoname based on point attributes
                         AttName = str(item[1])
-                        filename = "Count" + str(count) + "_" + photoname + ".jpg" # create the complete file name for each photo
+                        filename = photoname + "_" + str(count) + ".jpg" # create the complete file name for each photo
                         print(filename) # see what the name looks like
                         open(os.path.join(i, filename), 'wb').write(attachment.tobytes()) # write it out
                         del item
