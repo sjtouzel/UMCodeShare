@@ -13,7 +13,8 @@ dateTag = datetime.datetime.today().strftime('%Y%m%d') # looks somethin like thi
 
 ###### Create Temp Geodatabase ######
 arcpy.env.scratchWorkspace = r"C:"
-scratchGDB = arcpy.env.scratchGDB # Path to newly created gdb.
+scratchGDB = arcpy.env.scratchGDB # Path to scratch GDB
+arcpy.env.overwriteOutput = True
 
 ###### Designate Output GDB ######
 outPath = r"C:\Users\jtouzel\Desktop\PythonTempOutput\HydroTestingOutput.gdb" ### NEEDS TO BE A PARAMETER ###
@@ -21,9 +22,13 @@ outPath = r"C:\Users\jtouzel\Desktop\PythonTempOutput\HydroTestingOutput.gdb" ##
 ###### Designate projection info ######
 outCS = r"C:/Users/jtouzel/AppData/Roaming/Esri/Desktop10.6/ArcMap/Coordinate Systems/NAD 1983 UTM Zone 14N.prj" ### NEEDS TO BE A PARAMETER ###
 
+###### Designate flow accumulation threshold ######
+FlowAccumThresh = 3.5 ### NEEDS TO BE A PARAMETER ###
+
 ###### Data input GDB - will not be needed in final GUI, they'll just designate all the input layers individually ######
 inputDataGDB = r"C:/Users/jtouzel/Desktop/PythonTempInput/GlockzinProperty_20190906.gdb"
 env.workspace = inputDataGDB
+arcpy.env.overwriteOutput = True
 FC_List = arcpy.ListFeatureClasses()
 arcpy.ListDatasets()
 
@@ -70,17 +75,32 @@ arcpy.Clip_management(lidarRasterMosaicPath, ExtentString, lidarRasterClip)
 ###### Run Hydrology Analysis ######
 streamDelinThreshold = 3.5 # Set stream delineation value ### NEEDS TO BE A PARAMETER ###
 # Scratch variables we'll use in our analysis
-Fill_2 = "%scratchGDB%\\Fill"
+Fill = "%scratchGDB%\\Fill"
 FlowDrop = "%scratchGDB%\\FlowDrop"
-FlowDirection = "%scratchGDB%\\FLowDirection"
+FlowDirection = "%scratchGDB%\\FlowDirection"
 FlowAccum = "%scratchGDB%\\FlowAccum"
 FlowAccumRC = "%scratchGDB%\\FlowAccumRC"
 StreamOrder = "%scratchGDB%\\StreamOrder"
 # Fill the DEM
 env.scratchWorkspace = scratchGDB
-arcpy.sa.Fill(lidarRasterClip) # Allow for overwrites
+env.workspace = scratchGDB
+arcpy.env.overwriteOutput = True
+outFill = arcpy.sa.Fill(lidarRasterClip) # Allow for overwrites
+outFill.save(Fill)
 # Calc flow direction
-arcpy.sa.FlowDirection(Fill_2, FlowDirection, "NORMAL", FLOW_Drop, "D8")
+outFlowDir = arcpy.sa.FlowDirection(Fill, "NORMAL")
+outFlowDir.save(FlowDirection)
+# Calc flow accumulation
+outFlowAcc = arcpy.sa.FlowAccumulation(FlowDirection, "", "FLOAT", "D8")
+outFlowAcc.save(FlowAccum)
+# Calc Flow accumulation threshold raster
+env.workspace = scratchGDB
+arcpy.env.overwriteOutput = True
+outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10("FlowAccum") >= FlowAccumThresh, arcpy.sa.Log10("FlowAccum"))
+outRasterCalc.save = FlowAccumRC
+# Calc Stream Order
+outStreamOrder = arcpy.sa.StreamOrder(FlowAccumRC, FlowDirection, "STRAHLER") #### error shit
+
 
 
 
@@ -103,6 +123,7 @@ outPath = r"C:\Users\jtouzel\Desktop\PythonTempOutput\HydroTestingOutput.gdb" # 
 outCS = r"C:/Users/jtouzel/AppData/Roaming/Esri/Desktop10.6/ArcMap/Coordinate Systems/NAD 1983 UTM Zone 14N.prj" # NEEDS TO BE A PARAMETER
 inputDataGDB = r"C:/Users/jtouzel/Desktop/PythonTempInput/GlockzinProperty_20190906.gdb"
 env.workspace = inputDataGDB
+arcpy.env.overwriteOutput = True
 FC_List = arcpy.ListFeatureClasses()
 propBoundary = os.path.join(inputDataGDB, FC_List[0]) # NEEDS TO BE A PARAMETER
 propBoundaryReproj = os.path.join(outPath, FC_List[0] + "Project") # Create the output path for the reprojected layer
