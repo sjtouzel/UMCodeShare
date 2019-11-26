@@ -18,6 +18,7 @@ with open(DomainBanksCSV, 'r') as f:
 
 DomainBanksList = DomainBanksList2[0]
 DomainBanksList[1]
+# DomainBanksList = ['BuenaCreek'] # use this one if you wanna create a single instead of a list of them
 
 # Create a new geodatabase for each Domain Bank
 GDBPathsList = []
