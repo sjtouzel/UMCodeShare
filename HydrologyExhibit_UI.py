@@ -73,14 +73,14 @@ lidarRasterClip = os.path.join(outPath, "lidarRasterClip_" + dateTag) ### USE TH
 arcpy.Clip_management(lidarRasterMosaicPath, ExtentString, lidarRasterClip)
 
 ###### Run Hydrology Analysis ######
-streamDelinThreshold = 3.5 # Set stream delineation value ### NEEDS TO BE A PARAMETER ###
+FlowAccumThresh = 3.5 # Set stream delineation value ### NEEDS TO BE A PARAMETER ###
 # Scratch variables we'll use in our analysis
-Fill = "%scratchGDB%\\Fill"
-FlowDrop = "%scratchGDB%\\FlowDrop"
-FlowDirection = "%scratchGDB%\\FlowDirection"
-FlowAccum = "%scratchGDB%\\FlowAccum"
-FlowAccumRC = "%scratchGDB%\\FlowAccumRC"
-StreamOrder = "%scratchGDB%\\StreamOrder"
+Fill = os.path.join(scratchGDB, 'Fill')
+FlowDrop = os.path.join(scratchGDB, 'FlowDrop')
+FlowDirection = os.path.join(scratchGDB, 'FlowDirection')
+FlowAccum = os.path.join(scratchGDB, 'FlowAccum')
+FlowAccumRC = os.path.join(scratchGDB, 'FlowAccumRC')
+StreamOrder = os.path.join(scratchGDB, 'StreamOrder')
 # Fill the DEM
 env.scratchWorkspace = scratchGDB
 env.workspace = scratchGDB
@@ -97,9 +97,12 @@ outFlowAcc.save(FlowAccum)
 env.workspace = scratchGDB
 arcpy.env.overwriteOutput = True
 outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10("FlowAccum") >= FlowAccumThresh, arcpy.sa.Log10("FlowAccum"))
-outRasterCalc.save = FlowAccumRC
+outRasterCalc.save('C:\\scratch.gdb\\FlowAccumRC')
 # Calc Stream Order
 outStreamOrder = arcpy.sa.StreamOrder(FlowAccumRC, FlowDirection, "STRAHLER") #### error shit
+
+rasterInfo = arcpy.Describe(FlowAccumRC)
+
 
 
 
