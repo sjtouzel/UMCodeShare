@@ -81,6 +81,7 @@ FlowDirection = os.path.join(scratchGDB, 'FlowDirection')
 FlowAccum = os.path.join(scratchGDB, 'FlowAccum')
 FlowAccumRC = os.path.join(scratchGDB, 'FlowAccumRC')
 StreamOrder = os.path.join(scratchGDB, 'StreamOrder')
+StreamFeatureClass = os.path.join(outPath, 'StreamThalwegs_Thresh' + str(FlowAccumThresh).replace(".","") + "_" + dateTag)
 # Fill the DEM
 env.scratchWorkspace = scratchGDB
 env.workspace = scratchGDB
@@ -94,21 +95,21 @@ outFlowDir.save(FlowDirection)
 outFlowAcc = arcpy.sa.FlowAccumulation(FlowDirection, "", "FLOAT", "D8")
 outFlowAcc.save(FlowAccum)
 # Calc Flow accumulation threshold raster
+env.scratchWorkspace = scratchGDB
 env.workspace = scratchGDB
 arcpy.env.overwriteOutput = True
 outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10("FlowAccum") >= FlowAccumThresh, arcpy.sa.Log10("FlowAccum"))
-outRasterCalc.save('C:\\scratch.gdb\\FlowAccumRC')
+outRasterCalc.save(FlowAccumRC)
 # Calc Stream Order
+env.workspace = scratchGDB
+env.scratchWorkspace = scratchGDB
+arcpy.env.overwriteOutput = True
 outStreamOrder = arcpy.sa.StreamOrder(FlowAccumRC, FlowDirection, "STRAHLER") #### error shit
-
-rasterInfo = arcpy.Describe(FlowAccumRC)
-
-
-
-
-
-
-
+outStreamOrder.save(StreamOrder)
+# Create the stream line features
+arcpy.sa.StreamToFeature(StreamOrder, FlowDirection, StreamFeatureClass, "SIMPLIFY")
+# Clip the streams to the Property boundary
+arcpy.Clip_analysis()
 
 
 
@@ -135,3 +136,4 @@ envelopeBoundary = os.path.join(scratchGDB, "envelopeBoundary_20191112")
 extendedBoundary = os.path.join(outPath, "ExtendedBoundary_20191112") ### USE THIS FOR ANALYSIS ###
 lidarRasterFolder = r"C:\Users\jtouzel\Downloads\RasterImport"
 lidarRasterClip = os.path.join(outPath, "lidarRasterClip_20191112") ### USE THIS FOR ANALYSIS ###
+FlowAccumThresh = 3.5 # Set stream delineation value ### NEEDS TO BE A PARAMETER ###
