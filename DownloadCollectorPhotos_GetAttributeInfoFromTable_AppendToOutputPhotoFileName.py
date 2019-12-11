@@ -18,7 +18,7 @@ for i in folderlist: # get into each sub-folder
                         attachment = item[0] # get the blob
                         fcList = arcpy.ListFeatureClasses() # get a list of feature classes
                         with arcpy.da.SearchCursor(fcList[0], ["COMMENT", "PHOTO_DIRECTION"], "{0} = '{1}'".format("GlobalID", item[2])) as cursor2: # look through point FC to get
-                                                # the related info for each photo
+                                                                                                                                                    # the related info for each photo
                             for row2 in cursor2:
                                 PhotoComment = str(row2[0])
                                 photoname = PhotoComment.replace(" ", "_") + "_" + str(row2[1]) # create a photoname based on point attributes

@@ -277,5 +277,21 @@ def spinning_rings(inner_max, outer_max):
 def args_count(*args,**kwargs):
     return len(args) + len(kwargs)
 
+# Alphabetical Addition - write a function that takes letter inputs and converts them to their number equivalent
+# add those numbers together and then convert the sum back into a letter
+def add_letters(*letters):
+    LETTERS = {letter: index for index, letter in enumerate(list(map(chr, range(97, 123))), start=1)}
+    lettersSum = 0
+    for i in letters:
+        lettersSum += LETTERS.get(i)
+    print(lettersSum)
+    divtest = divmod(lettersSum,26)
+    print(divtest)
+    if divtest[1] != 0:
+        return chr(divtest[1]+96)
+    else:
+        return chr(122)
 
-
+# Best Method
+def add_letters(*letters):
+    return chr( (sum(ord(c)-96 for c in letters)-1)%26 + 97)
