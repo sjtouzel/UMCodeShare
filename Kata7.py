@@ -294,4 +294,5 @@ def add_letters(*letters):
 
 # Best Method
 def add_letters(*letters):
-    return chr( (sum(ord(c)-96 for c in letters)-1)%26 + 97)
+    return chr((sum(ord(c)-96 for c in letters)-1)%26 + 97)
+

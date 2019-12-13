@@ -131,3 +131,9 @@ def check_exam(arr1, arr2):
 # number possible
 def super_size(n):
     return int("".join(sorted(list(str(n)),reverse=True)))
+
+# Find the Integral - given an exponent and a coefficient find the integral of the variable
+def integrate(coefficient, exponent):
+    return ''.join([str(int(coefficient/(exponent+1))),'x^',str(exponent+1)])
+
+# Sleigh Authentication - create a method for a class that tells us
