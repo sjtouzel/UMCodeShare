@@ -3,7 +3,7 @@ from arcpy import da
 from arcpy import env
 import os
 
-MotherShipFolder = r"C:/Users/jtouzel/Downloads/DomainFieldDataDownload" # All our downloaded data is here
+MotherShipFolder = r"C:/Users/jtouzel/Downloads/NewDomainData" # All our downloaded data is here
 folderlist = [] # Create empty list for all the sub-folder paths
 for i in os.listdir(MotherShipFolder): # get a list of all the sub-folders
     folderlist.append(MotherShipFolder + "/" + i)
