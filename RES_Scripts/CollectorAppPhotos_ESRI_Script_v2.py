@@ -50,21 +50,20 @@ attributeList = [i for i in allattributeList if i] # this will make a list of al
 
 
 # Get the photo and name it
-with inputPhotoTable:
-    with da.SearchCursor(inputPhotoTable, ['DATA', 'ATT_NAME', 'REL_GLOBALID']) as cursor: # get this data from each row
-        count = 0
-        for item in cursor:
-            attachment = item[0]
-            with arcpy.da.SearchCursor(inputPhotoFC, attributeList,"{0} = '{1}'".format("GlobalID", item[2])) as cursor2:  # look through point FC to get the related info for each photo
-                for row2 in cursor2:
-                    photonameList = []
-                    for i in range(0, len(attributeList)):
-                        photonameList.append(str(row2[i]).replace(" ", "_"))
-                    photoname = "_".join(photonameList)
-                    filename = photoname + "_" + str(count) + ".jpg"  # create the complete file name for each photo
-                    print(filename)  # see what the name looks like
-                    open(os.path.join(outputFolder, filename), 'wb').write(attachment.tobytes())  # write it out
-                    del item
-                    del filename
-                    del attachment
-                    count += 1
+with da.SearchCursor(inputPhotoTable, ['DATA', 'ATT_NAME', 'REL_GLOBALID']) as cursor: # get this data from each row
+    count = 0
+    for item in cursor:
+        attachment = item[0]
+        with arcpy.da.SearchCursor(inputPhotoFC, attributeList,"{0} = '{1}'".format("GlobalID", item[2])) as cursor2:  # look through point FC to get the related info for each photo
+            for row2 in cursor2:
+                photonameList = []
+                for i in range(0, len(attributeList)):
+                    photonameList.append(str(row2[i]).replace(" ", "_"))
+                photoname = "_".join(photonameList)
+                filename = photoname + "_" + str(count) + ".jpg"  # create the complete file name for each photo
+                print(filename)  # see what the name looks like
+                open(os.path.join(outputFolder, filename), 'wb').write(attachment.tobytes())  # write it out
+                del item
+                del filename
+                del attachment
+                count += 1
