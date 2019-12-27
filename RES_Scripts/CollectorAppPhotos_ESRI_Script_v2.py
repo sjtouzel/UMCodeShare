@@ -68,4 +68,3 @@ with inputPhotoTable:
                     del filename
                     del attachment
                     count += 1
-
