@@ -62,7 +62,7 @@ with da.SearchCursor(inputPhotoTable, ['DATA', 'ATT_NAME', 'REL_GLOBALID']) as c
                 photoname = "_".join(photonameList)
                 filename = photoname + "_" + str(count) + ".jpg"  # create the complete file name for each photo
                 arcpy.AddMessage(filename)   # see what the name looks like
-                time.sleep(1)  # gives a 1 second pause before going to the next step
+                time.sleep(.5)  # gives a .5 second pause before going to the next step
                 open(os.path.join(outputFolder, filename), 'wb').write(attachment.tobytes())  # write it out
                 del item
                 del filename
