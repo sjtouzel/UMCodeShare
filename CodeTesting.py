@@ -1,7 +1,7 @@
 import arcpy
 
 featureClass = ['in', 'out', 'up', 'down']
-print(", ".join(featureClass))
+print("_".join(featureClass))
 print("Field Names: {}".format(", ".join(featureClass)))
 
 item1 = 'red'
