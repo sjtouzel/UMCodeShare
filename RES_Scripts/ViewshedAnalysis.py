@@ -38,7 +38,7 @@ DEM = os.path.join(DEM_GDB, FC_List_DEM[3])
 descDEM = arcpy.Describe(DEM)
 descDEM.spatialReference.name
 # project DEM to UTM zone 10N
-DEM_Proj = os.path.join(outPathScratch, "Klamath_DEM_Proj")
+DEM_Proj = os.path.join(outPathScratch, "Klamath_DEM_Proj_v2")
 arcpy.ProjectRaster_management(DEM, DEM_Proj, ProjectAll)
 
 
@@ -49,11 +49,31 @@ FC_List = arcpy.ListFeatureClasses()
 PointLayer = os.path.join(PointLayerGDB, FC_List[0])
 descFC = arcpy.Describe(PointLayer)
 descFC.spatialReference.name
-arcpy.ListFields(PointLayer) #check what fields are in this layer
+OID_field = descFC.OIDFieldName
+[f.name for f in arcpy.ListFields(PointLayer)] #check what fields are in this layer
 
-
-with da.SearchCursor(PointLayer, ['RES_NAME']) as cursor: # get this data from each row
+PointNameList = []
+count = 0
+env.workspace = scratchGDB
+with da.SearchCursor(PointLayer, [OID_field, 'RES_NAME', 'RES_NOTE']) as cursor: # get this data from each row
     for row in cursor:
-        print(row[0])
+        if row[2] == 'Golden Eagle':
+            count += 1
+            print(row[1])
+            where = """"OBJECTID" = {0}""".format(row[0])
+            arcpy.SelectLayerByAttribute_management(PointLayer, "NEW_SELECTION", where)  # select the current feature
+            viewshed_RasterFC = 'ViewshedRaster_' + str(row[0])
+            print("Running ViewShed Analysis")
+            arcpy.Viewshed_3d(DEM_Proj, PointLayer, viewshed_RasterFC)
+            viewshed_PolyFC = 'ViewshedPoly_' + str(row[0])
+            print("Running Raster to Polygon")
+            arcpy.RasterToPolygon_conversion(viewshed_RasterFC, viewshed_PolyFC, "SIMPLIFY", )
+            if count > 0:
+                break
+
+            #arcpy.CopyFeatures_management(PointLayer, 'Output_' + str(row[0]))  # output feature to new feature class
+
+
+
 
 
