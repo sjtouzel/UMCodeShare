@@ -60,19 +60,28 @@ with da.SearchCursor(PointLayer, [OID_field, 'RES_NAME', 'RES_NOTE']) as cursor:
         if row[2] == 'Golden Eagle':
             count += 1
             print(row[1])
-            where = """"OBJECTID" = {0}""".format(row[0])
-            arcpy.SelectLayerByAttribute_management(PointLayer, "NEW_SELECTION", where)  # select the current feature
-            viewshed_RasterFC = 'ViewshedRaster_' + str(row[0])
-            print("Running ViewShed Analysis")
-            arcpy.Viewshed_3d(DEM_Proj, PointLayer, viewshed_RasterFC)
-            viewshed_PolyFC = 'ViewshedPoly_' + str(row[0])
-            print("Running Raster to Polygon")
-            arcpy.RasterToPolygon_conversion(viewshed_RasterFC, viewshed_PolyFC, "SIMPLIFY", )
-            if count > 0:
-                break
+            PointNameList.append(row[1])
+            # where = """"OBJECTID" = {0}""".format(row[0])
+            # arcpy.SelectLayerByAttribute_management(PointLayer, "NEW_SELECTION", where)  # select the current feature
+            # viewshed_RasterFC = 'ViewshedRaster_' + str(row[0])
+            # print("Running ViewShed Analysis")
+            # arcpy.CopyFeatures_management(PointLayer, viewshed_RasterFC)
+            # arcpy.Viewshed_3d(DEM_Proj, PointLayer, viewshed_RasterFC)
+            # viewshed_PolyFC = 'ViewshedPoly_' + str(row[0])
+            # print("Running Raster to Polygon")
+            # arcpy.RasterToPolygon_conversion(viewshed_RasterFC, viewshed_PolyFC, "SIMPLIFY", )
+            # if count > 0:
+            #     break
 
             #arcpy.CopyFeatures_management(PointLayer, 'Output_' + str(row[0]))  # output feature to new feature class
-
+for n in PointNameList:
+    filename = n.replace(" ", "_").replace(".", "_").replace(",","_")
+    outfc = os.path.join(scratchGDB, filename)
+    where_clause = '"RES_NAME" = \'%s\'' % n
+    arcpy.Select_analysis(PointLayer, outfc, where_clause)
+    viewshed_RasterFC = 'ViewshedRaster_' + filename
+    print("Running ViewShed Analysis")
+    arcpy.Viewshed_3d(DEM_Proj, PointLayer, viewshed_RasterFC)
 
 
 
