@@ -44,8 +44,8 @@ arcpy.ProjectRaster_management(DEM, DEM_Proj, ProjectAll)
 
 # Get the point layer and create a cursor to go through the points to run the analysis
 PointLayerGDB = r"E:\Dropbox (RES)\@RES GIS\projects\CA\Klamath\SHP\EagleTerritoryDesignation_20191227\EagleTerritoryData.gdb"  # *****
-env.workspace = PointLayerGDB
-FC_List = arcpy.ListFeatureClasses()
+env.workspace = PointLayerGDB  # *****
+FC_List = arcpy.ListFeatureClasses()  # *****
 PointLayer = os.path.join(PointLayerGDB, FC_List[0])  # *****
 descFC = arcpy.Describe(PointLayer) # *****
 descFC.spatialReference.name
@@ -75,21 +75,25 @@ with da.SearchCursor(PointLayer, [OID_field, 'RES_NAME', 'RES_NOTE']) as cursor:
 
             #arcpy.CopyFeatures_management(PointLayer, 'Output_' + str(row[0]))  # output feature to new feature class
 arcpy.env.overwriteOutput = True
+env.workspace = scratchGDB
+filenameList = []
 for n in PointNameList:
-    filename = n.replace(" ", "_").replace(".", "_").replace(",","_")
-    print(filename)
+    filename = n.replace(" ", "").replace(".", "").replace(",","")
+    print("**********************\n", filename)
     outfc = os.path.join(scratchGDB, filename)
     where_clause = '"RES_NAME" = \'%s\'' % n
     arcpy.Select_analysis(PointLayer, outfc, where_clause)
     viewshed_RasterFC = 'ViewshedRaster_' + filename
     print("Running ViewShed Analysis")
-    arcpy.Viewshed_3d(DEM_Proj, PointLayer, viewshed_RasterFC)
+    arcpy.Viewshed_3d(DEM, outfc, viewshed_RasterFC)
     print("Running Raster to Polygon")
     viewshed_PolyFC = 'ViewshedPoly_' + filename
-    arcpy.RasterToPolygon_conversion(viewshed_RasterFC, viewshed_PolyFC, "SIMPLIFY", "gridcode", "MULTIPLE_OUTER_PART")
-    if count > 1:
-        break
-
-
-
-
+    arcpy.RasterToPolygon_conversion(viewshed_RasterFC, viewshed_PolyFC, "SIMPLIFY", "Value", "MULTIPLE_OUTER_PART")
+    print("Extract viewshed polygons")
+    positive_viewshed = "PositiveViewshed_" + filename
+    where_clause = '"gridcode" = 1'
+    arcpy.Select_analysis(viewshed_PolyFC, positive_viewshed, where_clause)
+    filenameList.append(os.path.join(scratchGDB, positive_viewshed))
+    print("Adding SITE_ID field, calculating values")
+    arcpy.AddField_management(positive_viewshed, "SITE_ID", "TEXT", field_length=50)
+    arcpy.CalculateField_management(positive_viewshed, "SITE_ID", expression='"%s"' % n)
