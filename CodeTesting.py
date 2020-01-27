@@ -29,3 +29,38 @@ env.workspace = maskGDB
 fc_list2 = arcpy.ListFeatureClasses()
 mask = os.path.join(maskGDB, fc_list2[0])
 outExtractByMask = arcpy.sa.ExtractByMask(nlcd, mask)
+
+
+##### adjusting symbology #####
+import arcpy
+import pprint
+project = arcpy.mp.ArcGISProject(r"C:\Users\jtouzel\Documents\ArcGIS\Projects\ProjectTemplate\ProjectTemplate.aprx") # access the current project
+map_1 = project.listMaps("Map")[0] # get the first map called "Map" in the current project
+for lyr in map_1.listLayers():
+    print(lyr.name) # print out the names of all the layers in the map
+# Making Unique Value Renderer updates
+lyr = map_1.listLayers()[0] # get the first layer from the map
+sym = lyr.symbology # access the layers symbology
+sym.updateRenderer("UniqueValueRenderer")
+sym.renderer.fields = ["NAME"]
+lyr.symbology = sym
+
+# adjust outline of polygon symbols
+sym.renderer.symbol.applySymbolFromGallery("Extent Transparent Wide Gray")
+sym.renderer.symbol.color = {'RGB' : [255, 0, 0, 60]}
+sym.renderer.symbol.outlineColor = {'CMYK' : [25, 50, 75, 25, 100]}
+
+# adjust just the transparency
+lyr_3 = map_1.listLayers()[3] # select a layer
+lyr_3.transparency = 30 # set the transparency
+
+# Making Simple Renderer updates
+lyr_2 = map_1.listLayers()[1]
+sym_2 = lyr_2.symbology
+sym_2.updateRenderer("SimpleRenderer")
+sym_2.renderer.symbol.applySymbolFromGallery("Black Outline (1pt)")
+lyr_2.symbology = sym_2
+
+# get connection info about layer
+pprint.pprint(lyr.connectionProperties)
+
