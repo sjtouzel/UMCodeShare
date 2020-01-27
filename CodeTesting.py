@@ -38,6 +38,7 @@ project = arcpy.mp.ArcGISProject(r"C:\Users\jtouzel\Documents\ArcGIS\Projects\Pr
 map_1 = project.listMaps("Map")[0] # get the first map called "Map" in the current project
 for lyr in map_1.listLayers():
     print(lyr.name) # print out the names of all the layers in the map
+
 # Making Unique Value Renderer updates
 lyr = map_1.listLayers()[0] # get the first layer from the map
 sym = lyr.symbology # access the layers symbology
