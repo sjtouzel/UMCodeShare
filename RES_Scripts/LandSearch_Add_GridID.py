@@ -43,16 +43,18 @@ Parcel_FID = arcpy.GetParameterAsText(4) #
 Output_Join_Field = arcpy.GetParameterAsText(6) #
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(7) # This is where all of our finalized output will be stored
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8) # This is where all of our temporary output will be stored
+Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a coordinate system
 
 # REMOVE AFTER TESTING IS COMPLETE
 county = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb\WilliamsonCounty" # this can be derived from the county boundary
-Cell_Size_Height = arcpy.GetParameterAsText(1) or "5280" # We'll create a fishnet with 1 sq mile cells
-Cell_Size_Width = arcpy.GetParameterAsText(2) or "5280" # We'll create a fishnet with 1 sq mile cells
+Cell_Size_Height = "1609.34" # We'll create a fishnet with 1 sq mile cells
+Cell_Size_Width = "1609.34" # We'll create a fishnet with 1 sq mile cells
 Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
 Parcel_FID = arcpy.GetParameterAsText(4) #
 Output_Join_Field = arcpy.GetParameterAsText(6) #
-FinalData_OutputGeodatabase = arcpy.GetParameterAsText(7) # This is where all of our finalized output will be stored
+FinalData_OutputGeodatabase = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb" # This is where all of our finalized output will be stored
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8)
+Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 
 # Write to Log
 arcpy.AddMessage('')
@@ -70,7 +72,16 @@ arcpy.AddMessage("==============================================================
 
 #Create the grid from the county boundary
 dateTag = datetime.datetime.today().strftime('%Y%m%d') #we'll tag our output with this. looks somethin like this 20181213
-arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, ) NC_Fishnet_shp, origin_coord="", y_axis_coord="", cell_width=Cell_Size_Width,
-                               cell_height=Cell_Size_Height, number_rows="", number_columns="", corner_coord="", labels="NO_LABELS", template=Template_Extent, geometry_type="POLYGON")
+fishnetFileName = "fishnet_" + dateTag
+CountyDesc = arcpy.Describe(county)
+arcpy.env.outputCoordinateSystem = Output_CoordinateSystem
+arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, fishnetFileName),
+                               origin_coord=str(CountyDesc.extent.lowerLeft),
+                               y_axis_coord=str(CountyDesc.extent.XMin) + " " + str(CountyDesc.extent.YMax),
+                               cell_width=Cell_Size_Width,
+                               cell_height=Cell_Size_Height,
+                               number_rows="", number_columns="",
+                               corner_coord=str(CountyDesc.extent.upperRight), labels="NO_LABELS",
+                               template=county, geometry_type="POLYGON")
 
 

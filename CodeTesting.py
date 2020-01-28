@@ -65,3 +65,8 @@ lyr_2.symbology = sym_2
 # get connection info about layer
 pprint.pprint(lyr.connectionProperties)
 
+# get list of items in a folder
+OutputTest_Folder = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems"
+for i in os.listdir(OutputTest_Folder):
+    print(i)
+
