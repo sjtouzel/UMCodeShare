@@ -4,7 +4,32 @@ All ModelBuilder functionality may not be exported. Edits may be required for eq
 """
 
 import arcpy
-import os
+import os, time, datetime
+
+"""
+========================================================================
+LandSearch_Add_GridID.py
+========================================================================
+Author: Joe Touzel
+========================================================================
+Date			Modifier	Description of Change
+2020/01/28  	JT			Published
+========================================================================
+Description:
+This script is designed to update a part of the Land Search System. This
+part will create the GridID field in the parcel layer. This field is 
+based on a square mile fishnet grid that surrounds the county we're 
+analysing.
+
+Inputs:
+- County boundary
+- Fishnet grid Cell size
+- Parcel layer for the county
+- Unique field ID attribute
+- temp output geodatabase for data we don't need to keep
+- finalized data output geodatabase for the data we want to keep
+"""
+
 
 # To allow overwriting the outputs change the overwrite option to true.
 arcpy.env.overwriteOutput = True
@@ -20,7 +45,7 @@ FinalData_OutputGeodatabase = arcpy.GetParameterAsText(7) # This is where all of
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8) # This is where all of our temporary output will be stored
 
 # REMOVE AFTER TESTING IS COMPLETE
-county_extent = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb\WilliamsonCounty" # this can be derived from the county boundary
+county = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb\WilliamsonCounty" # this can be derived from the county boundary
 Cell_Size_Height = arcpy.GetParameterAsText(1) or "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = arcpy.GetParameterAsText(2) or "5280" # We'll create a fishnet with 1 sq mile cells
 Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
@@ -29,8 +54,23 @@ Output_Join_Field = arcpy.GetParameterAsText(6) #
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(7) # This is where all of our finalized output will be stored
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8)
 
+# Write to Log
+arcpy.AddMessage('')
+arcpy.AddMessage("===================================================================")
+sVersionInfo = 'LandSearch_Add_GridID.py, v20200128'
+arcpy.AddMessage('Calculating GridID for Land Search Parcels, {}'.format(sVersionInfo))
+arcpy.AddMessage("")
+arcpy.AddMessage("Support: jtouzel@res.us, 281-715-9109")
+arcpy.AddMessage("")
+arcpy.AddMessage("Input FCs: {0}, {1}".format(county, Input_Parcels))
+field_names = [f.name for f in arcpy.ListFields(Input_Parcels)]
+arcpy.AddMessage("Field Names: {}".format(", ".join(field_names)))
+arcpy.AddMessage("===================================================================")
+
+
 #Create the grid from the county boundary
-arcpy.CreateFishnet_management(out_feature_class=os.join.path NC_Fishnet_shp, origin_coord="", y_axis_coord="", cell_width=Cell_Size_Width,
+dateTag = datetime.datetime.today().strftime('%Y%m%d') #we'll tag our output with this. looks somethin like this 20181213
+arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, ) NC_Fishnet_shp, origin_coord="", y_axis_coord="", cell_width=Cell_Size_Width,
                                cell_height=Cell_Size_Height, number_rows="", number_columns="", corner_coord="", labels="NO_LABELS", template=Template_Extent, geometry_type="POLYGON")
 
 
