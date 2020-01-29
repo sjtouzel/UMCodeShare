@@ -72,7 +72,22 @@ for i in os.listdir(OutputTest_Folder):
 
 # Get list of fields
 descFC = arcpy.Describe(UTM_List[0])
-fieldList = [f.name for f in arcpy.ListFields(UTM_List[0])]
+fieldList = [f.name for f in arcpy.ListFields(newFC)]
 
 # delete a field
-arcpy.DeleteField_management(UTM_List[0],fieldList[2])
+arcpy.DeleteField_management(newFC,fieldList[2])
+
+for fields in arcpy.ListFields(newFC):
+
+    if fields.name not in keep_fields:
+        arcpy.DeleteField_management(newFC, fields.name)
+
+# make a copy of a feature class
+newFC = os.path.join(database, "RogersCountyParcel_Copy")
+arcpy.CopyFeatures_management(UTM_List[0], newFC)
+
+# delete a feature class
+arcpy.Delete_management(newFC)
+
+# list feature classes
+arcpy.ListFeatureClasses()

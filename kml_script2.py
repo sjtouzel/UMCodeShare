@@ -29,19 +29,28 @@ UTM_List = arcpy.ListFeatureClasses()
 # mxd = arcpy.mapping.MapDocument('CURRENT')
 # df = arcpy.mapping.ListDataFrames(mxd)[0]
 
+#### Start the new FC here
+arcpy.Delete_management(newFC)
+keep_fields = ['OBJECTID', 'Shape', 'SHAPE', 'PopupInfo', 'Shape_Length', 'Shape_Area', 'SHAPE_Length', 'SHAPE_Area']
+
+newFC = os.path.join(database, "RogersCountyParcel_Copy")
+arcpy.CopyFeatures_management(UTM_List[0], newFC)
+
+for fields in arcpy.ListFields(newFC):
+
+    if fields.name not in keep_fields:
+        arcpy.DeleteField_management(newFC, fields.name)
+
 keep_fields = ['OID', 'Shape', 'SHAPE', 'PopupInfo', 'Shape_Length', 'Shape_Area', 'SHAPE_Length', 'SHAPE_Area']
+fieldList = [f.name for f in arcpy.ListFields(newFC)]
+fieldList.append('SHAPE_Area')
 
 for FC in UTM_List:
 
-   # update_layer = arcpy.mapping.Layer(database + '\\' + FC)
-   # arcpy.mapping.AddLayer(df, update_layer)
+##### first add the fields
 
-
-# first add the fields
-
-   SC = arcpy.da.SearchCursor(FC, keep_fields)
-   n=0
-   for row in SC:
+    SC = arcpy.da.SearchCursor(FC, keep_fields)
+    for row in SC:
 
       pop_string = row[3]
       pop_array = pop_string.split("<")
@@ -55,31 +64,29 @@ for FC in UTM_List:
             fields_array.append(tag)
       break
 
-   del row
-   del SC
-   fieldList = [f.name for f in arcpy.ListFields(FC)]
-   arcpy.DeleteField_management(UTM_List[0], fieldList[2])
    # for fields in arcpy.ListFields(FC):
    #
-      # if fields.name not in keep_fields:
-      #    arcpy.DeleteField_management(UTM_List[0],fields.name)
+   #    if fields.name not in keep_fields:
+   #       arcpy.DeleteField_management(newFC,fields.name)
 
-#this will list the field names and field values
-#even indexes are field names (starts at 0)  
-#and odd indexes are field values
+   #this will list the field names and field values
+   #even indexes are field names (starts at 0)
+   #and odd indexes are field values
    del fields_array[:2]
 
    for x in range(0,len(fields_array)):
       fields_array[x]=fields_array[x].replace("td>","")
-      if x%2 == 0 and fields_array[x] not in keep_fields:
-         names_array.append(fields_array[x])
-         arcpy.AddField_management(FC, fields_array[x], "TEXT")
+      if x%2 == 0:
+         if fields_array[x] not in fieldList:
+            print(fields_array[x])
+            names_array.append(fields_array[x])
+            arcpy.AddField_management(newFC, fields_array[x], "TEXT")
 
-# default is all TEXT fields but I could change this later to reference the values
-#now we update the values
+   # default is all TEXT fields but I could change this later to reference the values
+   #now we update the values
    names_array.append("PopupInfo")
-                      
-   with arcpy.da.UpdateCursor(FC,names_array) as UC:
+
+   with arcpy.da.UpdateCursor(newFC,names_array) as UC:
 
       for row in UC:
 
@@ -91,11 +98,11 @@ for FC in UTM_List:
          for segment in pop_array:
             if "td>" in segment and "/td>" not in segment:
                fields_array.append(segment)
-            
+
          del fields_array[:2]
-        
+
          for x in range(0,len(fields_array)):
-            if x%2<>0:
+            if x % 2 != 0:
                if fields_array[x-1] not in keep_fields:
                   fields_array[x]=fields_array[x].replace("td>","")
                   values_array.append(fields_array[x])
