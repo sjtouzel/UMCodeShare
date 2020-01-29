@@ -70,3 +70,9 @@ OutputTest_Folder = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\C
 for i in os.listdir(OutputTest_Folder):
     print(i)
 
+# Get list of fields
+descFC = arcpy.Describe(UTM_List[0])
+fieldList = [f.name for f in arcpy.ListFields(UTM_List[0])]
+
+# delete a field
+arcpy.DeleteField_management(UTM_List[0],fieldList[2])

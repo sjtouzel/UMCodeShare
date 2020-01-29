@@ -15,7 +15,7 @@ arcpy.env.workspace = dataset
 GCS_List = arcpy.ListFeatureClasses()
 
 coord_sys = arcpy.GetParameter(1)
-#in stand-alone script use arcpy.SpatialReferece('desired Coord Sys name')
+coord_sys = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD 1983 UTM Zone 15N.prj"
 
 e_count = 0
 
@@ -26,41 +26,49 @@ for FC in GCS_List:
 arcpy.env.workspace = database
 UTM_List = arcpy.ListFeatureClasses()
 
-mxd = arcpy.mapping.MapDocument('CURRENT')
-df = arcpy.mapping.ListDataFrames(mxd)[0]
+# mxd = arcpy.mapping.MapDocument('CURRENT')
+# df = arcpy.mapping.ListDataFrames(mxd)[0]
 
 keep_fields = ['OID', 'Shape', 'SHAPE', 'PopupInfo', 'Shape_Length', 'Shape_Area', 'SHAPE_Length', 'SHAPE_Area']
 
 for FC in UTM_List:
 
-   update_layer = arcpy.mapping.Layer(database + '\\' + FC)
-   arcpy.mapping.AddLayer(df, update_layer)
+   # update_layer = arcpy.mapping.Layer(database + '\\' + FC)
+   # arcpy.mapping.AddLayer(df, update_layer)
+
 
 # first add the fields
 
-   SC = arcpy.SearchCursor(FC)
+   SC = arcpy.da.SearchCursor(FC, keep_fields)
+   n=0
    for row in SC:
-      
-      pop_string = row.getValue("PopupInfo")
+
+      pop_string = row[3]
       pop_array = pop_string.split("<")
+      n += 1
       fields_array = []
       names_array = []
+
 
       for tag in pop_array:
          if "td>" in tag and "/td>" not in tag:
             fields_array.append(tag)
       break
 
-   for fields in arcpy.ListFields(FC):
-      
-      if fields.name not in keep_fields:
-         arcpy.DeleteField_management(FC,fields.name)
+   del row
+   del SC
+   fieldList = [f.name for f in arcpy.ListFields(FC)]
+   arcpy.DeleteField_management(UTM_List[0], fieldList[2])
+   # for fields in arcpy.ListFields(FC):
+   #
+      # if fields.name not in keep_fields:
+      #    arcpy.DeleteField_management(UTM_List[0],fields.name)
 
 #this will list the field names and field values
 #even indexes are field names (starts at 0)  
 #and odd indexes are field values
    del fields_array[:2]
-  
+
    for x in range(0,len(fields_array)):
       fields_array[x]=fields_array[x].replace("td>","")
       if x%2 == 0 and fields_array[x] not in keep_fields:
