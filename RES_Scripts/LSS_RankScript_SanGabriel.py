@@ -53,8 +53,6 @@ def Canopy_Parcel_Rank_Calc(Canopy_Mean):
 
     val = 1
 
-    arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking: <50 is {}, >=50 is 1")  # print the field we're adding
-
     if Canopy_Mean < 50:
         val = 3
     elif Canopy_Mean >= 50:
@@ -80,11 +78,11 @@ def Stream_Linear_Ft_Rank_Calc(Stream):
 
     if Stream < 5000:
         val = 0
-    elif Stream < 7000:
+    elif Stream < 7000 or Stream > 12000:
         val = 1
-    elif Stream < 8000:
+    elif Stream < 8000 or Stream > 11000:
         val = 2
-    elif Stream < 9000:
+    elif Stream <= 9000 or Stream > 10000:
         val = 3
     elif Stream > 9000:
         val = 4
@@ -216,6 +214,7 @@ def main():
     Add_Rank_Fields(county_parcel_data)
 
     fields = ['Canopy_cover_parcel', 'Canopy_cover_parcelR']
+    arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking: <50 is {}, >=50 is 1")  # print the field we're adding
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = Canopy_Parcel_Rank_Calc(row[0])
