@@ -1,7 +1,5 @@
 import arcpy
-from arcpy import da
-from arcpy import env
-import time, os
+import time
 
 """
 ========================================================================
@@ -33,13 +31,13 @@ def Add_Rank_Fields(parcel_input):
                   'Canopy_cover_riparian_bufferR',
                   'Stream_Linear_FeetR',
                   'LULC_bufferR',
-                  'LULC_parcelR',
-                  'NWI_PWSLR',
-                  'WetlandRestR',
-                  'WetlandPresR',
-                  'LF_Strm_HWR',
-                  'NHDR',
-                  'PriorityR']
+                  'LULC_parcelR',]
+                  # 'NWI_PWSLR',
+                  # 'WetlandRestR',
+                  # 'WetlandPresR',
+                  # 'LF_Strm_HWR',
+                  # 'NHDR',
+                  # 'PriorityR']
 
     attribute_type = 'SHORT'
     for field in new_fields:
@@ -214,7 +212,8 @@ def main():
     Add_Rank_Fields(county_parcel_data)
 
     fields = ['Canopy_cover_parcel', 'Canopy_cover_parcelR']
-    arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking: <50 is {}, >=50 is 1")  # print the field we're adding
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking")  # Print the Ranking info for Parcel Canopy
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = Canopy_Parcel_Rank_Calc(row[0])
@@ -223,6 +222,8 @@ def main():
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Canopy_cover_riparian_buffer', 'Canopy_cover_riparian_bufferR']
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate Buffer Canopy Cover Ranking")  # Print the Ranking info for Buffer Canopy
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = Canopy_Buffer_Rank_Calc(row[0])
@@ -230,7 +231,9 @@ def main():
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['Stream_Linear_Feet', 'Stream_Linear_FeetR']
+    fields = ['Stream_linear_feet', 'Stream_Linear_FeetR']
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate Stream LF Ranking")  # Print the Ranking info
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = Stream_Linear_Ft_Rank_Calc(row[0])
@@ -239,6 +242,8 @@ def main():
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['LULC_riparian_buffer', 'LULC_bufferR']
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate Buffer LULC Ranking")  # Print the Ranking info
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = LULC_Buffer_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceuous", "Shrub/Scrub", "Emergent Herbaceuous Wetlands", "Cultivated Crops", "Hay/Pasture")
@@ -247,6 +252,8 @@ def main():
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['LULC_parcel', 'LULC_parcelR']
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate Parcel LULC Ranking")  # Print the Ranking info
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = LULC_Parcel_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceuous", "Shrub/Scrub", "Emergent Herbaceuous Wetlands", "Cultivated Crops", "Hay/Pasture")
@@ -254,45 +261,55 @@ def main():
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['Tot_ac_pot', 'NWI_PWSLR']
-    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-        for row in cursor:
-            rank_val = NWI_PWSL_Rank_Calc(row[0])
-            row[1] = rank_val
-            cursor.updateRow(row)
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+    # fields = ['Tot_ac_pot', 'NWI_PWSLR']
+    # arcpy.AddMessage("===================================================================")
+    # arcpy.AddMessage("Calculate NWI PWSL Ranking")  # Print the Ranking info
+    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+    #     for row in cursor:
+    #         rank_val = NWI_PWSL_Rank_Calc(row[0])
+    #         row[1] = rank_val
+    #         cursor.updateRow(row)
+    # time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['Restor', 'WetlandRestR']
-    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-        for row in cursor:
-            rank_val = Restoration_Rank_Calc(row[0])
-            row[1] = rank_val
-            cursor.updateRow(row)
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+    # fields = ['Restor', 'WetlandRestR']
+    # arcpy.AddMessage("===================================================================")
+    # arcpy.AddMessage("Calculate Restoration Rank Ranking")  # Print the Ranking info
+    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+    #     for row in cursor:
+    #         rank_val = Restoration_Rank_Calc(row[0])
+    #         row[1] = rank_val
+    #         cursor.updateRow(row)
+    # time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['Preserv', 'WetlandPresR']
-    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-        for row in cursor:
-            rank_val = Preservation_Rank_Calc(row[0])
-            row[1] = rank_val
-            cursor.updateRow(row)
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+    # fields = ['Preserv', 'WetlandPresR']
+    # arcpy.AddMessage("===================================================================")
+    # arcpy.AddMessage("Calculate Preservation Ranking")  # Print the Ranking info
+    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+    #     for row in cursor:
+    #         rank_val = Preservation_Rank_Calc(row[0])
+    #         row[1] = rank_val
+    #         cursor.updateRow(row)
+    # time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['LF_Strm_HW', 'LF_Strm_HWR']
-    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-        for row in cursor:
-            rank_val = LF_Strm_HW_Calc(row[0])
-            row[1] = rank_val
-            cursor.updateRow(row)
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+    # fields = ['LF_Strm_HW', 'LF_Strm_HWR']
+    # arcpy.AddMessage("===================================================================")
+    # arcpy.AddMessage("Calculate Stream Headwater Ranking")  # Print the Ranking info
+    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+    #     for row in cursor:
+    #         rank_val = LF_Strm_HW_Calc(row[0])
+    #         row[1] = rank_val
+    #         cursor.updateRow(row)
+    # time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['NHD', 'NHDR']
-    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-        for row in cursor:
-            rank_val = NHD_Calc(row[0])
-            row[1] = rank_val
-            cursor.updateRow(row)
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+    # fields = ['NHD', 'NHDR']
+    # arcpy.AddMessage("===================================================================")
+    # arcpy.AddMessage("Calculate NHD stream LF Ranking")  # Print the Ranking info
+    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+    #     for row in cursor:
+    #         rank_val = NHD_Calc(row[0])
+    #         row[1] = rank_val
+    #         cursor.updateRow(row)
+    # time.sleep(1)  # gives a 1 second pause before going to the next step
             
 if __name__ == '__main__':
     main()
