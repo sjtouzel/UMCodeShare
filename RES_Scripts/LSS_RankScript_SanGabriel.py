@@ -1,23 +1,31 @@
-#-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
-#
-# Author:      tduong
-#
-# Created:     10/01/2020
-# Copyright:   (c) tduong 2020
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
+import arcpy
+from arcpy import da
+from arcpy import env
+import time, os
 
-'''
+"""
+========================================================================
+CollectorAppPhotos_ESRI_Script.py
+========================================================================
+Author: Joe Touzel
+========================================================================
+Date			Modifier	Description of Change
+2019/07/01      KC          Published
+2019/12/26  	JT			Modified
+========================================================================
+Description:
 This script is based on a model made in Model Builder for ArcGIS by Amy
 Ferguson for RES. The model takes a parcel data set and adds a standard
 set of fields that are used to rank parcels in the RES land search system.
 The ranking categories are multiplied together to calculate a final ranking.
 Current script written by Katherine Clark, July 2019.
-'''
 
-import arcpy
+Inputs:
+- Parcel Data with spatial analysis and Publishing Prep complete
+- Rank classes as specified by the Land Search Request
+"""
+
+
 
 
 def Add_Rank_Fields(parcel_input):
@@ -35,13 +43,17 @@ def Add_Rank_Fields(parcel_input):
 
     attribute_type = 'SHORT'
     for field in new_fields:
+        arcpy.AddMessage("Adding field: {}".format(field))  # print the field we're adding
         arcpy.AddField_management(parcel_input, field_name=field,
                                   field_type=attribute_type)
+
 
 
 def Canopy_Parcel_Rank_Calc(Canopy_Mean):
 
     val = 1
+
+    arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking: <50 is {}, >=50 is 1")  # print the field we're adding
 
     if Canopy_Mean < 50:
         val = 3
@@ -187,6 +199,20 @@ def main():
 
     county_parcel_data = arcpy.GetParameterAsText(0)
 
+    # Write to Log
+    arcpy.AddMessage('')
+    arcpy.AddMessage("===================================================================")
+    sVersionInfo = 'LSS_RankScript_SanGabriel.py, v20200203'
+    arcpy.AddMessage('LSS Ranking Script, {}'.format(sVersionInfo))
+    arcpy.AddMessage("")
+    arcpy.AddMessage("Support: jtouzel@res.us, 281-715-9109")
+    arcpy.AddMessage("")
+    arcpy.AddMessage("Input FC: {}".format(county_parcel_data))
+    field_names = [f.name for f in arcpy.ListFields(county_parcel_data)]
+    arcpy.AddMessage("Field Names: {}".format(", ".join(field_names)))
+    arcpy.AddMessage("===================================================================")
+
+
     Add_Rank_Fields(county_parcel_data)
 
     fields = ['Canopy_cover_parcel', 'Canopy_cover_parcelR']
@@ -195,6 +221,7 @@ def main():
             rank_val = Canopy_Parcel_Rank_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Canopy_cover_riparian_buffer', 'Canopy_cover_riparian_bufferR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -202,6 +229,7 @@ def main():
             rank_val = Canopy_Buffer_Rank_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Stream_Linear_Feet', 'Stream_Linear_FeetR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -209,6 +237,7 @@ def main():
             rank_val = Stream_Linear_Ft_Rank_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['LULC_riparian_buffer', 'LULC_bufferR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -216,6 +245,7 @@ def main():
             rank_val = LULC_Buffer_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceuous", "Shrub/Scrub", "Emergent Herbaceuous Wetlands", "Cultivated Crops", "Hay/Pasture")
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['LULC_parcel', 'LULC_parcelR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -223,6 +253,7 @@ def main():
             rank_val = LULC_Parcel_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceuous", "Shrub/Scrub", "Emergent Herbaceuous Wetlands", "Cultivated Crops", "Hay/Pasture")
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Tot_ac_pot', 'NWI_PWSLR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -230,6 +261,7 @@ def main():
             rank_val = NWI_PWSL_Rank_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Restor', 'WetlandRestR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -237,6 +269,7 @@ def main():
             rank_val = Restoration_Rank_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Preserv', 'WetlandPresR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -244,6 +277,7 @@ def main():
             rank_val = Preservation_Rank_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['LF_Strm_HW', 'LF_Strm_HWR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -251,6 +285,7 @@ def main():
             rank_val = LF_Strm_HW_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['NHD', 'NHDR']
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
@@ -258,6 +293,7 @@ def main():
             rank_val = NHD_Calc(row[0])
             row[1] = rank_val
             cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
             
 if __name__ == '__main__':
     main()
