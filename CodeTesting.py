@@ -91,3 +91,15 @@ arcpy.Delete_management(newFC)
 
 # list feature classes
 arcpy.ListFeatureClasses()
+
+# Fix symbology for LSS rankings
+project = arcpy.mp.ArcGISProject("CURRENT")
+map_1 = project.listMaps("Map")[0]
+lyr = map_1.listLayers()
+for f in range(1,5):
+    lyr_symbology = lyr[f].symbology
+    lyr_symbology.updateRenderer('UniqueValueRenderer')
+    lyr_symbology.renderer.fields = ['Priority_streams']
+    lyr[f].symbology = lyr_symbology
+    lyr_symbology = lyr[f].symbology
+
