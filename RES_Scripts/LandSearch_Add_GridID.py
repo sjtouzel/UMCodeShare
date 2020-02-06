@@ -72,8 +72,9 @@ arcpy.AddMessage("==============================================================
 
 #Create the grid from the county boundary
 dateTag = datetime.datetime.today().strftime('%Y%m%d') #we'll tag our output with this. looks somethin like this 20181213
-fishnetFileName = "fishnet_" + dateTag
+fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
 CountyDesc = arcpy.Describe(county)
+##Project the County boundary
 arcpy.env.outputCoordinateSystem = Output_CoordinateSystem
 arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, fishnetFileName),
                                origin_coord=str(CountyDesc.extent.lowerLeft),

@@ -103,3 +103,12 @@ for f in range(1,5):
     lyr[f].symbology = lyr_symbology
     lyr_symbology = lyr[f].symbology
 
+# reproject a feature class
+import arcpy
+import os
+
+arcpy.env.workspace = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb"
+arcpy.env.overwriteOutput = True
+
+
+inputFC =
