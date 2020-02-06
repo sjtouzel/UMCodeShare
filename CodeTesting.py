@@ -110,5 +110,20 @@ import os
 arcpy.env.workspace = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb"
 arcpy.env.overwriteOutput = True
 
+FC_List = arcpy.ListFeatureClasses()
 
-inputFC =
+inputFC = FC_List[2]
+outputFC = 'WilliamsonCounty_Proj'
+outputProjFolder = r'C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems'
+ProjList = []
+for i in os.listdir(outputProjFolder):
+    ProjList.append(i)
+outputProj = os.path.join(outputProjFolder, ProjList[6])
+
+FC_Description = arcpy.Describe(inputFC)
+FC_Description.spatialReference.name
+
+arcpy.Project_management(inputFC, outputFC, outputProj)
+
+# get the last part of a file path
+os.path.basename(os.path.normpath(outputProjFolder))

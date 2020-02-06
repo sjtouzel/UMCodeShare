@@ -35,7 +35,7 @@ Inputs:
 arcpy.env.overwriteOutput = True
 
 # Script parameters
-county = arcpy.GetParameterAsText(0) # this can be derived from the county boundary
+County = arcpy.GetParameterAsText(0) # this can be derived from the county boundary
 Cell_Size_Height = arcpy.GetParameterAsText(1) or "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = arcpy.GetParameterAsText(2) or "5280" # We'll create a fishnet with 1 sq mile cells
 Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
@@ -43,12 +43,12 @@ Parcel_FID = arcpy.GetParameterAsText(4) #
 Output_Join_Field = arcpy.GetParameterAsText(6) #
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(7) # This is where all of our finalized output will be stored
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8) # This is where all of our temporary output will be stored
-Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a coordinate system
+Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a state plane coordinate system
 
 # REMOVE AFTER TESTING IS COMPLETE
-county = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb\WilliamsonCounty" # this can be derived from the county boundary
-Cell_Size_Height = "1609.34" # We'll create a fishnet with 1 sq mile cells
-Cell_Size_Width = "1609.34" # We'll create a fishnet with 1 sq mile cells
+County = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb\WilliamsonCounty" # this can be derived from the county boundary
+Cell_Size_Height = "5280" # We'll create a fishnet with 1 sq mile cells
+Cell_Size_Width = "5280" # We'll create a fishnet with 1 sq mile cells
 Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
 Parcel_FID = arcpy.GetParameterAsText(4) #
 Output_Join_Field = arcpy.GetParameterAsText(6) #
@@ -64,25 +64,27 @@ arcpy.AddMessage('Calculating GridID for Land Search Parcels, {}'.format(sVersio
 arcpy.AddMessage("")
 arcpy.AddMessage("Support: jtouzel@res.us, 281-715-9109")
 arcpy.AddMessage("")
-arcpy.AddMessage("Input FCs: {0}, {1}".format(county, Input_Parcels))
+arcpy.AddMessage("Input FCs: {0}, {1}".format(County, Input_Parcels))
 field_names = [f.name for f in arcpy.ListFields(Input_Parcels)]
 arcpy.AddMessage("Field Names: {}".format(", ".join(field_names)))
 arcpy.AddMessage("===================================================================")
 
 
 #Create the grid from the county boundary
-dateTag = datetime.datetime.today().strftime('%Y%m%d') #we'll tag our output with this. looks somethin like this 20181213
+dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag our output with this. looks somethin like this 20181213
 fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
-CountyDesc = arcpy.Describe(county)
 ##Project the County boundary
-arcpy.env.outputCoordinateSystem = Output_CoordinateSystem
+arcpy.env.workspace = FinalData_OutputGeodatabase
+CountyProj = os.path.basename(os.path.normpath(County)) + "_Proj"
+arcpy.Project_management(County, CountyProj, Output_CoordinateSystem)
+CountyProjDesc = arcpy.Describe(CountyProj)
 arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, fishnetFileName),
-                               origin_coord=str(CountyDesc.extent.lowerLeft),
-                               y_axis_coord=str(CountyDesc.extent.XMin) + " " + str(CountyDesc.extent.YMax),
+                               origin_coord=str(CountyProjDesc.extent.lowerLeft),
+                               y_axis_coord=str(CountyProjDesc.extent.XMin) + " " + str(CountyProjDesc.extent.YMax),
                                cell_width=Cell_Size_Width,
                                cell_height=Cell_Size_Height,
                                number_rows="", number_columns="",
-                               corner_coord=str(CountyDesc.extent.upperRight), labels="NO_LABELS",
+                               corner_coord=str(CountyProjDesc.extent.upperRight), labels="NO_LABELS",
                                template=county, geometry_type="POLYGON")
 
 
