@@ -70,17 +70,20 @@ arcpy.AddMessage("==============================================================
 arcpy.AddMessage('Reprojecting input County, {}'.format(os.path.basename(os.path.normpath(County))))
 arcpy.env.workspace = FinalData_OutputGeodatabase
 CountyProj = os.path.basename(os.path.normpath(County)) + "_Proj"
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 arcpy.AddMessage('Output is: {}'.format(CountyProj))
 arcpy.Project_management(County, CountyProj, Output_CoordinateSystem)
 arcpy.AddMessage('Reprojecting input Parcels, {}'.format(os.path.basename(os.path.normpath(Input_Parcels))))
 ParcelProj = os.path.basename(os.path.normpath(Input_Parcels)) + "_Proj"
 arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 arcpy.AddMessage('Output is: {}'.format(ParcelProj))
 
 #Create the grid from the county boundary
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag our output with this. looks somethin like this 20181213
 fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
 CountyProjDesc = arcpy.Describe(CountyProj) # get the details of the county data
+arcpy.AddMessage('Creating the square mile Fishnet Grid: {}'.format(fishnetFileName))
 arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, fishnetFileName),
                                origin_coord=str(CountyProjDesc.extent.lowerLeft),
                                y_axis_coord=str(CountyProjDesc.extent.XMin) + " " + str(CountyProjDesc.extent.YMax),
@@ -89,49 +92,72 @@ arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGe
                                number_rows="", number_columns="",
                                corner_coord=str(CountyProjDesc.extent.upperRight), labels="NO_LABELS",
                                template=CountyProj, geometry_type="POLYGON")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##add a field to the fishnet grid called GRID_FID
 Grid_FID = "Grid_FID"
+arcpy.AddMessage('Adding a GRID_FID field to the fishnet grid. Field Name: {}'.format(Grid_FID))
 arcpy.AddField_management(in_table=fishnetFileName, field_name=Grid_FID, field_type="LONG", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ###Calculate FID field as a copy of the OID field
 oidFieldName = arcpy.Describe(fishnetFileName).OIDFieldName
+arcpy.AddMessage('Calculating the GRID_FID field as a copy of the ObjectID field')
 arcpy.CalculateField_management(in_table=fishnetFileName, field=Grid_FID, expression="!" + oidFieldName + "!",
                                 expression_type="PYTHON3", code_block="")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 #Add an FID field to the parcel layer
 FID_FieldName_1 = "FID_v1"
+arcpy.AddMessage('Adding an FID field to the Parcel layer. Field Name: {}'.format(FID_FieldName_1))
 arcpy.AddField_management(in_table=ParcelProj, field_name=FID_FieldName_1, field_type="LONG", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##Calculate FID field as a copy of the OID field
 oidFieldName = arcpy.Describe(ParcelProj).OIDFieldName
+arcpy.AddMessage('Calculating the Parcel FID field as a copy of the ObjectID field')
 arcpy.CalculateField_management(in_table=ParcelProj, field=FID_FieldName_1, expression="!" + oidFieldName + "!",
                                 expression_type="PYTHON3", code_block="")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##Add a Grid_ID field and an ACRES field
 GridID_FieldName = "GRID_ID"
 Acres_FieldName = "ACRES_v1"
+arcpy.AddMessage('Adding a GRID_ID, and an ACRES field to the Parcel layer. Field Name: {},{}'.format(GridID_FieldName,
+                                                                                                      Acres_FieldName))
 arcpy.AddField_management(in_table=ParcelProj, field_name=GridID_FieldName, field_type="LONG", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 arcpy.AddField_management(in_table=ParcelProj, field_name=Acres_FieldName, field_type="DOUBLE", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ###Calculate acreage
+arcpy.AddMessage('Calculating the Parcel Acreage')
 arcpy.CalculateField_management(in_table=ParcelProj, field=Acres_FieldName, expression="!shape.area@acres!",
                                 expression_type="PYTHON3", code_block="")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 #run a spatial join on the parcel data and the grid layer so we can add a Grid ID to the parcel layer
 ParcelGridJoin = "ParcelGridJoin_" + dateTag
+arcpy.AddMessage('Running a spatial join on the Parcels and Fishnet Grid')
 arcpy.SpatialJoin_analysis(target_features=ParcelProj, join_features=fishnetFileName, out_feature_class=ParcelGridJoin,
                            join_operation="JOIN_ONE_TO_ONE", join_type="KEEP_ALL", match_option='HAVE_THEIR_CENTER_IN')
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 #join the parcel data and the parcel grid join so we can calculate the GRID_ID field
 ParcelFeatureLayer = "ParcelFeatureLayer_" + dateTag
 arcpy.MakeFeatureLayer_management(ParcelProj, ParcelFeatureLayer)
+arcpy.AddMessage('Joining the Parcels with the spatially joined Parcel/Grid table')
 arcpy.AddJoin_management(in_layer_or_view=ParcelFeatureLayer, in_field=FID_FieldName_1, join_table=ParcelGridJoin,
                          join_field=FID_FieldName_1, join_type="KEEP_ALL")
-CalcField = ParcelProj + "." + GridID_FieldName
+time.sleep(.5)  # gives a .5 second pause before going to the next step
+CalcParcelGridField = ParcelProj + "." + GridID_FieldName
 CalcGridField = ParcelGridJoin + "." + Grid_FID
-arcpy.CalculateField_management(in_table=ParcelFeatureLayer, field=CalcField, expression="!" + CalcGridField + "!",
-                                expression_type="PYTHON3", code_block="")
+arcpy.AddMessage('Calculate the GRID_ID field for the Parcel layer and remove join')
+arcpy.CalculateField_management(in_table=ParcelFeatureLayer, field=CalcParcelGridField,
+                                expression="!" + CalcGridField + "!", expression_type="PYTHON3", code_block="")
 arcpy.RemoveJoin_management(in_layer_or_view=ParcelFeatureLayer)
-ParcelFeatureClass_v1 = "ParcelswGridID_" + dateTag
-arcpy.CopyFeatures_management(ParcelFeatureLayer, ParcelFeatureClass_v1)
+time.sleep(.5)  # gives a .5 second pause before going to the next step
+ParcelFeatureClass_WithGrid = "ParcelswGridID_" + dateTag
+arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFeatureClass_WithGrid))
+arcpy.CopyFeatures_management(ParcelFeatureLayer, ParcelFeatureClass_WithGrid)
+time.sleep(.5)  # gives a .5 second pause before going to the next step
+
