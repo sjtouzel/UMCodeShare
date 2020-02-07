@@ -171,7 +171,7 @@ time.sleep(.5)  # gives a .5 second pause before going to the next step
 ParcelHUC8Join = "ParcelHUC8Join_" + dateTag
 HUC8_FC = "HUC8_FC"
 ##add HUC8 Field to the parcel layer
-HUC8_FieldName = "HUC8_v1"
+ParcelHUC8_FieldName = "HUC8_v1"
 arcpy.AddField_management(in_table=ParcelFeatureClass_WithGrid, field_name=HUC8_FieldName, field_type="TEXT", field_precision="",
                           field_scale="", field_length=8, field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
@@ -189,6 +189,14 @@ arcpy.MakeFeatureLayer_management(ParcelFeatureClass_WithGrid, ParcelGridFeature
 arcpy.AddMessage('Joining the Parcels with the spatially joined Parcel/HUC8 table')
 arcpy.AddJoin_management(in_layer_or_view=ParcelGridFeatureLayer, in_field=FID_FieldName_1, join_table=ParcelHUC8Join,
                          join_field=FID_FieldName_1, join_type="KEEP_ALL")
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##Calculate the HUC8 field from the joined table HUC8
-CalcParcelHUC8Field = ParcelFeatureClass_WithGrid + "." + HUC8_FieldName
+CalcParcelHUC8Field = ParcelFeatureClass_WithGrid + "." + ParcelHUC8_FieldName
 CalcHUC8Field = ParcelGridJoin + "." + HUC8_FieldName
+arcpy.AddMessage('Calculating the HUC8 field for the Parcel layer and removing join')
+arcpy.CalculateField_management(in_table=ParcelGridFeatureLayer, field=CalcParcelHUC8Field,
+                                expression="!" + CalcHUC8Field + "!", expression_type="PYTHON3", code_block="")
+
+fieldList = [f.name for f in arcpy.ListFields(ParcelGridFeatureLayer)]
+
+####### Rerun all code and make sure the parcel layer HUC8 field is different than HUC_8 (LINE 175) ####
