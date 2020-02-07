@@ -197,6 +197,4 @@ arcpy.AddMessage('Calculating the HUC8 field for the Parcel layer and removing j
 arcpy.CalculateField_management(in_table=ParcelGridFeatureLayer, field=CalcParcelHUC8Field,
                                 expression="!" + CalcHUC8Field + "!", expression_type="PYTHON3", code_block="")
 
-fieldList = [f.name for f in arcpy.ListFields(ParcelGridFeatureLayer)]
-
-####### Rerun all code and make sure the parcel layer HUC8 field is different than HUC_8 (LINE 175) ####
+####### Finish remove join and export to new FC ####
