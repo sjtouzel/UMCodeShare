@@ -168,7 +168,6 @@ arcpy.CopyFeatures_management(ParcelFeatureLayer, ParcelFeatureClass_WithGrid)
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 
 #Add HUC8 numbers to our parcel layer
-ParcelHUC8Join = "ParcelHUC8Join_" + dateTag
 HUC8_FC = "HUC8_FC"
 ##add HUC8 Field to the parcel layer
 ParcelHUC8_FieldName = "HUC8_v1"
@@ -178,6 +177,7 @@ arcpy.AddField_management(in_table=ParcelFeatureClass_WithGrid, field_name=HUC8_
 ##copy the HUC 8 data to our geodatabase
 arcpy.FeatureClassToFeatureClass_conversion(HUC_8, FinalData_OutputGeodatabase, HUC8_FC)
 ##run a spatial join on the parcels and the HUC8 FC
+ParcelHUC8Join = "ParcelHUC8Join_" + dateTag
 arcpy.AddMessage('Running a spatial join on the Parcels and HUC8 layer')
 arcpy.SpatialJoin_analysis(target_features=ParcelFeatureClass_WithGrid, join_features=HUC8_FC,
                            out_feature_class=ParcelHUC8Join, join_operation="JOIN_ONE_TO_ONE", join_type="KEEP_ALL",
@@ -192,7 +192,7 @@ arcpy.AddJoin_management(in_layer_or_view=ParcelGridFeatureLayer, in_field=FID_F
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##Calculate the HUC8 field from the joined table HUC8
 CalcParcelHUC8Field = ParcelFeatureClass_WithGrid + "." + ParcelHUC8_FieldName
-CalcHUC8Field = ParcelGridJoin + "." + HUC8_FieldName
+CalcHUC8Field = ParcelHUC8Join + "." + HUC8_FieldName
 arcpy.AddMessage('Calculating the HUC8 field for the Parcel layer and removing join')
 arcpy.CalculateField_management(in_table=ParcelGridFeatureLayer, field=CalcParcelHUC8Field,
                                 expression="!" + CalcHUC8Field + "!", expression_type="PYTHON3", code_block="")
