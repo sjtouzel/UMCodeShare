@@ -100,7 +100,7 @@ arcpy.AddField_management(in_table=fishnetFileName, field_name=Grid_FID, field_t
                           field_is_required="NON_REQUIRED", field_domain="")
 #Calculate FID field as a copy of the OID field
 oidFieldName = arcpy.Describe(fishnetFileName).OIDFieldName
-arcpy.CalculateField_management(in_table=ParcelProj, field=FID_FieldName_1, expression="!" + oidFieldName + "!",
+arcpy.CalculateField_management(in_table=fishnetFileName, field=Grid_FID, expression="!" + oidFieldName + "!",
                                 expression_type="PYTHON3", code_block="")
 #Add an FID field to the parcel layer
 FID_FieldName_1 = "FID_v1"
