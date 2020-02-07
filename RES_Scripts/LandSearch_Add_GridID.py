@@ -46,13 +46,13 @@ TempOutput_Geodatabase = arcpy.GetParameterAsText(8) # This is where all of our 
 Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a state plane coordinate system
 
 # REMOVE AFTER TESTING IS COMPLETE
-County = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb\WilliamsonCounty" # this can be derived from the county boundary
+County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
 Cell_Size_Height = "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = "5280" # We'll create a fishnet with 1 sq mile cells
-Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
+Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
 Parcel_FID = arcpy.GetParameterAsText(4) #
 Output_Join_Field = arcpy.GetParameterAsText(6) #
-FinalData_OutputGeodatabase = r"R:\resgis\dropboxgis\Land Prospecting\Land Search\TX\HUC12070205_PRJ102353_San Gabriel_InFill\PRO\LSS_ParcelTemplate.gdb" # This is where all of our finalized output will be stored
+FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our finalized output will be stored
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8)
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 
@@ -70,6 +70,13 @@ arcpy.AddMessage("Field Names: {}".format(", ".join(field_names)))
 arcpy.AddMessage("===================================================================")
 
 
+#Reproject all incoming data
+arcpy.env.workspace = FinalData_OutputGeodatabase
+CountyProj = os.path.basename(os.path.normpath(County)) + "_Proj"
+arcpy.Project_management(County, CountyProj, Output_CoordinateSystem)
+ParcelProj = os.path.basename(os.path.normpath(Input_Parcels)) + "_Proj"
+arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
+
 #Create the grid from the county boundary
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag our output with this. looks somethin like this 20181213
 fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
@@ -85,6 +92,38 @@ arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGe
                                cell_height=Cell_Size_Height,
                                number_rows="", number_columns="",
                                corner_coord=str(CountyProjDesc.extent.upperRight), labels="NO_LABELS",
-                               template=county, geometry_type="POLYGON")
-
-
+                               template=CountyProj, geometry_type="POLYGON")
+##add a field to the fishnet grid called GRID_FID
+Grid_FID = "Grid_FID"
+arcpy.AddField_management(in_table=fishnetFileName, field_name=Grid_FID, field_type="LONG", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+#Calculate FID field as a copy of the OID field
+oidFieldName = arcpy.Describe(fishnetFileName).OIDFieldName
+arcpy.CalculateField_management(in_table=ParcelProj, field=FID_FieldName_1, expression="!" + oidFieldName + "!",
+                                expression_type="PYTHON3", code_block="")
+#Add an FID field to the parcel layer
+FID_FieldName_1 = "FID_v1"
+arcpy.AddField_management(in_table=ParcelProj, field_name=FID_FieldName_1, field_type="LONG", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+#Calculate FID field as a copy of the OID field
+oidFieldName = arcpy.Describe(ParcelProj).OIDFieldName
+arcpy.CalculateField_management(in_table=ParcelProj, field=FID_FieldName_1, expression="!" + oidFieldName + "!",
+                                expression_type="PYTHON3", code_block="")
+#Add a Grid_ID field and an ACRES field
+GridID_FieldName = "GRID_ID"
+Acres_FieldName = "ACRES_v1"
+arcpy.AddField_management(in_table=ParcelProj, field_name=GridID_FieldName, field_type="LONG", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+arcpy.AddField_management(in_table=ParcelProj, field_name=Acres_FieldName, field_type="DOUBLE", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+#Calculate acreage
+arcpy.CalculateField_management(in_table=ParcelProj, field=Acres_FieldName, expression="!shape.area@acres!",
+                                expression_type="PYTHON3", code_block="")
+#run a spatial join on the parcel data and the grid layer so we can add a Grid ID to the parcel layer
+ParcelGridJoin = "ParcelGridJoin"
+arcpy.SpatialJoin_analysis(target_features=ParcelProj, join_features=fishnetFileName, out_feature_class=ParcelGridJoin,
+                           join_operation="JOIN_ONE_TO_ONE", join_type="KEEP_ALL", {field_mapping}, {match_option}, {search_radius}, {distance_field_name})
