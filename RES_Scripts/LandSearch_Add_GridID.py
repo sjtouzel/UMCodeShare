@@ -151,13 +151,13 @@ arcpy.AddJoin_management(in_layer_or_view=ParcelFeatureLayer, in_field=FID_Field
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 CalcParcelGridField = ParcelProj + "." + GridID_FieldName
 CalcGridField = ParcelGridJoin + "." + Grid_FID
-arcpy.AddMessage('Calculate the GRID_ID field for the Parcel layer and remove join')
+arcpy.AddMessage('Calculating the GRID_ID field for the Parcel layer and removing join')
 arcpy.CalculateField_management(in_table=ParcelFeatureLayer, field=CalcParcelGridField,
                                 expression="!" + CalcGridField + "!", expression_type="PYTHON3", code_block="")
 arcpy.RemoveJoin_management(in_layer_or_view=ParcelFeatureLayer)
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 ParcelFeatureClass_WithGrid = "ParcelswGridID_" + dateTag
-arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFeatureClass_WithGrid))
+arcpy.AddMessage('Exporting the updated Parcel layer to a new Feature Class: {}'.format(ParcelFeatureClass_WithGrid))
 arcpy.CopyFeatures_management(ParcelFeatureLayer, ParcelFeatureClass_WithGrid)
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 
