@@ -129,3 +129,5 @@ arcpy.Project_management(inputFC, outputFC, outputProj)
 os.path.basename(os.path.normpath(outputProjFolder))
 
 # return a string with double quotes
+teststring = 'butts'
+print('"{}"'.format(teststring))
