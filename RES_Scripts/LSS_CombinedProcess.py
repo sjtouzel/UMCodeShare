@@ -36,11 +36,12 @@ County = arcpy.GetParameterAsText(0) # this can be derived from the county bound
 Cell_Size_Height = arcpy.GetParameterAsText(1) or "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = arcpy.GetParameterAsText(2) or "5280" # We'll create a fishnet with 1 sq mile cells
 Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
-HUC_8 = arcpy.GetParameterAsText(3) # Get the HUC 8 feature class or shapefile
-HUC8_FieldName = arcpy.GetParameterAsText(4) # get the HUC8 field name for adding it to the Parcel layer
-FinalData_OutputGeodatabase = arcpy.GetParameterAsText(7) # This is where all of our finalized output will be stored
-TempOutput_Geodatabase = arcpy.GetParameterAsText(8) # This is where all of our temporary output will be stored
-Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a state plane coordinate system
+HUC_8 = arcpy.GetParameterAsText(4) # Get the HUC 8 feature class or shapefile
+HUC8_FieldName = arcpy.GetParameterAsText(5) # get the HUC8 field name for adding it to the Parcel layer
+FinalData_OutputGeodatabase = arcpy.GetParameterAsText(6) # This is where all of our finalized output will be stored
+TempOutput_Geodatabase = arcpy.GetParameterAsText(7) # This is where all of our temporary output will be stored
+Output_CoordinateSystem = arcpy.GetParameterAsText(8) # choose a state plane coordinate system
+Minimum_ParcelAcreage = arcpy.GetParameterAsText(9)
 
 # REMOVE AFTER TESTING IS COMPLETE
 County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
@@ -53,6 +54,7 @@ HUC8_FieldName = 'HUC_8'
 FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our finalized output will be stored
 TempOutput_Geodatabase = arcpy.GetParameterAsText(8)
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
+Minimum_ParcelAcreage = 5
 
 # Write to Log
 arcpy.AddMessage('')
@@ -83,6 +85,7 @@ arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 arcpy.AddMessage('Output is: {}'.format(ParcelProj))
 
+#### Create the Fishnet Grid and add Grid ID to the Parcel Layer
 #Create the grid from the county boundary
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag our output with this. looks somethin like this 20181213
 fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
@@ -140,6 +143,7 @@ arcpy.AddMessage('Calculating the Parcel Acreage')
 arcpy.CalculateField_management(in_table=ParcelProj, field=Acres_FieldName, expression="!shape.area@acres!",
                                 expression_type="PYTHON3", code_block="")
 time.sleep(.5)  # gives a .5 second pause before going to the next step
+
 #run a spatial join on the parcel data and the grid layer so we can add a Grid ID to the parcel layer
 ParcelGridJoin = "ParcelGridJoin_" + dateTag
 arcpy.AddMessage('Running a spatial join on the Parcels and Fishnet Grid')
@@ -167,7 +171,7 @@ arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.fo
 arcpy.CopyFeatures_management(ParcelFeatureLayer, ParcelFeatureClass_WithGrid)
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 
-#Add HUC8 numbers to our parcel layer
+##### Add HUC8 numbers to our parcel layer #####
 HUC8_FC = "HUC8_FC"
 ##add HUC8 Field to the parcel layer
 ParcelHUC8_FieldName = "HUC8_v1"
