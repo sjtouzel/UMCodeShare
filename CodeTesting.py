@@ -127,3 +127,5 @@ arcpy.Project_management(inputFC, outputFC, outputProj)
 
 # get the last part of a file path
 os.path.basename(os.path.normpath(outputProjFolder))
+
+# return a string with double quotes

@@ -108,9 +108,9 @@ arcpy.AddField_management(in_table=fishnetFileName, field_name=Grid_FID, field_t
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 ###Calculate FID field as a copy of the OID field
-oidFieldName = arcpy.Describe(fishnetFileName).OIDFieldName
+oidFieldName1 = arcpy.Describe(fishnetFileName).OIDFieldName
 arcpy.AddMessage('Calculating the GRID_FID field as a copy of the ObjectID field')
-arcpy.CalculateField_management(in_table=fishnetFileName, field=Grid_FID, expression="!" + oidFieldName + "!",
+arcpy.CalculateField_management(in_table=fishnetFileName, field=Grid_FID, expression="!" + oidFieldName1 + "!",
                                 expression_type="PYTHON3", code_block="")
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 #Add an FID field to the parcel layer
@@ -121,9 +121,9 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=FID_FieldName_1, field
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##Calculate FID field as a copy of the OID field
-oidFieldName = arcpy.Describe(ParcelProj).OIDFieldName
+oidFieldName2 = arcpy.Describe(ParcelProj).OIDFieldName
 arcpy.AddMessage('Calculating the Parcel FID field as a copy of the ObjectID field')
-arcpy.CalculateField_management(in_table=ParcelProj, field=FID_FieldName_1, expression="!" + oidFieldName + "!",
+arcpy.CalculateField_management(in_table=ParcelProj, field=FID_FieldName_1, expression="!" + oidFieldName2 + "!",
                                 expression_type="PYTHON3", code_block="")
 time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##Add a Grid_ID field and an ACRES field
@@ -165,7 +165,13 @@ arcpy.CalculateField_management(in_table=ParcelFeatureLayer, field=CalcParcelGri
                                 expression="!" + CalcGridField + "!", expression_type="PYTHON3", code_block="")
 arcpy.RemoveJoin_management(in_layer_or_view=ParcelFeatureLayer)
 time.sleep(.5)  # gives a .5 second pause before going to the next step
-ParcelFeatureClass_WithGrid = "ParcelswGridID_" + dateTag
+###Filter out all parcels smaller than Minimum Parcel Acreage
+arcpy.AddMessage('Filtering out all parcels less than {} acres'.format(Minimum_ParcelAcreage))
+Selection1 = '"{}" >= {}'.format(Acres_FieldName,Minimum_ParcelAcreage)
+arcpy.SelectLayerByAttribute_management(ParcelFeatureLayer, 'NEW_SELECTION',
+                                        Selection1)
+ParcelFeatureClass_WithGrid = "ParcelsGridIDFilter_" + dateTag
+time.sleep(.5)  # gives a .5 second pause before going to the next step
 ##copy the updated parcel layer to a new FC
 arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFeatureClass_WithGrid))
 arcpy.CopyFeatures_management(ParcelFeatureLayer, ParcelFeatureClass_WithGrid)
