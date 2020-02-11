@@ -131,3 +131,10 @@ os.path.basename(os.path.normpath(outputProjFolder))
 # return a string with double quotes
 teststring = 'butts'
 print('"{}"'.format(teststring))
+
+# Calc Null Values
+def calculateNull(field):
+    if field is None:
+        return 0
+    else:
+        return field
