@@ -216,9 +216,4 @@ arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.fo
 arcpy.CopyFeatures_management(ParcelGridFeatureLayer, ParcelsGridHuc_FC)
 time.sleep(1)  # gives a .5 second pause before going to the next step
 
-##### Calculate Stream LF from input stream data #####
-
-fieldList = [f.name for f in arcpy.ListFields(ParcelGridFeatureLayer)]
-
-for f in fieldList:
-    print(f)
+##### Calculate Stream LF from input stream data in another process #####
