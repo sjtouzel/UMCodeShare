@@ -11,8 +11,9 @@ Date			Modifier	Description of Change
 2020/02/12  	JT			Published
 ========================================================================
 Description:
-This script is designed to run the initial analysis on the parcel data
-for a given county. This is in preparation for more specific analysis to
+This script is designed to run part two of the parcel data analysis
+for a given county. it will calculate values for the GRID_ID and HUC_8
+fields. This is in preparation for more specific analysis to
 be completed by the analyst. 
 
 Inputs:
@@ -212,3 +213,6 @@ arcpy.CopyFeatures_management(ParcelGridFeatureLayer, ParcelsGridHuc_FC)
 time.sleep(1)  # gives a .5 second pause before going to the next step
 
 ##### Calculate Stream LF from input stream data in another process #####
+
+
+###### Look for things we can remove from this analysis and put in the 1LSS_FormatParcelData_Analysis script ######
