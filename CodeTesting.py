@@ -72,8 +72,10 @@ for i in os.listdir(OutputTest_Folder):
 
 # Get list of fields
 descFC = arcpy.Describe(UTM_List[0])
-fieldList = [f.name for f in arcpy.ListFields(newFC)]
+fieldList = [f.name for f in arcpy.ListFields(ParcelGridFeatureLayer)]
 
+for f in fieldList:
+    print(f)
 # delete a field
 arcpy.DeleteField_management(newFC,fieldList[2])
 
