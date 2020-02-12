@@ -8,12 +8,12 @@ import os, time, datetime
 
 """
 ========================================================================
-LSS_CombinedProcess.py
+2LSS_GridID_HUC8_Analysis.py
 ========================================================================
 Author: Joe Touzel
 ========================================================================
 Date			Modifier	Description of Change
-2020/02/07  	JT			Published
+2020/02/12  	JT			Published
 ========================================================================
 Description:
 This script is designed to run the initial analysis on the parcel data
