@@ -17,7 +17,7 @@ Date			Modifier	Description of Change
 ========================================================================
 Description:
 This script is designed to run the initial analysis on the parcel data
-for a given county. This is in preperation for more specific analysis to
+for a given county. This is in preparation for more specific analysis to
 be completed by the analyst. 
 
 Inputs:
