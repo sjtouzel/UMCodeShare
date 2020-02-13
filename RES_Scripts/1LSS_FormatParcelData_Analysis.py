@@ -250,8 +250,39 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerType, field_type=
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-
-
+### Now we'll calculate this Owner Type field **Adapt the code below to create an if then statement to calc this field
+myCalc( !Parcel_owner! ,"CITY", "LLC", "MNCPPC", "STATE", "LLLP", "L L L P", "INC", " CO", "LP", "COUNTY", "CORPORATION", "CORP", "ASSOCIATION", "L L C")
+def myCalc(Parcel_owner,ownerVal, ownerVal2, ownerVal3, ownerVal4, ownerVal5, ownerVal6, ownerVal7, ownerVal8, ownerVal9, ownerVal10, ownerVal11, ownerVal12, ownerVal13, ownerVal14):
+   if (ownerVal in Parcel_owner):
+      return "Municipal"
+   if (ownerVal2 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal3 in Parcel_owner):
+      return "County"
+   if (ownerVal4 in Parcel_owner):
+      return "State"
+   if (ownerVal5 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal6 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal7 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal8 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal9 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal10 in Parcel_owner):
+      return "County"
+   if (ownerVal11 in Parcel_owner):
+       return "Partnership/Corporation"
+   if (ownerVal12 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal13 in Parcel_owner):
+      return "Partnership/Corporation"
+   if (ownerVal14 in Parcel_owner):
+      return "Partnership/Corporation"
+   else:
+      return "Private individual"
 
 ##add a field to the parcel layer called Owner_on_off_site
 OwnerOnOffSite = "Owner_on_off_site"
