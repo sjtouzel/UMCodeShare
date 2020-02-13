@@ -28,10 +28,10 @@ Inputs:
 arcpy.env.overwriteOutput = True
 
 # Script parameters
-County = arcpy.GetParameterAsText(0) # this can be derived from the county boundary
+CountyProj = arcpy.GetParameterAsText(0) # this can be derived from the county boundary
 Cell_Size_Height = arcpy.GetParameterAsText(1) or "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = arcpy.GetParameterAsText(2) or "5280" # We'll create a fishnet with 1 sq mile cells
-Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
+ParcelProj = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
 HUC_8 = arcpy.GetParameterAsText(4) # Get the HUC 8 feature class or shapefile
 HUC8_FieldName = arcpy.GetParameterAsText(5) # get the HUC8 field name for adding it to the Parcel layer
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(6) # This is where all of our finalized output will be stored
@@ -68,18 +68,18 @@ arcpy.AddMessage("Field Names: {}".format(", ".join(field_names)))
 arcpy.AddMessage("===================================================================")
 
 
-#Reproject all incoming data
-arcpy.AddMessage('Reprojecting input County, {}'.format(os.path.basename(os.path.normpath(County))))
-arcpy.env.workspace = FinalData_OutputGeodatabase
-CountyProj = os.path.basename(os.path.normpath(County)) + "_Proj"
-time.sleep(1)  # gives a .5 second pause before going to the next step
-arcpy.AddMessage('Output is: {}'.format(CountyProj))
-arcpy.Project_management(County, CountyProj, Output_CoordinateSystem)
-arcpy.AddMessage('Reprojecting input Parcels, {}'.format(os.path.basename(os.path.normpath(Input_Parcels))))
-ParcelProj = os.path.basename(os.path.normpath(Input_Parcels)) + "_Proj"
-arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
-time.sleep(1)  # gives a .5 second pause before going to the next step
-arcpy.AddMessage('Output is: {}'.format(ParcelProj))
+# #Reproject all incoming data
+# arcpy.AddMessage('Reprojecting input County, {}'.format(os.path.basename(os.path.normpath(County))))
+# arcpy.env.workspace = FinalData_OutputGeodatabase
+# CountyProj = os.path.basename(os.path.normpath(County)) + "_Proj"
+# time.sleep(1)  # gives a .5 second pause before going to the next step
+# arcpy.AddMessage('Output is: {}'.format(CountyProj))
+# arcpy.Project_management(County, CountyProj, Output_CoordinateSystem)
+# arcpy.AddMessage('Reprojecting input Parcels, {}'.format(os.path.basename(os.path.normpath(Input_Parcels))))
+# ParcelProj = os.path.basename(os.path.normpath(Input_Parcels)) + "_Proj"
+# arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
+# time.sleep(1)  # gives a .5 second pause before going to the next step
+# arcpy.AddMessage('Output is: {}'.format(ParcelProj))
 
 #### Create the Fishnet Grid and add Grid ID to the Parcel Layer
 #Create the grid from the county boundary
