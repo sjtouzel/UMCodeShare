@@ -27,6 +27,7 @@ County = arcpy.GetParameterAsText(0) # county boundary FC or shapefile
 CountyName = arcpy.GetParameterAsText(1) # get the county name so we can use to calculate the field later
 Input_Parcels = arcpy.GetParameterAsText(2) # Get the parcel data to be processed
 ParcelID_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
+ParcelOwner_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(2) # This is where all of our output will be stored
 Output_CoordinateSystem = arcpy.GetParameterAsText(3) # choose a state plane coordinate system
 Minimum_ParcelAcreage = arcpy.GetParameterAsText(4)
@@ -37,7 +38,8 @@ StateName = arcpy.GetParameterAsText(5)
 County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
 CountyName = "Williamson"
 Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
-ParcelID_Field =
+ParcelID_Column =
+ParcelOwner_Column =
 FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 Minimum_ParcelAcreage = 5
@@ -170,7 +172,7 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=ParcelID, field_type="
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-arcpy.AddMessage('Calculating the Parcel ID field from the field, {}, from the imported parcel data'.format(ParcelID_Field))
-arcpy.CalculateField_management(in_table=ParcelProj, field=CountyField, expression="!" + ParcelID_Field + "!",
+arcpy.AddMessage('Calculating the Parcel ID field from the field, {}, from the imported parcel data'.format(ParcelID_Column))
+arcpy.CalculateField_management(in_table=ParcelProj, field=CountyField, expression="!" + ParcelID_Column + "!",
                                 expression_type="PYTHON3", code_block="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
