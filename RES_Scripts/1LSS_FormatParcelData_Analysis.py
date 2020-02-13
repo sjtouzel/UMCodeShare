@@ -27,23 +27,23 @@ County = arcpy.GetParameterAsText(0) # county boundary FC or shapefile
 CountyName = arcpy.GetParameterAsText(1) # get the county name so we can use to calculate the field later
 Input_Parcels = arcpy.GetParameterAsText(2) # Get the parcel data to be processed
 ParcelID_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
-ParcelOwner_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
-FinalData_OutputGeodatabase = arcpy.GetParameterAsText(2) # This is where all of our output will be stored
-Output_CoordinateSystem = arcpy.GetParameterAsText(3) # choose a state plane coordinate system
-Minimum_ParcelAcreage = arcpy.GetParameterAsText(4)
-StateName = arcpy.GetParameterAsText(5)
+ParcelOwner_Column = arcpy.GetParameterAsText(4) # we'll select this column to calculate the field later
+FinalData_OutputGeodatabase = arcpy.GetParameterAsText(5) # This is where all of our output will be stored
+Output_CoordinateSystem = arcpy.GetParameterAsText(6) # choose a state plane coordinate system
+Minimum_ParcelAcreage = arcpy.GetParameterAsText(7)
+StateName = arcpy.GetParameterAsText(8)
 
 
 # REMOVE AFTER TESTING IS COMPLETE
-County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
-CountyName = "Williamson"
-Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
-ParcelID_Column =
-ParcelOwner_Column =
-FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
-Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
-Minimum_ParcelAcreage = 5
-StateName = "Texas"
+# County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
+# CountyName = "Williamson"
+# Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
+# ParcelID_Column =
+# ParcelOwner_Column =
+# FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
+# Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
+# Minimum_ParcelAcreage = 5
+# StateName = "Texas"
 
 
 
