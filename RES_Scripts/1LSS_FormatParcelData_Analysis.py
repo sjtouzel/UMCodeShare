@@ -28,11 +28,13 @@ CountyName = arcpy.GetParameterAsText(1) # get the county name so we can use to 
 Input_Parcels = arcpy.GetParameterAsText(2) # Get the parcel data to be processed
 ParcelID_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
 ParcelOwner_Column = arcpy.GetParameterAsText(4) # we'll select this column to calculate the field later
+ParcelAddress_Column = arcpy.GetParameterAsText(5) # make it a SQL expression paramater in case the address field needs to be concatenated
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(5) # This is where all of our output will be stored
 Output_CoordinateSystem = arcpy.GetParameterAsText(6) # choose a state plane coordinate system
-Minimum_ParcelAcreage = arcpy.GetParameterAsText(7)
+Minimum_ParcelAcreage = arcpy.GetParameterAsText(7) # a minimum acreage for our incoming parcel data
 StateName = arcpy.GetParameterAsText(8)
-
+JobCodeInput = arcpy.GetParameterAsText(9) # this will be supplied by the PM requesting the Land Search
+TotalCostField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
 
 # REMOVE AFTER TESTING IS COMPLETE
 # County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
@@ -45,7 +47,7 @@ StateName = arcpy.GetParameterAsText(8)
 # Minimum_ParcelAcreage = 5
 # StateName = "Texas"
 
-
+dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
 
 #Reproject all incoming data
 arcpy.AddMessage('Reprojecting input County, {}'.format(os.path.basename(os.path.normpath(County))))
@@ -145,7 +147,7 @@ arcpy.CalculateField_management(in_table=ParcelProj, field=StateField, expressio
                                 expression_type="PYTHON3", code_block="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
 
-##add a field to the parcel layer called State
+##add a field to the parcel layer called County
 CountyField = "County"
 arcpy.AddMessage('Adding a County field to the Parcel Layer. Field Name: {}'.format(CountyField))
 arcpy.AddField_management(in_table=ParcelProj, field_name=CountyField, field_type="TEXT", field_precision="",
@@ -164,6 +166,11 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=JobCode, field_type="T
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
+if JobCodeInput:
+    arcpy.AddMessage('Calculating the Job Code field as: {}'.format(JobCodeInput))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=JobCode, expression='"{}"'.format(JobCodeInput),
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ##add a field to the parcel layer called Parcel_ID
 ParcelID = "Parcel_ID"
@@ -172,7 +179,324 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=ParcelID, field_type="
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-arcpy.AddMessage('Calculating the Parcel ID field from the field, {}, from the imported parcel data'.format(ParcelID_Column))
-arcpy.CalculateField_management(in_table=ParcelProj, field=CountyField, expression="!" + ParcelID_Column + "!",
+if ParcelID_Column:
+    arcpy.AddMessage('Calculating the Parcel ID field from the field, {}, from the imported parcel data'.format(ParcelID_Column))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=ParcelID, expression="!" + ParcelID_Column + "!",
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Parcel_owner
+ParcelOwner = "Parcel_owner"
+arcpy.AddMessage('Adding a Parcel Owner field to the Parcel Layer. Field Name: {}'.format(ParcelOwner))
+arcpy.AddField_management(in_table=ParcelProj, field_name=ParcelOwner, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+if ParcelOwner_Column:
+    arcpy.AddMessage('Calculating the Parcel Owner field from the field, {}, from the imported parcel data'.format(ParcelOwner_Column))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=ParcelOwner, expression="!" + ParcelOwner_Column + "!",
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Parcel_address
+ParcelAddress = "Parcel_address"
+arcpy.AddMessage('Adding a Parcel Address field to the Parcel Layer. Field Name: {}'.format(ParcelAddress))
+arcpy.AddField_management(in_table=ParcelProj, field_name=ParcelAddress, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+if ParcelAddress_Column:
+    arcpy.AddMessage('Calculating the Parcel Address field from the field, {}, from the imported parcel data'.format(ParcelAddress_Column))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=ParcelAddress, expression="!" + ParcelAddress_Column + "!",
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Parcel_acreage
+ParcelAcreage = "Parcel_acreage"
+arcpy.AddMessage('Adding a Parcel Acreage field to the Parcel Layer. Field Name: {}'.format(ParcelAcreage))
+arcpy.AddField_management(in_table=ParcelProj, field_name=ParcelAcreage, field_type="FLOAT", field_precision="",
+                          field_scale=2, field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+arcpy.AddMessage('Calculating the Parcel Acreage')
+arcpy.CalculateField_management(in_table=ParcelProj, field=ParcelAcreage, expression="!shape.area@acres!",
                                 expression_type="PYTHON3", code_block="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Total_cost
+TotalCost = "Total_cost"
+arcpy.AddMessage('Adding a Total Cost field to the Parcel Layer. Field Name: {}'.format(TotalCost))
+arcpy.AddField_management(in_table=ParcelProj, field_name=TotalCost, field_type="FLOAT", field_precision="",
+                          field_scale=2, field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+if TotalCostField:
+    arcpy.AddMessage('Calculating the Total Cost field from the field, {}, from the imported parcel data'.format(TotalCostField))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost, expression="!" + TotalCostField + "!",
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
+##add a field to the parcel layer called Cost_per_acre
+CostPerAcre = "Cost_per_acre"
+arcpy.AddMessage('Adding a Cost Per Acre field to the Parcel Layer. Field Name: {}'.format(CostPerAcre))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CostPerAcre, field_type="DOUBLE", field_precision="",
+                          field_scale=2, field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Owner_type
+OwnerType = "Owner_type"
+arcpy.AddMessage('Adding a Owner Type field to the Parcel Layer. Field Name: {}'.format(OwnerType))
+arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerType, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+
+
+##add a field to the parcel layer called Owner_on_off_site
+OwnerOnOffSite = "Owner_on_off_site"
+arcpy.AddMessage('Adding a Owner On/Off Site field to the Parcel Layer. Field Name: {}'.format(OwnerOnOffSite))
+arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerOnOffSite, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Grid2
+Grid2 = "Grid2"
+arcpy.AddMessage('Adding a Grid 2 field to the Parcel Layer. Field Name: {}'.format(Grid2))
+arcpy.AddField_management(in_table=ParcelProj, field_name=Grid2, field_type="SHORT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called HUC_8
+HUC8 = "HUC_8"
+arcpy.AddMessage('Adding a HUC 8 field to the Parcel Layer. Field Name: {}'.format(HUC8))
+arcpy.AddField_management(in_table=ParcelProj, field_name=HUC8, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Delivery_Factor_TN
+DeliveryFactorTN = "Delivery_Factor_TN"
+arcpy.AddMessage('Adding a Delivery Factor TN field to the Parcel Layer. Field Name: {}'.format(DeliveryFactorTN))
+arcpy.AddField_management(in_table=ParcelProj, field_name=DeliveryFactorTN, field_type="DOUBLE", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Delivery_Factor_TP
+DeliveryFactorTP = "Delivery_Factor_TP"
+arcpy.AddMessage('Adding a Delivery Factor TP field to the Parcel Layer. Field Name: {}'.format(DeliveryFactorTP))
+arcpy.AddField_management(in_table=ParcelProj, field_name=DeliveryFactorTP, field_type="DOUBLE", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Delivery_Factor_TSS
+DeliveryFactorTSS = "Delivery_Factor_TSS"
+arcpy.AddMessage('Adding a Delivery Factor TSS field to the Parcel Layer. Field Name: {}'.format(DeliveryFactorTSS))
+arcpy.AddField_management(in_table=ParcelProj, field_name=DeliveryFactorTSS, field_type="DOUBLE", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Stream_linear_feet
+StreamLinearFeet = "Stream_linear_feet"
+arcpy.AddMessage('Adding a Stream Linear Feet field to the Parcel Layer. Field Name: {}'.format(StreamLinearFeet))
+arcpy.AddField_management(in_table=ParcelProj, field_name=StreamLinearFeet, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Stream_order
+StreamOrder = "Stream_order"
+arcpy.AddMessage('Adding a Stream Order field to the Parcel Layer. Field Name: {}'.format(StreamOrder))
+arcpy.AddField_management(in_table=ParcelProj, field_name=StreamOrder, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Stream_Slope
+StreamSlope = "Stream_Slope"
+arcpy.AddMessage('Adding a Stream Slope field to the Parcel Layer. Field Name: {}'.format(StreamSlope))
+arcpy.AddField_management(in_table=ParcelProj, field_name=StreamSlope, field_type="DOUBLE", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Buffer_acreage
+BufferAcreage = "Buffer_acreage"
+arcpy.AddMessage('Adding a Buffer Acreage field to the Parcel Layer. Field Name: {}'.format(BufferAcreage))
+arcpy.AddField_management(in_table=ParcelProj, field_name=BufferAcreage, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called LULC_parcel
+LULCParcel = "LULC_parcel"
+arcpy.AddMessage('Adding an LULC Parcel field to the Parcel Layer. Field Name: {}'.format(LULCParcel))
+arcpy.AddField_management(in_table=ParcelProj, field_name=LULCParcel, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called LULC_riparian_buffer
+LULCRiparianBuffer = "LULC_riparian_buffer"
+arcpy.AddMessage('Adding an LULC Riparian Buffer field to the Parcel Layer. Field Name: {}'.format(LULCRiparianBuffer))
+arcpy.AddField_management(in_table=ParcelProj, field_name=LULCRiparianBuffer, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Canopy_cover_parcel
+CanopyCoverParcel = "Canopy_cover_parcel"
+arcpy.AddMessage('Adding a Canopy Cover Parcel field to the Parcel Layer. Field Name: {}'.format(CanopyCoverParcel))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CanopyCoverParcel, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Canopy_cover_riparian_buffer
+CanopyCoverRB = "Canopy_cover_riparian_buffer"
+arcpy.AddMessage('Adding a Canopy Cover Riparian Buffer field to the Parcel Layer. Field Name: {}'.format(CanopyCoverRB))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CanopyCoverRB, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called NWI_acres
+NWIAcres = "NWI_acres"
+arcpy.AddMessage('Adding an NWI Acres field to the Parcel Layer. Field Name: {}'.format(NWIAcres))
+arcpy.AddField_management(in_table=ParcelProj, field_name=NWIAcres, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called NWI_percent
+NWIPercent = "NWI_percent"
+arcpy.AddMessage('Adding an NWI Percent field to the Parcel Layer. Field Name: {}'.format(NWIPercent))
+arcpy.AddField_management(in_table=ParcelProj, field_name=NWIPercent, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Soils
+Soils = "Soils"
+arcpy.AddMessage('Adding a Soils field to the Parcel Layer. Field Name: {}'.format(Soils))
+arcpy.AddField_management(in_table=ParcelProj, field_name=Soils, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called FEMA_flood_zone
+FEMAFZ = "FEMA_flood_zone"
+arcpy.AddMessage('Adding a FEMA Flood Zone field to the Parcel Layer. Field Name: {}'.format(FEMAFZ))
+arcpy.AddField_management(in_table=ParcelProj, field_name=FEMAFZ, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Critical_habitat
+CriticalHabitat = "Critical_habitat"
+arcpy.AddMessage('Adding a Critical Habitat field to the Parcel Layer. Field Name: {}'.format(CriticalHabitat))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CriticalHabitat, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Conservation_easement
+ConservationEase = "Conservation_easement"
+arcpy.AddMessage('Adding a Conservation Easement field to the Parcel Layer. Field Name: {}'.format(ConservationEase))
+arcpy.AddField_management(in_table=ParcelProj, field_name=ConservationEase, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Priority_streams
+PriorityStreams = "Priority_streams"
+arcpy.AddMessage('Adding a Priority Streams field to the Parcel Layer. Field Name: {}'.format(PriorityStreams))
+arcpy.AddField_management(in_table=ParcelProj, field_name=PriorityStreams, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Priority_wetlands
+PriorityWetlands = "Priority_wetlands"
+arcpy.AddMessage('Adding a Priority Wetlands field to the Parcel Layer. Field Name: {}'.format(PriorityWetlands))
+arcpy.AddField_management(in_table=ParcelProj, field_name=PriorityWetlands, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Priority_nutrientbank
+PriorityNutrientBank = "Priority_nutrientbank"
+arcpy.AddMessage('Adding a Priority Nutrient Bank field to the Parcel Layer. Field Name: {}'.format(PriorityNutrientBank))
+arcpy.AddField_management(in_table=ParcelProj, field_name=PriorityNutrientBank, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Priority_species
+PrioritySpecies = "Priority_species"
+arcpy.AddMessage('Adding a Priority Species field to the Parcel Layer. Field Name: {}'.format(PrioritySpecies))
+arcpy.AddField_management(in_table=ParcelProj, field_name=PrioritySpecies, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Credit_yield_estimate_streams
+CreditYieldES = "Credit_yield_estimate_streams"
+arcpy.AddMessage('Adding a Credit Yield Estimate Streams field to the Parcel Layer. Field Name: {}'.format(CreditYieldES))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CreditYieldES, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Credit_yield_estimate_wetland
+CreditYieldEW = "Credit_yield_estimate_wetland"
+arcpy.AddMessage('Adding a Credit Yield Estimate Wetland field to the Parcel Layer. Field Name: {}'.format(CreditYieldEW))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CreditYieldEW, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Credit_yield_estimate_nutrient_bank
+CreditYieldENB = "Credit_yield_estimate_nutrient_bank"
+arcpy.AddMessage('Adding a Credit Yield Estimate Nutrient Bank field to the Parcel Layer. Field Name: {}'.format(CreditYieldENB))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CreditYieldENB, field_type="FLOAT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Property_subcode
+PropertySubcode = "Property_subcode"
+arcpy.AddMessage('Adding a Property Subcode field to the Parcel Layer. Field Name: {}'.format(PropertySubcode))
+arcpy.AddField_management(in_table=ParcelProj, field_name=PropertySubcode, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Confidence_indicator
+ConfidenceIndicator = "Confidence_indicator"
+arcpy.AddMessage('Adding a Confidence Indicator field to the Parcel Layer. Field Name: {}'.format(ConfidenceIndicator))
+arcpy.AddField_management(in_table=ParcelProj, field_name=ConfidenceIndicator, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##Filter out all parcels smaller than the Minimum_ParcelAcreage
+ParcelFeatureLayerFilter = "ParcelFeatureLayerFilter" + dateTag
+arcpy.MakeFeatureLayer_management(ParcelProj, ParcelFeatureLayerFilter)
+arcpy.AddMessage('Filtering out all parcels less than {} acres'.format(Minimum_ParcelAcreage))
+Selection1 = '"{}" >= {}'.format(ParcelAcreage,Minimum_ParcelAcreage)
+arcpy.SelectLayerByAttribute_management(ParcelFeatureLayerFilter, 'NEW_SELECTION',
+                                        Selection1)
+ParcelFilter_FC = "ParcelFilterFC_" + dateTag
+time.sleep(1)  # gives a 1 second pause before going to the next step
+##copy the updated parcel layer to a new FC
+arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFilter_FC))
+arcpy.CopyFeatures_management(ParcelFeatureLayerFilter, ParcelFilter_FC)
+time.sleep(1)  # gives a .5 second pause before going to the next step
+
+
