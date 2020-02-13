@@ -5,7 +5,7 @@ import os, time, datetime
 ========================================================================
 2LSS_GridID_HUC8_Analysis.py
 ========================================================================
-Author: Joe Touzel
+Author: Katie Clark, Joe Touzel
 ========================================================================
 Date			Modifier	Description of Change
 2020/02/12  	JT			Published

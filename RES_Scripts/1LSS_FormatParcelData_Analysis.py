@@ -5,13 +5,13 @@ import os, time, datetime
 ========================================================================
 1LSS_FormatParcelData_Analysis.py
 ========================================================================
-Author: Joe Touzel
+Author: Katie Clark, Joe Touzel
 ========================================================================
 Date			Modifier	Description of Change
 2020/02/12  	JT			Published
 ========================================================================
 Description:
-This script is designed to run the initial analysis on the parcel data
+This script is designed to run the initial formatting on the parcel data
 for a given county. This will add all of the necessary fields and 
 calculate any that exist in the incoming parcel data.
 
@@ -23,18 +23,27 @@ Inputs:
 arcpy.env.overwriteOutput = True
 
 # Script parameters
-County = arcpy.GetParameterAsText(0) # this can be derived from the county boundary
-Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
-FinalData_OutputGeodatabase = arcpy.GetParameterAsText(6) # This is where all of our output will be stored
-Output_CoordinateSystem = arcpy.GetParameterAsText(8) # choose a state plane coordinate system
-Minimum_ParcelAcreage = arcpy.GetParameterAsText(9)
+County = arcpy.GetParameterAsText(0) # county boundary FC or shapefile
+CountyName = arcpy.GetParameterAsText(1) # get the county name so we can use to calculate the field later
+Input_Parcels = arcpy.GetParameterAsText(2) # Get the parcel data to be processed
+ParcelID_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
+FinalData_OutputGeodatabase = arcpy.GetParameterAsText(2) # This is where all of our output will be stored
+Output_CoordinateSystem = arcpy.GetParameterAsText(3) # choose a state plane coordinate system
+Minimum_ParcelAcreage = arcpy.GetParameterAsText(4)
+StateName = arcpy.GetParameterAsText(5)
+
 
 # REMOVE AFTER TESTING IS COMPLETE
 County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
+CountyName = "Williamson"
 Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
+ParcelID_Field =
 FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 Minimum_ParcelAcreage = 5
+StateName = "Texas"
+
+
 
 #Reproject all incoming data
 arcpy.AddMessage('Reprojecting input County, {}'.format(os.path.basename(os.path.normpath(County))))
@@ -122,3 +131,46 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=Survey123, field_type=
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
 
+##add a field to the parcel layer called State
+StateField = "State"
+arcpy.AddMessage('Adding a State field to the Parcel Layer. Field Name: {}'.format(StateField))
+arcpy.AddField_management(in_table=ParcelProj, field_name=StateField, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+arcpy.AddMessage('Calculating the State field as: {}'.format(StateName))
+arcpy.CalculateField_management(in_table=ParcelProj, field=StateField, expression='"{}"'.format(StateName),
+                                expression_type="PYTHON3", code_block="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called State
+CountyField = "County"
+arcpy.AddMessage('Adding a County field to the Parcel Layer. Field Name: {}'.format(CountyField))
+arcpy.AddField_management(in_table=ParcelProj, field_name=CountyField, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+arcpy.AddMessage('Calculating the County field as: {}'.format(CountyName))
+arcpy.CalculateField_management(in_table=ParcelProj, field=CountyField, expression='"{}"'.format(CountyName),
+                                expression_type="PYTHON3", code_block="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Job_code
+JobCode = "Job_code"
+arcpy.AddMessage('Adding a Job Code field to the Parcel Layer. Field Name: {}'.format(JobCode))
+arcpy.AddField_management(in_table=ParcelProj, field_name=JobCode, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+
+##add a field to the parcel layer called Parcel_ID
+ParcelID = "Parcel_ID"
+arcpy.AddMessage('Adding a Parcel ID field to the Parcel Layer. Field Name: {}'.format(ParcelID))
+arcpy.AddField_management(in_table=ParcelProj, field_name=ParcelID, field_type="TEXT", field_precision="",
+                          field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
+                          field_is_required="NON_REQUIRED", field_domain="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
+arcpy.AddMessage('Calculating the Parcel ID field from the field, {}, from the imported parcel data'.format(ParcelID_Field))
+arcpy.CalculateField_management(in_table=ParcelProj, field=CountyField, expression="!" + ParcelID_Field + "!",
+                                expression_type="PYTHON3", code_block="")
+time.sleep(1)  # gives a 1 second pause before going to the next step
