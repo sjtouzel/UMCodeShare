@@ -35,6 +35,7 @@ Minimum_ParcelAcreage = arcpy.GetParameterAsText(7) # a minimum acreage for our 
 StateName = arcpy.GetParameterAsText(8)
 JobCodeInput = arcpy.GetParameterAsText(9) # this will be supplied by the PM requesting the Land Search
 TotalCostField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
+MailStateField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
 
 #REMOVE AFTER TESTING IS COMPLETE
 County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
@@ -46,11 +47,23 @@ ParcelAddress_Column = "SITUS_ADDR"
 FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 Minimum_ParcelAcreage = 5
-StateName = "Texas"
+StateNameABBR = "TX"
 JobCodeInput = "1234"
 TotalCostField = "GIS_AREA"
+MailStateField = "MAIL_STAT"
 
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
+StateListDictionary = {'AK': 'Alaska','AL': 'Alabama','AR': 'Arkansas','AS': 'American Samoa','AZ': 'Arizona','CA': 'California',
+                       'CO': 'Colorado','CT': 'Connecticut','DC': 'District of Columbia','DE': 'Delaware','FL': 'Florida',
+                       'GA': 'Georgia','GU': 'Guam','HI': 'Hawaii','IA': 'Iowa','ID': 'Idaho','IL': 'Illinois','IN': 'Indiana',
+                       'KS': 'Kansas','KY': 'Kentucky','LA': 'Louisiana','MA': 'Massachusetts','MD': 'Maryland',
+                       'ME': 'Maine','MI': 'Michigan','MN': 'Minnesota','MO': 'Missouri','MP': 'Northern Mariana Islands',
+                       'MS': 'Mississippi','MT': 'Montana','NA': 'National','NC': 'North Carolina','ND': 'North Dakota',
+                       'NE': 'Nebraska','NH': 'New Hampshire','NJ': 'New Jersey','NM': 'New Mexico','NV': 'Nevada',
+                       'NY': 'New York','OH': 'Ohio','OK': 'Oklahoma','OR': 'Oregon','PA': 'Pennsylvania','RI': 'Rhode Island',
+                       'SC': 'South Carolina','SD': 'South Dakota','TN': 'Tennessee','TX': 'Texas','UT': 'Utah',
+                       'VA': 'Virginia','VI': 'Virgin Islands','VT': 'Vermont','WA': 'Washington','WI': 'Wisconsin',
+                       'WV': 'West Virginia','WY': 'Wyoming'}
 
 #Reproject all incoming data
 arcpy.AddMessage('Reprojecting input County, {}'.format(os.path.basename(os.path.normpath(County))))
@@ -233,7 +246,7 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=TotalCost, field_type=
                           field_scale=2, field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-if TotalCostInput:
+if TotalCostField:
     arcpy.AddMessage('Calculating the Total Cost field from the field, {}, from the imported parcel data'.format(
         TotalCostField))
     arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost,
@@ -247,7 +260,13 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=CostPerAcre, field_typ
                           field_scale=2, field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-
+if TotalCostField:
+    arcpy.AddMessage('Calculating the Cost Per Acre field from the this equation: {} / {}'.format(
+        TotalCost,ParcelAcreage))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost,
+                                    expression="!" + TotalCost + "!" + " / " + "!" + ParcelAcreage + "!",
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 ##add a field to the parcel layer called Owner_type
 OwnerType = "Owner_type"
 arcpy.AddMessage('Adding a Owner Type field to the Parcel Layer. Field Name: {}'.format(OwnerType))
@@ -278,6 +297,13 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerOnOffSite, field_
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
+if MailStateField:
+    arcpy.AddMessage('Calculating the Owner On/Off Site field from the this equation: {} / {}'.format(
+        TotalCost,ParcelAcreage))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost,
+                                    expression="!" + TotalCost + "!" + " / " + "!" + ParcelAcreage + "!",
+                                    expression_type="PYTHON3", code_block="")
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ##add a field to the parcel layer called Grid2
 Grid2 = "Grid2"
