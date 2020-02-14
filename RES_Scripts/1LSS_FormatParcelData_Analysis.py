@@ -48,7 +48,7 @@ Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\Ar
 Minimum_ParcelAcreage = 5
 StateName = "Texas"
 JobCodeInput = "1234"
-TotalCostField = "12345.0"
+TotalCostField = "GIS_AREA"
 
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
 
@@ -233,9 +233,11 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=TotalCost, field_type=
                           field_scale=2, field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-if TotalCostField:
-    arcpy.AddMessage('Calculating the Total Cost field from the field, {}, from the imported parcel data'.format(TotalCostField))
-    arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost, expression="!" + TotalCostField + "!",
+if TotalCostInput:
+    arcpy.AddMessage('Calculating the Total Cost field from the field, {}, from the imported parcel data'.format(
+        TotalCostField))
+    arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost,
+                                    expression="!" + TotalCostField + "!",
                                     expression_type="PYTHON3", code_block="")
     time.sleep(1)  # gives a 1 second pause before going to the next step
 ##add a field to the parcel layer called Cost_per_acre
@@ -253,52 +255,21 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerType, field_type=
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-### Now we'll calculate this Owner Type field **Adapt the code below to create an if then statement to calc this field
+### Now we'll calculate this Owner Type field
+corporationStringList = ["llc", "lllp", "l l l p", "inc", " co", "lp", "corporation", "corp", "association", "l l c"]
 with arcpy.da.UpdateCursor(ParcelProj, [ParcelOwner, OwnerType]) as cursor1:  # look through point FC to get the related info for each photo
     for row in cursor1:
         if "city" in row[0].lower():
             row[1] = "Municipal"
-            cursor1.updateRow()
+        elif "county" in row[0].lower():
+            row[1] = "County"
+        elif "state" in row[0].lower():
+            row[1] = "State"
+        elif any(part in row[0].lower() for part in corporationStringList):
+            row[1] = "Partnership/Corporation"
         else:
-            row[1] = None
-
-
-
-
-
-
-
-
-myCalc( !Parcel_owner! ,"CITY", "LLC", "MNCPPC", "STATE", "LLLP", "L L L P", "INC", " CO", "LP", "COUNTY", "CORPORATION", "CORP", "ASSOCIATION", "L L C")
-def myCalc(Parcel_owner,ownerVal, ownerVal2, ownerVal3, ownerVal4, ownerVal5, ownerVal6, ownerVal7, ownerVal8, ownerVal9, ownerVal10, ownerVal11, ownerVal12, ownerVal13, ownerVal14):
-   if (ownerVal2 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal3 in Parcel_owner):
-      return "County"
-   if (ownerVal4 in Parcel_owner):
-      return "State"
-   if (ownerVal5 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal6 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal7 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal8 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal9 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal10 in Parcel_owner):
-      return "County"
-   if (ownerVal11 in Parcel_owner):
-       return "Partnership/Corporation"
-   if (ownerVal12 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal13 in Parcel_owner):
-      return "Partnership/Corporation"
-   if (ownerVal14 in Parcel_owner):
-      return "Partnership/Corporation"
-   else:
-      return "Private individual"
+            row[1] = "Private individual"
+        cursor1.updateRow(row)
 
 ##add a field to the parcel layer called Owner_on_off_site
 OwnerOnOffSite = "Owner_on_off_site"
