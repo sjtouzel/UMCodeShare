@@ -36,16 +36,19 @@ StateName = arcpy.GetParameterAsText(8)
 JobCodeInput = arcpy.GetParameterAsText(9) # this will be supplied by the PM requesting the Land Search
 TotalCostField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
 
-# REMOVE AFTER TESTING IS COMPLETE
-# County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
-# CountyName = "Williamson"
-# Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
-# ParcelID_Column =
-# ParcelOwner_Column =
-# FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
-# Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
-# Minimum_ParcelAcreage = 5
-# StateName = "Texas"
+#REMOVE AFTER TESTING IS COMPLETE
+County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
+CountyName = "Williamson"
+Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
+ParcelID_Column = "PROP_ID"
+ParcelOwner_Column = "OWNER_NAME"
+ParcelAddress_Column = "SITUS_ADDR"
+FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
+Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
+Minimum_ParcelAcreage = 5
+StateName = "Texas"
+JobCodeInput = "1234"
+TotalCostField = "12345.0"
 
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
 
@@ -251,10 +254,23 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerType, field_type=
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
 ### Now we'll calculate this Owner Type field **Adapt the code below to create an if then statement to calc this field
+with arcpy.da.UpdateCursor(ParcelProj, [ParcelOwner, OwnerType]) as cursor1:  # look through point FC to get the related info for each photo
+    for row in cursor1:
+        if "city" in row[0].lower():
+            row[1] = "Municipal"
+            cursor1.updateRow()
+        else:
+            row[1] = None
+
+
+
+
+
+
+
+
 myCalc( !Parcel_owner! ,"CITY", "LLC", "MNCPPC", "STATE", "LLLP", "L L L P", "INC", " CO", "LP", "COUNTY", "CORPORATION", "CORP", "ASSOCIATION", "L L C")
 def myCalc(Parcel_owner,ownerVal, ownerVal2, ownerVal3, ownerVal4, ownerVal5, ownerVal6, ownerVal7, ownerVal8, ownerVal9, ownerVal10, ownerVal11, ownerVal12, ownerVal13, ownerVal14):
-   if (ownerVal in Parcel_owner):
-      return "Municipal"
    if (ownerVal2 in Parcel_owner):
       return "Partnership/Corporation"
    if (ownerVal3 in Parcel_owner):
