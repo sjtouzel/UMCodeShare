@@ -79,7 +79,11 @@ arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
 time.sleep(1)  # gives a 1 second pause before going to the next step
 arcpy.AddMessage('Output is: {}'.format(ParcelProj))
 #Get a list of the original fields from the incoming parcel data
-OriginalFieldList = [f.name for f in arcpy.ListFields(ParcelProj)]
+OriginalFieldObjects = arcpy.ListFields(ParcelProj)
+OriginalFieldList = []
+for field in OriginalFieldObjects:
+    if not field.required:
+        OriginalFieldList.append(field.name)
 
 
 #Add fields to our Projected Parcel Layer
@@ -257,6 +261,7 @@ if TotalCostField:
                                     expression="!" + TotalCostField + "!",
                                     expression_type="PYTHON3", code_block="")
     time.sleep(1)  # gives a 1 second pause before going to the next step
+
 ##add a field to the parcel layer called Cost_per_acre
 CostPerAcre = "Cost_per_acre"
 arcpy.AddMessage('Adding a Cost Per Acre field to the Parcel Layer. Field Name: {}'.format(CostPerAcre))
@@ -271,6 +276,7 @@ if TotalCostField:
                                     expression="!" + TotalCost + "!" + " / " + "!" + ParcelAcreage + "!",
                                     expression_type="PYTHON3", code_block="")
     time.sleep(1)  # gives a 1 second pause before going to the next step
+
 ##add a field to the parcel layer called Owner_type
 OwnerType = "Owner_type"
 arcpy.AddMessage('Adding a Owner Type field to the Parcel Layer. Field Name: {}'.format(OwnerType))
@@ -278,7 +284,9 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerType, field_type=
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
+
 ### Now we'll calculate this Owner Type field
+arcpy.AddMessage('Calculating the Owner Type based on a list of commonly used terms')
 corporationStringList = ["llc", "lllp", "l l l p", "inc", " co", "lp", "corporation", "corp", "association", "l l c"]
 with arcpy.da.UpdateCursor(ParcelProj, [ParcelOwner, OwnerType]) as cursor1:  # look through point FC to get the related info
     for row in cursor1:
@@ -293,6 +301,9 @@ with arcpy.da.UpdateCursor(ParcelProj, [ParcelOwner, OwnerType]) as cursor1:  # 
         else:
             row[1] = "Private individual"
         cursor1.updateRow(row)
+del row
+del cursor1
+time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ##add a field to the parcel layer called Owner_on_off_site
 OwnerOnOffSite = "Owner_on_off_site"
@@ -324,8 +335,9 @@ if AddressStateField:
                 else:
                     row[1] = "OFF"
                 cursor1.updateRow(row)
-
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+del row
+del cursor1
+time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ##add a field to the parcel layer called Grid2
 Grid2 = "Grid2"
@@ -566,7 +578,6 @@ arcpy.CopyFeatures_management(ParcelFeatureLayerFilter, ParcelFilter_FC)
 time.sleep(1)  # gives a .5 second pause before going to the next step
 
 ##Remove all fields that we don't need anymore
-arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFilter_FC))
 NewFieldsList = [LandAgent,DateContacted,LandStatus,DealType,LegalStatus,SiteProtection,Notes,Attachments,Survey123,
                  StateField,CountyField,JobCode,ParcelID,ParcelOwner,ParcelAddress,ParcelAcreage,TotalCost,CostPerAcre,OwnerType,
                  OwnerOnOffSite,Grid2,HUC8,DeliveryFactorTN,DeliveryFactorTP,DeliveryFactorTSS,StreamLinearFeet,
@@ -575,9 +586,11 @@ NewFieldsList = [LandAgent,DateContacted,LandStatus,DealType,LegalStatus,SitePro
                  PriorityNutrientBank,PrioritySpecies,CreditYieldES,CreditYieldEW,CreditYieldENB,PropertySubcode,
                  ConfidenceIndicator]
 FinishedFieldList = [f.name for f in arcpy.ListFields(ParcelFilter_FC)]
-#ListOfOldFieldsTest1 = set([x.lower() for x in OriginalFieldList]) - set([x.lower() for x in NewFieldsList])
+
 RemoveTheseFields = []
 for x in OriginalFieldList:
     if x.lower() not in [b.lower() for b in NewFieldsList]:
         RemoveTheseFields.append(x)
-        print(x.lower())
+arcpy.AddMessage('Deleting all the incoming parcel fields we can remove')
+arcpy.DeleteField_management(ParcelFilter_FC,RemoveTheseFields)
+
