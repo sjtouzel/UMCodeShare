@@ -82,7 +82,7 @@ arcpy.AddMessage('Output is: {}'.format(ParcelProj))
 OriginalFieldObjects = arcpy.ListFields(ParcelProj)
 OriginalFieldList = []
 for field in OriginalFieldObjects:
-    if not field.required:
+    if not field.required: # don't list the required fields
         OriginalFieldList.append(field.name)
 
 
@@ -585,8 +585,6 @@ NewFieldsList = [LandAgent,DateContacted,LandStatus,DealType,LegalStatus,SitePro
                  NWIAcres,NWIPercent,Soils,FEMAFZ,CriticalHabitat,ConservationEase,PriorityStreams,PriorityWetlands,
                  PriorityNutrientBank,PrioritySpecies,CreditYieldES,CreditYieldEW,CreditYieldENB,PropertySubcode,
                  ConfidenceIndicator]
-FinishedFieldList = [f.name for f in arcpy.ListFields(ParcelFilter_FC)]
-
 RemoveTheseFields = []
 for x in OriginalFieldList:
     if x.lower() not in [b.lower() for b in NewFieldsList]:

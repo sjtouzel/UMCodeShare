@@ -162,8 +162,21 @@ else:
     StateNameList.append(StateName.lower())
 
 # Remove fields from an FC that don't exist in a list
-OriginalFieldList = [f.name for f in arcpy.ListFields(ParcelProj)]
-FinishedFieldsStringList = ""
-for f in OriginalFieldList:
-    FinishedFieldsStringList += f + ", "
-
+OriginalFieldObjects = arcpy.ListFields(FeatureClass)
+OriginalFieldList = []
+for field in OriginalFieldObjects:
+    if not field.required: # don't list the required fields
+        OriginalFieldList.append(field.name)
+NewFieldsList = [LandAgent,DateContacted,LandStatus,DealType,LegalStatus,SiteProtection,Notes,Attachments,Survey123,
+                 StateField,CountyField,JobCode,ParcelID,ParcelOwner,ParcelAddress,ParcelAcreage,TotalCost,CostPerAcre,OwnerType,
+                 OwnerOnOffSite,Grid2,HUC8,DeliveryFactorTN,DeliveryFactorTP,DeliveryFactorTSS,StreamLinearFeet,
+                 StreamOrder,StreamSlope,BufferAcreage,LULCParcel,LULCRiparianBuffer,CanopyCoverParcel,CanopyCoverRB,
+                 NWIAcres,NWIPercent,Soils,FEMAFZ,CriticalHabitat,ConservationEase,PriorityStreams,PriorityWetlands,
+                 PriorityNutrientBank,PrioritySpecies,CreditYieldES,CreditYieldEW,CreditYieldENB,PropertySubcode,
+                 ConfidenceIndicator]
+RemoveTheseFields = []
+for x in OriginalFieldList: # find all the fields form the original FC that we can remove
+    if x.lower() not in [b.lower() for b in NewFieldsList]: # don't delete any of the new fields we just added
+        RemoveTheseFields.append(x)
+arcpy.AddMessage("Deleting all the incoming parcel fields we don't need anymore")
+arcpy.DeleteField_management(FCWithFieldsToDelete,RemoveTheseFields)
