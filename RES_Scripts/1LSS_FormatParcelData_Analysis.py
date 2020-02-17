@@ -145,7 +145,7 @@ time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ##add a field to the parcel layer called Attachments
 Attachments = "Attachments"
-arcpy.AddMessage('Adding a Attachments field to the Parcel Layer. Field Name: {}'.format(Attachments))
+arcpy.AddMessage('Adding an Attachments field to the Parcel Layer. Field Name: {}'.format(Attachments))
 arcpy.AddField_management(in_table=ParcelProj, field_name=Attachments, field_type="TEXT", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
@@ -326,7 +326,7 @@ if AddressStateField:
                     row[1] = "OFF"
                 cursor1.updateRow(row)
     else:
-        StateNameList = [abbr.lower() for abbr, name in StateListDictionary.items() if name.lower() == StateName]
+        StateNameList = [abbr.lower() for abbr, name in StateListDictionary.items() if name.lower() == StateName.lower()]
         StateNameList.append(StateName.lower())
         with arcpy.da.UpdateCursor(ParcelProj, [AddressStateField, OwnerOnOffSite]) as cursor1:  # look through point FC to get the related info
             for row in cursor1:
