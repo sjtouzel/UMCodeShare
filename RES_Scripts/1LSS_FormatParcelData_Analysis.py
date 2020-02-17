@@ -32,10 +32,10 @@ ParcelAddress_Column = arcpy.GetParameterAsText(5) # make it a SQL expression pa
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(5) # This is where all of our output will be stored
 Output_CoordinateSystem = arcpy.GetParameterAsText(6) # choose a state plane coordinate system
 Minimum_ParcelAcreage = arcpy.GetParameterAsText(7) # a minimum acreage for our incoming parcel data
-StateName = arcpy.GetParameterAsText(8)
+StateName = arcpy.GetParameterAsText(8) # tell us what state the parcels are located in
 JobCodeInput = arcpy.GetParameterAsText(9) # this will be supplied by the PM requesting the Land Search
 TotalCostField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
-MailStateField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
+AddressStateField = arcpy.GetParameterAsText(9) # we'll select this column to help us calculate the Owner on/off site value
 
 #REMOVE AFTER TESTING IS COMPLETE
 County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
@@ -47,11 +47,12 @@ ParcelAddress_Column = "SITUS_ADDR"
 FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 Minimum_ParcelAcreage = 5
-StateNameABBR = "TX"
+StateName = "TX"
 JobCodeInput = "1234"
 TotalCostField = "GIS_AREA"
-MailStateField = "MAIL_STAT"
+AddressStateField = "MAIL_STAT"
 
+# Static things we need to import
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
 StateListDictionary = {'AK': 'Alaska','AL': 'Alabama','AR': 'Arkansas','AS': 'American Samoa','AZ': 'Arizona','CA': 'California',
                        'CO': 'Colorado','CT': 'Connecticut','DC': 'District of Columbia','DE': 'Delaware','FL': 'Florida',
@@ -77,6 +78,8 @@ ParcelProj = os.path.basename(os.path.normpath(Input_Parcels)) + "_Proj"
 arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
 time.sleep(1)  # gives a 1 second pause before going to the next step
 arcpy.AddMessage('Output is: {}'.format(ParcelProj))
+#Get a list of the original fields from the incoming parcel data
+OriginalFieldList = [f.name for f in arcpy.ListFields(ParcelProj)]
 
 #Add fields to our Projected Parcel Layer
 ##add a field to the parcel layer called Land_agent
@@ -276,7 +279,7 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerType, field_type=
 time.sleep(1)  # gives a 1 second pause before going to the next step
 ### Now we'll calculate this Owner Type field
 corporationStringList = ["llc", "lllp", "l l l p", "inc", " co", "lp", "corporation", "corp", "association", "l l c"]
-with arcpy.da.UpdateCursor(ParcelProj, [ParcelOwner, OwnerType]) as cursor1:  # look through point FC to get the related info for each photo
+with arcpy.da.UpdateCursor(ParcelProj, [ParcelOwner, OwnerType]) as cursor1:  # look through point FC to get the related info
     for row in cursor1:
         if "city" in row[0].lower():
             row[1] = "Municipal"
@@ -297,12 +300,30 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerOnOffSite, field_
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
-if MailStateField:
-    arcpy.AddMessage('Calculating the Owner On/Off Site field from the this equation: {} / {}'.format(
-        TotalCost,ParcelAcreage))
-    arcpy.CalculateField_management(in_table=ParcelProj, field=TotalCost,
-                                    expression="!" + TotalCost + "!" + " / " + "!" + ParcelAcreage + "!",
-                                    expression_type="PYTHON3", code_block="")
+if AddressStateField:
+    arcpy.AddMessage('Calculating the Owner On/Off Site field from the this equation: Parcel Address State = Land '
+                     'Search State -> ON. Else -> OFF')
+    if len(StateName) == 2:  # Get a lower case list of the state name and abbreviation depending on what the input is
+        StateNameList = [name.lower() for abbr, name in StateListDictionary.items() if abbr.lower() == StateName.lower()]
+        StateNameList.append(StateName.lower())
+        with arcpy.da.UpdateCursor(ParcelProj, [AddressStateField, OwnerOnOffSite]) as cursor1:  # look through point FC to get the related info
+            for row in cursor1:
+                if any(part in row[0].lower() for part in StateNameList):
+                    row[1] = "ON"
+                else:
+                    row[1] = "OFF"
+                cursor1.updateRow(row)
+    else:
+        StateNameList = [abbr.lower() for abbr, name in StateListDictionary.items() if name.lower() == StateName]
+        StateNameList.append(StateName.lower())
+        with arcpy.da.UpdateCursor(ParcelProj, [AddressStateField, OwnerOnOffSite]) as cursor1:  # look through point FC to get the related info
+            for row in cursor1:
+                if any(part in row[0].lower() for part in StateNameList):
+                    row[1] = "ON"
+                else:
+                    row[1] = "OFF"
+                cursor1.updateRow(row)
+
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ##add a field to the parcel layer called Grid2
@@ -543,4 +564,4 @@ arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.fo
 arcpy.CopyFeatures_management(ParcelFeatureLayerFilter, ParcelFilter_FC)
 time.sleep(1)  # gives a .5 second pause before going to the next step
 
-
+##Remove all fields that we didn't just create
