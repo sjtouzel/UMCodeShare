@@ -161,3 +161,9 @@ else:
     StateNameList = [abbr.lower() for abbr, name in StateListDictionary.items() if name.lower() == StateName.lower()]
     StateNameList.append(StateName.lower())
 
+# Remove fields from an FC that don't exist in a list
+OriginalFieldList = [f.name for f in arcpy.ListFields(ParcelProj)]
+FinishedFieldsStringList = ""
+for f in OriginalFieldList:
+    FinishedFieldsStringList += f + ", "
+

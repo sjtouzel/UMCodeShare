@@ -81,6 +81,7 @@ arcpy.AddMessage('Output is: {}'.format(ParcelProj))
 #Get a list of the original fields from the incoming parcel data
 OriginalFieldList = [f.name for f in arcpy.ListFields(ParcelProj)]
 
+
 #Add fields to our Projected Parcel Layer
 ##add a field to the parcel layer called Land_agent
 LandAgent = "Land_agent"
@@ -125,7 +126,7 @@ time.sleep(1)  # gives a 1 second pause before going to the next step
 ##add a field to the parcel layer called Site_protection_instrument_filed
 SiteProtection = "Site_protection_instrument_filed"
 arcpy.AddMessage('Adding a Site Protection Instrument Filed field to the Parcel Layer. Field Name: {}'.format(SiteProtection))
-arcpy.AddField_management(in_table=ParcelProj, field_name=LegalStatus, field_type="TEXT", field_precision="",
+arcpy.AddField_management(in_table=ParcelProj, field_name=SiteProtection, field_type="TEXT", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
@@ -560,8 +561,23 @@ arcpy.SelectLayerByAttribute_management(ParcelFeatureLayerFilter, 'NEW_SELECTION
 ParcelFilter_FC = "ParcelFilterFC_" + dateTag
 time.sleep(1)  # gives a 1 second pause before going to the next step
 ##copy the updated parcel layer to a new FC
-arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFilter_FC))
+arcpy.AddMessage('Exporting the updated Parcel layer to a new Feature Class: {}'.format(ParcelFilter_FC))
 arcpy.CopyFeatures_management(ParcelFeatureLayerFilter, ParcelFilter_FC)
 time.sleep(1)  # gives a .5 second pause before going to the next step
 
-##Remove all fields that we didn't just create
+##Remove all fields that we don't need anymore
+arcpy.AddMessage('Export the updated Parcel layer to a new Feature Class: {}'.format(ParcelFilter_FC))
+NewFieldsList = [LandAgent,DateContacted,LandStatus,DealType,LegalStatus,SiteProtection,Notes,Attachments,Survey123,
+                 StateField,CountyField,JobCode,ParcelID,ParcelOwner,ParcelAddress,ParcelAcreage,TotalCost,CostPerAcre,OwnerType,
+                 OwnerOnOffSite,Grid2,HUC8,DeliveryFactorTN,DeliveryFactorTP,DeliveryFactorTSS,StreamLinearFeet,
+                 StreamOrder,StreamSlope,BufferAcreage,LULCParcel,LULCRiparianBuffer,CanopyCoverParcel,CanopyCoverRB,
+                 NWIAcres,NWIPercent,Soils,FEMAFZ,CriticalHabitat,ConservationEase,PriorityStreams,PriorityWetlands,
+                 PriorityNutrientBank,PrioritySpecies,CreditYieldES,CreditYieldEW,CreditYieldENB,PropertySubcode,
+                 ConfidenceIndicator]
+FinishedFieldList = [f.name for f in arcpy.ListFields(ParcelFilter_FC)]
+#ListOfOldFieldsTest1 = set([x.lower() for x in OriginalFieldList]) - set([x.lower() for x in NewFieldsList])
+RemoveTheseFields = []
+for x in OriginalFieldList:
+    if x.lower() not in [b.lower() for b in NewFieldsList]:
+        RemoveTheseFields.append(x)
+        print(x.lower())
