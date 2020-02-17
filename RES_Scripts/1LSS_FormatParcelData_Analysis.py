@@ -29,13 +29,13 @@ Input_Parcels = arcpy.GetParameterAsText(2) # Get the parcel data to be processe
 ParcelID_Column = arcpy.GetParameterAsText(3) # we'll select this column to calculate the field later
 ParcelOwner_Column = arcpy.GetParameterAsText(4) # we'll select this column to calculate the field later
 ParcelAddress_Column = arcpy.GetParameterAsText(5) # make it a SQL expression paramater in case the address field needs to be concatenated
-FinalData_OutputGeodatabase = arcpy.GetParameterAsText(5) # This is where all of our output will be stored
-Output_CoordinateSystem = arcpy.GetParameterAsText(6) # choose a state plane coordinate system
-Minimum_ParcelAcreage = arcpy.GetParameterAsText(7) # a minimum acreage for our incoming parcel data
-StateName = arcpy.GetParameterAsText(8) # tell us what state the parcels are located in
-JobCodeInput = arcpy.GetParameterAsText(9) # this will be supplied by the PM requesting the Land Search
-TotalCostField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
-AddressStateField = arcpy.GetParameterAsText(9) # we'll select this column to help us calculate the Owner on/off site value
+FinalData_OutputGeodatabase = arcpy.GetParameterAsText(6) # This is where all of our output will be stored
+Output_CoordinateSystem = arcpy.GetParameterAsText(7) # choose a state plane coordinate system
+Minimum_ParcelAcreage = arcpy.GetParameterAsText(8) # a minimum acreage for our incoming parcel data
+StateName = arcpy.GetParameterAsText(9) # tell us what state the parcels are located in
+JobCodeInput = arcpy.GetParameterAsText(10) # this will be supplied by the PM requesting the Land Search
+TotalCostField = arcpy.GetParameterAsText(11) # we'll select this column to calculate the field later
+AddressStateField = arcpy.GetParameterAsText(12) # we'll select this column to help us calculate the Owner on/off site value
 
 # #REMOVE AFTER TESTING IS COMPLETE
 # County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
