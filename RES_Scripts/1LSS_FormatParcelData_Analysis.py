@@ -37,20 +37,20 @@ JobCodeInput = arcpy.GetParameterAsText(9) # this will be supplied by the PM req
 TotalCostField = arcpy.GetParameterAsText(9) # we'll select this column to calculate the field later
 AddressStateField = arcpy.GetParameterAsText(9) # we'll select this column to help us calculate the Owner on/off site value
 
-#REMOVE AFTER TESTING IS COMPLETE
-County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
-CountyName = "Williamson"
-Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
-ParcelID_Column = "PROP_ID"
-ParcelOwner_Column = "OWNER_NAME"
-ParcelAddress_Column = "SITUS_ADDR"
-FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
-Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
-Minimum_ParcelAcreage = 5
-StateName = "TX"
-JobCodeInput = "1234"
-TotalCostField = "GIS_AREA"
-AddressStateField = "MAIL_STAT"
+# #REMOVE AFTER TESTING IS COMPLETE
+# County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
+# CountyName = "Williamson"
+# Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
+# ParcelID_Column = "PROP_ID"
+# ParcelOwner_Column = "OWNER_NAME"
+# ParcelAddress_Column = "SITUS_ADDR"
+# FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our output will be stored
+# Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
+# Minimum_ParcelAcreage = 5
+# StateName = "TX"
+# JobCodeInput = "1234"
+# TotalCostField = "GIS_AREA"
+# AddressStateField = "MAIL_STAT"
 
 # Static things we need to import
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
@@ -591,6 +591,6 @@ RemoveTheseFields = []
 for x in OriginalFieldList:
     if x.lower() not in [b.lower() for b in NewFieldsList]:
         RemoveTheseFields.append(x)
-arcpy.AddMessage('Deleting all the incoming parcel fields we can remove')
+arcpy.AddMessage("Deleting all the incoming parcel fields we don't need anymore")
 arcpy.DeleteField_management(ParcelFilter_FC,RemoveTheseFields)
 
