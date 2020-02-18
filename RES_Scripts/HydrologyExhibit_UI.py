@@ -1,12 +1,26 @@
+import arcpy, os, datetime, time
+from arcpy import env
+
+"""
+========================================================================
+1LSS_FormatParcelData_Analysis.py
+========================================================================
+Author: Katie Clark, Joe Touzel
+========================================================================
+Date			Modifier	Description of Change
+2020/02/12  	JT			Published
+========================================================================
+Description:
+This script is designed to run the initial formatting on the parcel data
+for a given county. This will add all of the necessary fields and 
+calculate any that exist in the incoming parcel data.
+
+Inputs:
+- Parcel Feature Class for a given county
+"""
+
 # User interface for running hydro analysis on DEM data
 # and generating conservation easements for exhibits
-
-# import libraries
-import os
-from arcpy import env
-import arcpy
-import datetime
-import time
 
 ###### Get date for tagging our output files ######
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # looks somethin like this 20181213
