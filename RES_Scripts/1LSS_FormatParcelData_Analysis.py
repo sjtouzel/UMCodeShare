@@ -52,6 +52,16 @@ AddressStateField = arcpy.GetParameterAsText(12) # we'll select this column to h
 # TotalCostField = "GIS_AREA"
 # AddressStateField = "MAIL_STAT"
 
+arcpy.AddMessage('')
+arcpy.AddMessage("===================================================================")
+sVersionInfo = '1LSS_FormatParcelData_Analysis.py, v20200218'
+arcpy.AddMessage('LSS Part 1 - Formatting, {}'.format(sVersionInfo))
+arcpy.AddMessage("")
+arcpy.AddMessage("Support: jtouzel@res.us, 281-715-9109")
+arcpy.AddMessage("")
+arcpy.AddMessage("Input FCs: {}, {}".format(Input_Parcels, County))
+arcpy.AddMessage("===================================================================")
+
 # Static things we need to import
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
 StateListDictionary = {'AK': 'Alaska','AL': 'Alabama','AR': 'Arkansas','AS': 'American Samoa','AZ': 'Arizona','CA': 'California',
