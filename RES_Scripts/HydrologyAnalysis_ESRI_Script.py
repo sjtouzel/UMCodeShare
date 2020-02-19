@@ -8,7 +8,7 @@ HydrologyAnalysis_ESRI_Script.py
 Author: Joe Touzel
 ========================================================================
 Date			Modifier	Description of Change
-2020/02/12  	JT			Published
+2020/02/19  	JT			Published
 ========================================================================
 Description:
 This script is designed to run hydro analysis on DEM data
@@ -28,7 +28,7 @@ outPath = arcpy.GetParameterAsText(1) # This is where all of our output will be 
 outCS = arcpy.GetParameterAsText(2) # Choose a state plane coordinate system
 FlowAccumThresh = arcpy.GetParameterAsText(3) # Get the threshold for stream designation
 lidarRasterFolder = arcpy.GetParameterAsText(4) # Get the folder where lidar/DEM tiles are
-ConEaseBuf = arcpy.GetParameterAsText(4) or 200 # Get the conservation easement size. this will usually be 200 ft
+ConEaseBuf = arcpy.GetParameterAsText(5) or 200 # Get the conservation easement size. this will usually be 200 ft
 
 #REMOVE AFTER TESTING IS COMPLETE
 propBoundary = r"C:/Users/jtouzel/Desktop/PythonTempInput/GlockzinProperty_20190906.gdb/GlockzinBoundary_20190906" # Property Boundary Feature Class
@@ -36,16 +36,18 @@ outPath = r"C:\Users\jtouzel\Desktop\PythonTempOutput\HydroTestingOutput.gdb" # 
 outCS = r"C:/Users/jtouzel/AppData/Roaming/Esri/Desktop10.6/ArcMap/Coordinate Systems/NAD 1983 UTM Zone 14N.prj" # Choose a state plane coordinate system
 FlowAccumThresh = 3.5 # Get the threshold for stream designation
 lidarRasterFolder = r"C:\Users\jtouzel\Downloads\RasterImport" # Get the folder where lidar/DEM tiles are
-
+ConEaseBuf = 200 # Get the conservation easement size. this will usually be 200 ft
 
 arcpy.AddMessage('')
 arcpy.AddMessage("===================================================================")
 sVersionInfo = 'HydrologyAnalysis_ESRI_Script.py, v20200218'
-arcpy.AddMessage('Hydrology Analysis Tool, {}'.format(sVersionInfo))
+arcpy.AddMessage('Hydrology Analysis and Conservation Easement Tool, {}'.format(sVersionInfo))
 arcpy.AddMessage("")
 arcpy.AddMessage("Support: jtouzel@res.us, 281-715-9109")
 arcpy.AddMessage("")
 arcpy.AddMessage("Input FCs: {}".format(propBoundary))
+arcpy.AddMessage("Input Folder of Rasters: {}".format(lidarRasterFolder))
+arcpy.AddMessage("Input Conservation Easement buffer radius: {} ft".format(ConEaseBuf))
 arcpy.AddMessage("===================================================================")
 
 
@@ -163,6 +165,13 @@ arcpy.AddMessage("Clipping the stream thalwegs to our property boundary. Output 
 arcpy.Clip_analysis(StreamFeatureClass,propBoundaryMerge,StreamFC_Clip)
 time.sleep(1) # gives a 1 second pause before going to the next step
 # Create conservation easements
-arcpy.Buffer_analysis(envelopeBoundary, extendedBoundary, "200 Feet", "FULL", "ROUND", "ALL", None, "PLANAR")
-
+arcpy.AddMessage("Creating the {} ft radius conservation easements".format(ConEaseBuf))
+ConEaseBufFC = "ConEaseBufFC{}_{}Ft_".format(FlowAccumThresh,ConEaseBuf) + dateTag # Create the output name for our conservation easement
+arcpy.Buffer_analysis(StreamFC_Clip, ConEaseBufFC, "{} Feet".format(ConEaseBuf), "FULL", "ROUND", "ALL", None, "PLANAR")
+time.sleep(1) # gives a 1 second pause before going to the next step
+# Clip our conservation easements to the property boundary
+ConEaseBufFC_Clip = ConEaseBufFC + "_Clip" # Create the output name for our clipped streams
+arcpy.AddMessage("Clipping the easements to our property boundary. Output is: {}".format(ConEaseBufFC_Clip))
+arcpy.Clip_analysis(ConEaseBufFC,propBoundaryMerge,ConEaseBufFC_Clip)
+time.sleep(1) # gives a 1 second pause before going to the next step
 
