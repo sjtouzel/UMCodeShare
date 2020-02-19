@@ -323,7 +323,7 @@ arcpy.AddField_management(in_table=ParcelProj, field_name=OwnerOnOffSite, field_
                           field_is_required="NON_REQUIRED", field_domain="")
 time.sleep(1)  # gives a 1 second pause before going to the next step
 if AddressStateField:
-    arcpy.AddMessage('Calculating the Owner On/Off Site field from the this equation: Parcel Address State = Land '
+    arcpy.AddMessage('Calculating the Owner On/Off Site field from this equation: Parcel Address State = Land '
                      'Search State -> ON. Else -> OFF')
     if len(StateName) == 2:  # Get a lower case list of the state name and abbreviation depending on what the input is
         StateNameList = [name.lower() for abbr, name in StateListDictionary.items() if abbr.lower() == StateName.lower()]
