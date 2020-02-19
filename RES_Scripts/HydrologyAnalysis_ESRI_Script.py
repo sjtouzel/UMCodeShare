@@ -104,14 +104,17 @@ for i in arcpy.ListRasters(): # lets go through our folder to get all the raster
     rExt = rDesc.extent
     if sExt.disjoint(rExt):
         arcpy.AddMessage("Raster {} is outside the boundary".format(i))
+        time.sleep(.5)  # gives a 1/2 second pause before going to the next step
     else:
         arcpy.AddMessage("Raster {} is within the boundary".format(i))
         lidarRasterList.append(os.path.join(lidarRasterFolder, i))
+        time.sleep(.5)  # gives a 1/2 second pause before going to the next step
 arcpy.AddMessage("Creating a mosaic of the LIDAR/DEM rasters that intersect our boundary. Output is: {}".format(lidarRasterMosaic))
 arcpy.MosaicToNewRaster_management(lidarRasterList, scratchGDB, lidarRasterMosaic, outCS, "32_BIT_FLOAT", "1", "1", "LAST", "FIRST") # lets merge all the rasters
 lidarRasterClip = os.path.join(outPath, "lidarRasterClip_" + dateTag) ### USE THIS FOR ANALYSIS ###
 arcpy.AddMessage("Clipping our mosaic to the boundary. Output is: {}".format(lidarRasterClip))
 arcpy.Clip_management(lidarRasterMosaicPath, ExtentString, lidarRasterClip)
+time.sleep(1)  # gives a 1 second pause before going to the next step
 
 ###### Run Hydrology Analysis ######
 # Scratch variables we'll use in our analysis
