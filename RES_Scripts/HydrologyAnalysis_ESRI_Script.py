@@ -148,7 +148,8 @@ arcpy.AddMessage("Running a FLOW ACCUMULATION THRESHOLD RASTER analysis. Output 
 env.scratchWorkspace = scratchGDB
 env.workspace = scratchGDB
 arcpy.env.overwriteOutput = True
-outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10("FlowAccum") >= FlowAccumThresh, arcpy.sa.Log10("FlowAccum"))
+print(os.path.join(scratchGDB))
+outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10(FlowAccum) >= FlowAccumThresh, arcpy.sa.Log10(FlowAccum))
 outRasterCalc.save(FlowAccumRC)
 time.sleep(1) # gives a 1 second pause before going to the next step
 # Calc Stream Order
@@ -179,4 +180,5 @@ ConEaseBufFC_Clip = ConEaseBufFC + "_Clip" # Create the output name for our clip
 arcpy.AddMessage("Clipping the easements to our property boundary. Output is: {}".format(ConEaseBufFC_Clip))
 arcpy.Clip_analysis(ConEaseBufFC,propBoundaryMerge,ConEaseBufFC_Clip)
 time.sleep(1) # gives a 1 second pause before going to the next step
+
 
