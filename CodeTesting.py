@@ -180,3 +180,7 @@ for x in OriginalFieldList: # find all the fields form the original FC that we c
         RemoveTheseFields.append(x)
 arcpy.AddMessage("Deleting all the incoming parcel fields we don't need anymore")
 arcpy.DeleteField_management(FCWithFieldsToDelete,RemoveTheseFields)
+
+# string to float
+aNumber = "4"
+aFloat = float(aNumber)

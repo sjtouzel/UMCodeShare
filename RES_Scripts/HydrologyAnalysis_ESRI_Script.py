@@ -30,6 +30,8 @@ FlowAccumThresh = arcpy.GetParameterAsText(3) # Get the threshold for stream des
 lidarRasterFolder = arcpy.GetParameterAsText(4) # Get the folder where lidar/DEM tiles are
 ConEaseBuf = arcpy.GetParameterAsText(5) or 200 # Get the conservation easement size. this will usually be 200 ft
 
+FlowAccumThresh = float(FlowAccumThresh)
+
 # #REMOVE AFTER TESTING IS COMPLETE
 # propBoundary = r"C:/Users/jtouzel/Desktop/PythonTempInput/GlockzinProperty_20190906.gdb/GlockzinBoundary_20190906" # Property Boundary Feature Class
 # outPath = r"C:\Users\jtouzel\Desktop\PythonTempOutput\HydroTestingOutput.gdb" # This is where all of our output will be stored
@@ -143,7 +145,7 @@ arcpy.AddMessage("Running a FLOW ACCUMULATION THRESHOLD RASTER analysis. Output 
 env.scratchWorkspace = scratchGDB
 env.workspace = scratchGDB
 arcpy.env.overwriteOutput = True
-outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10("FlowAccum") >= float(FlowAccumThresh), arcpy.sa.Log10("FlowAccum"))
+outRasterCalc = arcpy.sa.Con(arcpy.sa.Log10("FlowAccum") >= FlowAccumThresh, arcpy.sa.Log10("FlowAccum"))
 outRasterCalc.save(FlowAccumRC)
 time.sleep(1) # gives a 1 second pause before going to the next step
 # Calc Stream Order
