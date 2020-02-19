@@ -165,8 +165,8 @@ arcpy.AddMessage("Clipping the stream thalwegs to our property boundary. Output 
 arcpy.Clip_analysis(StreamFeatureClass,propBoundaryMerge,StreamFC_Clip)
 time.sleep(1) # gives a 1 second pause before going to the next step
 # Create conservation easements
-arcpy.AddMessage("Creating the {} ft radius conservation easements".format(ConEaseBuf))
-ConEaseBufFC = "ConEaseBufFC{}_{}Ft_".format(FlowAccumThresh,ConEaseBuf) + dateTag # Create the output name for our conservation easement
+ConEaseBufFC = "ConEaseBufFC{}_{}Ft_".format(str(FlowAccumThresh).replace(".",""),ConEaseBuf) + dateTag # Create the output name for our conservation easement
+arcpy.AddMessage("Creating the {} ft radius conservation easements. Output is: {}".format(ConEaseBuf, ConEaseBufFC))
 arcpy.Buffer_analysis(StreamFC_Clip, ConEaseBufFC, "{} Feet".format(ConEaseBuf), "FULL", "ROUND", "ALL", None, "PLANAR")
 time.sleep(1) # gives a 1 second pause before going to the next step
 # Clip our conservation easements to the property boundary
