@@ -96,6 +96,68 @@ for field in OriginalFieldObjects:
         OriginalFieldList.append(field.name)
 
 
+#Create required Domains in our output GDB
+arcpy.AddMessage('Adding required domains to the output Geodatabase')
+DescribeGDB = arcpy.Describe(FinalData_OutputGeodatabase)
+GDBDomains = DescribeGDB.domains #Get a list of existing domains in our output GDB
+##Check if the value exists in our GDB already if it does we can skip adding it
+###Add the deal_type domain
+dealTypeDomain = "deal_type"
+dealTypeDesc = "Deal Type"
+if dealTypeDomain not in GDBDomains:
+    arcpy.CreateDomain_management(FinalData_OutputGeodatabase,dealTypeDomain,dealTypeDesc,"TEXT","CODED","DEFAULT","DEFAULT")
+    dealTypeDic = {"MPA":"MPA","PSA":"PSA","Option":"Option","Other":"Other"}
+    for code in dealTypeDic:
+        arcpy.AddCodedValueToDomain_management(FinalData_OutputGeodatabase,dealTypeDomain,code,dealTypeDic[code])
+###Add the land_status domain
+landStatusDomain = "land_status"
+landStatusDesc = "Land Status"
+if landStatusDomain not in GDBDomains:
+    arcpy.CreateDomain_management(FinalData_OutputGeodatabase,landStatusDomain,landStatusDesc,"TEXT","CODED","DEFAULT","DEFAULT")
+    landStatusDic = {"Prospecting":"Prospecting","Negotiating":"Negotiating","LAO signed":"LAO signed",
+                     "Contract signed":"Contract signed","Land closed":"Land closed","Not interested":"Not interested",
+                     "On hold":"On hold","Terminated":"Terminated","Not contacted":"Not contacted"}
+    for code in landStatusDic:
+        arcpy.AddCodedValueToDomain_management(FinalData_OutputGeodatabase,landStatusDomain,code,landStatusDic[code])
+###Add the legal_status domain
+legalStatusDomain = "legal_status"
+legalStatusDesc = "Legal Status"
+if legalStatusDomain not in GDBDomains:
+    arcpy.CreateDomain_management(FinalData_OutputGeodatabase,legalStatusDomain,legalStatusDesc,"TEXT","CODED","DEFAULT","DEFAULT")
+    legalStatusDic = {"Fee simple executed":"Fee simple executed","Easement drafted":"Easement drafted",
+                      "Easement executed":"Easement executed","Deed restriction drafted":"Deed restriction drafted",
+                      "Deed restriction executed":"Deed restriction executed"}
+    for code in legalStatusDic:
+        arcpy.AddCodedValueToDomain_management(FinalData_OutputGeodatabase,legalStatusDomain,code,legalStatusDic[code])
+###Add priority domain
+priorityDomain = "priority"
+priorityDesc = "Priority ranking system"
+if priorityDomain not in GDBDomains:
+    arcpy.CreateDomain_management(FinalData_OutputGeodatabase,priorityDomain,priorityDesc,"TEXT","CODED","DEFAULT","DEFAULT")
+    priorityDic = {"A":"A","B":"B","C":"C","D":"D","E":"E","X":"X","Identified by land agent":"Identified by land agent"}
+    for code in priorityDic:
+        arcpy.AddCodedValueToDomain_management(FinalData_OutputGeodatabase,priorityDomain,code,priorityDic[code])
+###Add Verification_Stage domain
+verificationStageDomain = "Verification_Stage"
+verificationStageDesc = "Verification Stage"
+if verificationStageDomain not in GDBDomains:
+    arcpy.CreateDomain_management(FinalData_OutputGeodatabase,verificationStageDomain,verificationStageDesc,"TEXT",
+                                  "CODED","DEFAULT","DEFAULT")
+    verificationStageDic = {"1 - GIS":"1 - GIS","2 - PM":"2 - PM","3 - Land Agent":"3 - Land Agent",
+                            "4 - Field Assessment":"4 - Field Assessment","5 - Contract":"5 - Contract"}
+    for code in verificationStageDic:
+        arcpy.AddCodedValueToDomain_management(FinalData_OutputGeodatabase,verificationStageDomain,code,
+                                               verificationStageDic[code])
+###Add yes_no domain
+yesNoDomain = "yes_no"
+yesNoDesc = "Yes/No"
+if yesNoDomain not in GDBDomains:
+    arcpy.CreateDomain_management(FinalData_OutputGeodatabase,yesNoDomain,yesNoDesc,"TEXT",
+                                  "CODED","DEFAULT","DEFAULT")
+    yesNoDic = {"Yes":"Yes","No":"No"}
+    for code in yesNoDic:
+        arcpy.AddCodedValueToDomain_management(FinalData_OutputGeodatabase,yesNoDomain,code,yesNoDic[code])
+
 #Add fields to our Projected Parcel Layer
 ##add a field to the parcel layer called Land_agent
 LandAgent = "Land_agent"

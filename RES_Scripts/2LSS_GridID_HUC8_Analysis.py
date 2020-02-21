@@ -8,7 +8,7 @@ import os, time, datetime
 Author: Katie Clark, Joe Touzel
 ========================================================================
 Date			Modifier	Description of Change
-2020/02/12  	JT			Published
+2020/02/21  	JT			Published
 ========================================================================
 Description:
 This script is designed to run part two of the parcel data analysis
@@ -17,9 +17,8 @@ fields. This is in preparation for more specific analysis to
 be completed by the analyst. 
 
 Inputs:
-- County boundary
+- From Step 1: Projected County Boundary, Output GDB, Formatted Parcels
 - Fishnet grid Cell size
-- Input GDB
 - Parcel Feature Class for the county
 """
 
@@ -31,7 +30,7 @@ arcpy.env.overwriteOutput = True
 CountyProj = arcpy.GetParameterAsText(0) # this can be derived from the county boundary
 Cell_Size_Height = arcpy.GetParameterAsText(1) or "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = arcpy.GetParameterAsText(2) or "5280" # We'll create a fishnet with 1 sq mile cells
-ParcelProj = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
+Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processed
 HUC_8 = arcpy.GetParameterAsText(4) # Get the HUC 8 feature class or shapefile
 HUC8_FieldName = arcpy.GetParameterAsText(5) # get the HUC8 field name for adding it to the Parcel layer
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(6) # This is where all of our finalized output will be stored
@@ -40,10 +39,9 @@ Output_CoordinateSystem = arcpy.GetParameterAsText(8) # choose a state plane coo
 Minimum_ParcelAcreage = arcpy.GetParameterAsText(9)
 
 # REMOVE AFTER TESTING IS COMPLETE
-County = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
+CountyProj = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty" # this can be derived from the county boundary
 Cell_Size_Height = "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = "5280" # We'll create a fishnet with 1 sq mile cells
-Input_GDB = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb"
 Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\stratmap19_landparcels_48491_williamson_201905" # Get the parcel data to be processed
 HUC_8 = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\HUC8_FC" # Get the HUC 8 feature class or shapefile
 HUC8_FieldName = 'HUC_8'
