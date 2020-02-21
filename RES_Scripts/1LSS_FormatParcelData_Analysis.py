@@ -63,7 +63,7 @@ arcpy.AddMessage("Input FCs: {}, {}".format(Input_Parcels, County))
 arcpy.AddMessage("===================================================================")
 
 # Static things we need to import
-dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like # this 20181213
+dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag some of our output with this. looks somethin like this 20181213
 StateListDictionary = {'AK': 'Alaska','AL': 'Alabama','AR': 'Arkansas','AS': 'American Samoa','AZ': 'Arizona','CA': 'California',
                        'CO': 'Colorado','CT': 'Connecticut','DC': 'District of Columbia','DE': 'Delaware','FL': 'Florida',
                        'GA': 'Georgia','GU': 'Guam','HI': 'Hawaii','IA': 'Iowa','ID': 'Idaho','IL': 'Illinois','IN': 'Indiana',
