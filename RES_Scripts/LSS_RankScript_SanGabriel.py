@@ -74,15 +74,15 @@ def Stream_Linear_Ft_Rank_Calc(Stream):
 
     val = 1
 
-    if Stream < 5000:
+    if Stream < 4000:
         val = 0
-    elif Stream < 7000 or Stream > 12000:
+    elif Stream < 5000:
         val = 1
-    elif Stream < 8000 or Stream > 11000:
+    elif Stream < 6000:
         val = 2
-    elif Stream <= 9000 or Stream > 10000:
+    elif Stream < 7000:
         val = 3
-    elif Stream > 9000:
+    elif Stream >= 7000:
         val = 4
 
     
