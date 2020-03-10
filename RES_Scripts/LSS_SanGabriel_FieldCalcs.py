@@ -20,14 +20,14 @@ def calc(field):
 # calculate the priority field letter scores
 def priority(rankField):
     if rankField == 0:
-        return 'X'
-    elif rankField >= 70:
+        return None
+    elif rankField >= 80:
         return 'A'
-    elif rankField >= 55:
+    elif rankField >= 65:
         return 'B'
-    elif rankField >= 47.5:
+    elif rankField >= 55:
         return 'C'
-    elif rankField >= 40:
+    elif rankField >= 42.5:
         return 'D'
     else:
         return 'E'
