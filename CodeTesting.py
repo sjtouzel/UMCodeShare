@@ -184,3 +184,18 @@ arcpy.DeleteField_management(FCWithFieldsToDelete,RemoveTheseFields)
 # string to float
 aNumber = "4"
 aFloat = float(aNumber)
+
+#update the Potential attribute with the updated Priority Streams data
+##we need to maintain the current Potential data if there's a value there
+##no value then we'll update it with the a yes if there's a value in the Priority Streams
+
+def updatePotential(potential,priority):
+    if potential:
+        return potential
+    else:
+        if priority:
+            return "Yes"
+        else:
+            return None
+
+updatePotential(!Potential!,!Priority_streams!)
