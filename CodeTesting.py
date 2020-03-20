@@ -199,3 +199,12 @@ def updatePotential(potential,priority):
             return None
 
 updatePotential(!Potential!,!Priority_streams!)
+
+
+def typefun(rankfield):
+    if rankfield == "high":
+        return "Class 1"
+    elif rankfield == "mod":
+        return "Class 2"
+    else:
+        return "Class 3"
