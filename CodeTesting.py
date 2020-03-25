@@ -208,3 +208,37 @@ def typefun(rankfield):
         return "Class 2"
     else:
         return "Class 3"
+
+def calcsqft1(rankfield):
+    c1 = 4
+    c2 = 3
+    c3 = 2
+    if rankfield == "Class 1":
+        return 20 * c1
+    if rankfield == "Class 2":
+        return 20 * c2
+    if rankfield == "Class 3":
+        return 20 * c3
+
+def calcsqft2(rankfield):
+    c1 = 600
+    c2 = 400
+    c3 = 200
+    if rankfield == "Class 1":
+        return 20 * c1 * 2
+    if rankfield == "Class 2":
+        return 20 * c2 * 2
+    if rankfield == "Class 3":
+        return 20 * c3 * 2
+
+def calcsqft3(rankfield):
+    c1 = 600
+    c2 = 400
+    c3 = 200
+    presBuffer = 100
+    if rankfield == "Class 1":
+        return (20 * c1 * 2) + (c1 * 2 * presBuffer * 2)
+    if rankfield == "Class 2":
+        return (20 * c2 * 2) + (c2 * 2 * presBuffer * 2)
+    if rankfield == "Class 3":
+        return (20 * c3 * 2) + (c3 * 2 * presBuffer * 2)
