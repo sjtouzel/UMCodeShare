@@ -242,3 +242,8 @@ def calcsqft3(rankfield):
         return (20 * c2 * 2) + (c2 * 2 * presBuffer * 2)
     if rankfield == "Class 3":
         return (20 * c3 * 2) + (c3 * 2 * presBuffer * 2)
+
+# make sure outgoing file names for feature classes have an acceptable file name - remove all unacceptable characters
+import arcpy
+tablename = "abcdokj-two...*ham!@#123"
+tablename = arcpy.ValidateTableName(tablename)
