@@ -245,5 +245,22 @@ def calcsqft3(rankfield):
 
 # make sure outgoing file names for feature classes have an acceptable file name - remove all unacceptable characters
 import arcpy
-tablename = "abcdokj-two...*ham!@#123"
+tablename = "123abcdokj-two...*ham!@#123"
 tablename = arcpy.ValidateTableName(tablename)
+
+# make sure input is a number
+user_input = input ("Enter your Age")
+try:
+   val = int(user_input)
+   print("Input is an integer number. Number = ", val)
+except ValueError:
+  try:
+    val = float(user_input)
+    print("Input is a float  number. Number = ", val)
+  except ValueError:
+      print("No.. input is not a number. It's a string")
+
+# test values
+inputnum = "3"
+if type(inputnum) == str:
+    print("Yes")
