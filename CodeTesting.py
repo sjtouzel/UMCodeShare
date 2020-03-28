@@ -264,3 +264,7 @@ except ValueError:
 inputnum = "3"
 if type(inputnum) == str:
     print("Yes")
+
+#Remove all non numeric values from a string
+rawdata = ['1234frt', 'hoiun1234']
+rawdata2 = filter(lambda x: x in '.0123456789', rawdata)
