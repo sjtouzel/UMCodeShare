@@ -266,5 +266,20 @@ if type(inputnum) == str:
     print("Yes")
 
 #Remove all non numeric values from a string
-rawdata = ['1234frt', 'hoiun1234']
-rawdata2 = filter(lambda x: x in '.0123456789', rawdata)
+rawdata = '1234,fr.t'
+include = set('0' '1' '2' '3' '4' '5' '6' '7' '8' '9' '.')
+cleandata1 = ''.join(ch for ch in rawdata if ch in include)
+
+#Get a list of Fields
+import arcpy
+GDBtest = r"C:\Users\jtouzel\Desktop\TEMP\Pro_Default.gdb"
+arcpy.env.workspace = GDBtest
+listOfFCs = []
+for i in arcpy.ListFeatureClasses():
+    listOfFCs.append(i)
+
+#check field type
+import arcpy
+FeatureClassTest = r"C:\Users\jtouzel\Desktop\TEMP\Pro_Default.gdb\ParcelFilterFC_20200326"
+for f in arcpy.ListFields(FeatureClassTest):
+    print("Field Name: " + f.name + " field type: " + f.type)
