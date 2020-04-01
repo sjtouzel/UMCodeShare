@@ -283,3 +283,23 @@ import arcpy
 FeatureClassTest = r"C:\Users\jtouzel\Desktop\TEMP\Pro_Default.gdb\ParcelFilterFC_20200326"
 for f in arcpy.ListFields(FeatureClassTest):
     print("Field Name: " + f.name + " field type: " + f.type)
+
+# Truncate a string
+data = "Canopy_cover_riparian_buffer_RES"
+info = (data[:31]) if len(data) > 31 else data
+
+# Split a string into a list
+teststring1 = 'add1;add2'
+testList = teststring1.split(";")
+
+# Concatenate our list
+## option 1
+teststringConcat = ""
+for i in testList:
+    teststringConcat += "!" + i + "!"
+## option 2
+testList = ['add3','add2']
+newlist = []
+for i in testList:
+    newlist.append("!" + i + "!")
+expressionString = ' + "   " + '.join(newlist)
