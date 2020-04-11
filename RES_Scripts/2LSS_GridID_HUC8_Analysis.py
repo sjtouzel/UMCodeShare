@@ -135,7 +135,7 @@ arcpy.RemoveJoin_management(in_layer_or_view=ParcelFeatureLayer)
 time.sleep(1)  # gives a .5 second pause before going to the next step
 
 ##### Add HUC8 numbers to our parcel layer #####
-##copy the HUC 8 data to our geodatabase
+##copy the HUC 8 data to our geodatabase - select any intersecting HUCs and export them to a new FC
 HUC8_FC = "HUC8_FC" # Create filename and we'll copy our incoming HUC8 FC to our output GDB so we can edit it
 arcpy.FeatureClassToFeatureClass_conversion(HUC_8, FinalData_OutputGeodatabase, HUC8_FC)
 ###add a "HUC8_RES" field to the HUC8 FC we just created, we'll copy the HUC8 values over from this field
