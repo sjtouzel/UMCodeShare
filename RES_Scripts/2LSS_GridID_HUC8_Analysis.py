@@ -34,7 +34,7 @@ Input_Parcels = arcpy.GetParameterAsText(3) # Get the parcel data to be processe
 GridID_FieldName = arcpy.GetParameterAsText(4) # get the field for the Grid ID from the incoming formatted parcel data
 ParcelHUC8_FieldName = arcpy.GetParameterAsText(5) # get the field name for the HUC8 field from the incoming formatted parcel data
 HUC_8 = arcpy.GetParameterAsText(6) # Get the HUC 8 feature class or shapefile
-HUC8_FieldName = arcpy.GetParameterAsText(7) # get the HUC8 field name for adding it to the Parcel layer
+HUC8_FieldName = arcpy.GetParameterAsText(7) # get the HUC8 field name for our HUC 8 FC
 FinalData_OutputGeodatabase = arcpy.GetParameterAsText(8) # This is where all of our finalized output will be stored
 Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a state plane coordinate system
 
