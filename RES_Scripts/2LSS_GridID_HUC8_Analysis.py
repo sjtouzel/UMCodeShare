@@ -41,16 +41,19 @@ Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a state plane coo
 
 # REMOVE AFTER TESTING IS COMPLETE
 CountyProj = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty_Proj" # this can be derived from the county boundary
-Cell_Size_Height = "5280" # We'll create a fishnet with 1 sq mile cells
-Cell_Size_Width = "5280" # We'll create a fishnet with 1 sq mile cells
-Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\ParcelFilterFC_20200224" # Get the parcel data to be processed
+
+
 GridID_FieldName = "Grid2" # get the field for the Grid ID from the incoming formatted parcel data
 ParcelHUC8_FieldName = "HUC_8" # get the field name for the HUC8 from the incoming formatted parcel data
 HUC_8 = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\HUC8_Copy" # Get the HUC 8 feature class or shapefile
 HUC8_FieldName = 'HUC_8' # what field in the incoming HUC8 layer contains the HUC8 numbers
-FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb" # This is where all of our finalized output will be stored
-Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\Coordinate Systems\NAD_1983_StatePlane_Texas_Central_FIPS_4203_Feet.prj"
 
+
+Cell_Size_Height = "5280" # We'll create a fishnet with 1 sq mile cells
+Cell_Size_Width = "5280" # We'll create a fishnet with 1 sq mile cells
+Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\AL_Landsearch_Data.gdb\Bullock_County_AL_ParcelData_2020_04_05" # Get the parcel data to be processed
+FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\AL_Landsearch_Data.gdb" # This is where all of our finalized output will be stored
+Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.8\ArcMap\Coordinate Systems\NAD 1983 StatePlane Alabama East FIPS 0101 (US Feet).prj"
 
 # Write to Log
 arcpy.AddMessage('')
@@ -72,7 +75,7 @@ arcpy.env.workspace = FinalData_OutputGeodatabase
 #Create the grid from the county boundary
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag our output with this. looks somethin like this 20181213
 fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
-CountyProjDesc = arcpy.Describe(CountyProj) # get the details of the county data
+CountyProjDesc = arcpy.Describe(Input_Parcels) # get the details of the county data
 arcpy.AddMessage('Creating the square mile Fishnet Grid: {}'.format(fishnetFileName))
 arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, fishnetFileName),
                                origin_coord=str(CountyProjDesc.extent.lowerLeft),
