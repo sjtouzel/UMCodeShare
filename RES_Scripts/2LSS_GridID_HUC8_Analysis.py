@@ -43,17 +43,15 @@ Output_CoordinateSystem = arcpy.GetParameterAsText(9) # choose a state plane coo
 CountyProj = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\WilliamsonCounty_Proj" # this can be derived from the county boundary
 
 
-GridID_FieldName = "Grid2" # get the field for the Grid ID from the incoming formatted parcel data
+GridID_FieldName = "Grid" # get the field for the Grid ID from the incoming formatted parcel data
 ParcelHUC8_FieldName = "HUC_8" # get the field name for the HUC8 from the incoming formatted parcel data
-HUC_8 = r"C:\Users\jtouzel\Desktop\TEMP\PRO_DEFAULT_GDB\Pro_Default.gdb\HUC8_Copy" # Get the HUC 8 feature class or shapefile
-HUC8_FieldName = 'HUC_8' # what field in the incoming HUC8 layer contains the HUC8 numbers
-
-
 Cell_Size_Height = "5280" # We'll create a fishnet with 1 sq mile cells
 Cell_Size_Width = "5280" # We'll create a fishnet with 1 sq mile cells
-Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\AL_Landsearch_Data.gdb\Bullock_County_AL_ParcelData_2020_04_05" # Get the parcel data to be processed
-FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\AL_Landsearch_Data.gdb" # This is where all of our finalized output will be stored
+Input_Parcels = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\SHP\AL_Landsearch_Data.gdb\Bullock_County_AL_ParcelData_2020_04_05" # Get the parcel data to be processed
+FinalData_OutputGeodatabase = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\SHP\AL_Landsearch_Data.gdb" # This is where all of our finalized output will be stored
 Output_CoordinateSystem = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.8\ArcMap\Coordinate Systems\NAD 1983 StatePlane Alabama East FIPS 0101 (US Feet).prj"
+HUC_8 = r"C:\Users\jtouzel\Desktop\TEMP\_DataToTransfer\Alabama_LandSearch\SHP\AL_Landsearch_Data.gdb\HUC8_Intersect" # Get the HUC 8 feature class or shapefile
+HUC8_FieldName = 'HUC8' # what field in the incoming HUC8 layer contains the HUC8 numbers
 
 # Write to Log
 arcpy.AddMessage('')
@@ -71,11 +69,14 @@ arcpy.AddMessage("Field Names: {}".format(", ".join(field_names)))
 arcpy.AddMessage("===================================================================")
 
 arcpy.env.workspace = FinalData_OutputGeodatabase
+
 #### Create the Fishnet Grid and add Grid ID to the Parcel Layer
 #Create the grid from the county boundary
+ParcelProj = arcpy.ValidateTableName(os.path.basename(os.path.normpath(Input_Parcels))) + "_Proj"
+arcpy.Project_management(Input_Parcels, ParcelProj, Output_CoordinateSystem)
 dateTag = datetime.datetime.today().strftime('%Y%m%d') # we'll tag our output with this. looks somethin like this 20181213
 fishnetFileName = "FishnetGrid_" + dateTag # create a filename for the fishnet grid
-CountyProjDesc = arcpy.Describe(Input_Parcels) # get the details of the county data
+CountyProjDesc = arcpy.Describe(ParcelProj) # get the details of the county data
 arcpy.AddMessage('Creating the square mile Fishnet Grid: {}'.format(fishnetFileName))
 arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGeodatabase, fishnetFileName),
                                origin_coord=str(CountyProjDesc.extent.lowerLeft),
@@ -84,7 +85,7 @@ arcpy.CreateFishnet_management(out_feature_class=os.path.join(FinalData_OutputGe
                                cell_height=Cell_Size_Height,
                                number_rows="", number_columns="",
                                corner_coord=str(CountyProjDesc.extent.upperRight), labels="NO_LABELS",
-                               template=CountyProj, geometry_type="POLYGON")
+                               template=ParcelProj, geometry_type="POLYGON")
 time.sleep(1)  # gives a .5 second pause before going to the next step
 ##add a field to the fishnet grid called GRID_FID
 Grid_FID = "Grid_FID"
@@ -143,7 +144,7 @@ HUC8_FC = "HUC8_FC" # Create filename and we'll copy our incoming HUC8 FC to our
 arcpy.FeatureClassToFeatureClass_conversion(HUC_8, FinalData_OutputGeodatabase, HUC8_FC)
 ###add a "HUC8_RES" field to the HUC8 FC we just created, we'll copy the HUC8 values over from this field
 HUC8_RES = "HUC8_RES"
-arcpy.AddField_management(in_table=HUC8_FC, field_name=HUC8_RES, field_type="LONG", field_precision="",
+arcpy.AddField_management(in_table=HUC8_FC, field_name=HUC8_RES, field_type="TEXT", field_precision="",
                           field_scale="", field_length="", field_alias="", field_is_nullable="NULLABLE",
                           field_is_required="NON_REQUIRED", field_domain="")
 arcpy.CalculateField_management(in_table=HUC8_FC, field=HUC8_RES,
