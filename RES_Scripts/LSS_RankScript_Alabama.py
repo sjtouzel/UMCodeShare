@@ -125,6 +125,7 @@ def LULC_Parcel_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc1
 def NWI_PWSL_Rank_Calc(nwi, pwsl):
 
     val = 1
+    Tot_ac_pot = nwi + pwsl
 
     if Tot_ac_pot < 20:
         val = 1
@@ -262,15 +263,15 @@ def main():
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    # fields = ['Tot_ac_pot', 'NWI_PWSLR']
-    # arcpy.AddMessage("===================================================================")
-    # arcpy.AddMessage("Calculate NWI PWSL Ranking")  # Print the Ranking info
-    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-    #     for row in cursor:
-    #         rank_val = NWI_PWSL_Rank_Calc(row[0])
-    #         row[1] = rank_val
-    #         cursor.updateRow(row)
-    # time.sleep(1)  # gives a 1 second pause before going to the next step
+    fields = ['NWI_acres','PWSL_acres', 'NWI_PWSLR']
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate NWI PWSL Ranking")  # Print the Ranking info
+    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+        for row in cursor:
+            rank_val = NWI_PWSL_Rank_Calc(row[0], row[1])
+            row[1] = rank_val
+            cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
 
     # fields = ['Restor', 'WetlandRestR']
     # arcpy.AddMessage("===================================================================")
