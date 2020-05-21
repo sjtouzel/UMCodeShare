@@ -269,7 +269,7 @@ def main():
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
             rank_val = NWI_PWSL_Rank_Calc(row[0], row[1])
-            row[1] = rank_val
+            row[2] = rank_val
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
