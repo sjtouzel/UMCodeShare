@@ -1,13 +1,13 @@
 # Return a score that combines all our ranking fields
 def rank(streams, canopyCoverP, canopyCoverB, landCoverP, landCoverB):
     # Set percentage multipliers
-    stream_per = 12
-    canopyCover_per = 2.5
+    stream_per = 15
+    other_per = 2.5
 
     if streams is 0:
         return 0
     else:
-        perCalc = streams*stream_per + canopyCoverP*canopyCover_per + canopyCoverB*canopyCover_per + \
+        perCalc = streams*stream_per + canopyCoverP*other_per + canopyCoverB*canopyCover_per + \
                   landCoverP*landCover_per + landCoverB*landCover_per
         return perCalc
 
