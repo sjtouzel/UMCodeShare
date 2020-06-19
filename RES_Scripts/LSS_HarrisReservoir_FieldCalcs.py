@@ -7,11 +7,11 @@ def rank(streams, canopyCoverP, canopyCoverB, landCoverP, landCoverB):
     if streams is 0:
         return 0
     else:
-        perCalc = streams*stream_per + canopyCoverP*other_per + canopyCoverB*canopyCover_per + \
-                  landCoverP*landCover_per + landCoverB*landCover_per
+        perCalc = streams*stream_per + canopyCoverP*other_per + canopyCoverB*other_per + \
+                  landCoverP*other_per + landCoverB*other_per
         return perCalc
 
-rank(!Stream_Linear_FeetR!,!Canopy_cover_parcelR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!,!NWI_PWSLR!)
+rank(!Stream_Linear_FeetR!,!Canopy_cover_parcelR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!)
 
 # convert null values to 0 for those fields that we're using to calc ranks
 def calc(field):
@@ -24,11 +24,11 @@ def calc(field):
 def priority(rankField):
     if rankField == 0:
         return None
-    elif rankField >= 80:
+    elif rankField >= 90:
         return 'A'
-    elif rankField >= 75:
+    elif rankField > 80:
         return 'B'
-    elif rankField >= 55:
+    elif rankField >= 70:
         return 'C'
     elif rankField >= 40:
         return 'D'
