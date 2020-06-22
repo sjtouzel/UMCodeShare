@@ -37,3 +37,20 @@ def priority(rankField):
     else:
         return 'E'
 
+
+
+##### UPDATE RANK SCORES
+
+def Canopy_Parcel_Rank_Calc(Canopy_Mean, BufferAcreage):
+    if BufferAcreage == 0:
+        return 0
+    else:
+        if Canopy_Mean > 70:
+            return 1
+        elif Canopy_Mean > 40:
+            return 2
+        elif Canopy_Mean >= 20:
+            return 3
+        else:
+            return 4
+
