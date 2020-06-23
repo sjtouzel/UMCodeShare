@@ -54,3 +54,21 @@ def Canopy_Parcel_Rank_Calc(Canopy_Mean, BufferAcreage):
         else:
             return 4
 
+def LULC_Buffer_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc10, lc11, lc12, lc13, lc14, lc15, lc16):
+
+    if(lulc == lc1 or lulc == lc4 or lulc == lc5 or lulc == lc13):
+        return 0
+    if(lulc == lc2 or lulc == lc3 or lulc == lc6 or lulc == lc10):
+        return 0
+    if(lulc == lc7 or lulc == lc8 or lulc == lc9):
+        return 2
+    if(lulc == lc11 or lulc == lc12 or lulc == lc14):
+        return 3
+    if(lulc == lc15 or lulc == lc16):
+        return 4
+    else:
+        return 0
+
+LULC_Buffer_Rank_Calc(!LULC_riparian_buffer!, "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceous", "Shrub/Scrub", "Emergent Herbaceous Wetlands", "Grassland/Herbaceous", "Cultivated Crops", "Pasture/Hay")
+
+LULC_Buffer_Rank_Calc(!LULC_parcel!, "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceous", "Shrub/Scrub", "Emergent Herbaceous Wetlands", "Grassland/Herbaceous", "Cultivated Crops", "Pasture/Hay")
