@@ -69,6 +69,26 @@ def LULC_Buffer_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc1
     else:
         return 0
 
-LULC_Buffer_Rank_Calc(!LULC_riparian_buffer!, "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceous", "Shrub/Scrub", "Emergent Herbaceous Wetlands", "Grassland/Herbaceous", "Cultivated Crops", "Pasture/Hay")
+LULC_Buffer_Rank_Calc(!LULC_parcel!, "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity",
+                                     "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest",
+                                     "Woody Wetlands", "Herbaceous", "Shrub/Scrub", "Emergent Herbaceous Wetlands", "Grassland/Herbaceous", "Cultivated Crops", "Pasture/Hay")
 
-LULC_Buffer_Rank_Calc(!LULC_parcel!, "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceous", "Shrub/Scrub", "Emergent Herbaceous Wetlands", "Grassland/Herbaceous", "Cultivated Crops", "Pasture/Hay")
+LULC_Buffer_Rank_Calc(!LULC_riparian_buffer!, "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity",
+                                              "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest",
+                                              "Woody Wetlands", "Herbaceous", "Shrub/Scrub", "Emergent Herbaceous Wetlands", "Grassland/Herbaceous",
+                                              "Cultivated Crops", "Pasture/Hay")
+
+def Stream_Linear_Ft_Rank_Calc(Stream):
+
+    if Stream < 5000:
+        return 0
+    elif Stream < 10000:
+        return 1
+    elif Stream < 12000:
+        return 2
+    elif Stream < 15000:
+        return 3
+    elif Stream >= 15000:
+        return 4
+
+Stream_Linear_Ft_Rank_Calc(!NHD!)
