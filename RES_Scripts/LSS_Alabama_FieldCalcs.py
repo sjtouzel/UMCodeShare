@@ -1,19 +1,20 @@
 # Return a score that combines all our ranking fields
-def rank(streams, canopyCoverP, canopyCoverB, landCoverP, landCoverB, nwi_pwsl):
+def rank(streams, canopyCoverB, landCoverP, landCoverB):
     # Set percentage multipliers
     stream_per = 12.5
-    canopyCover_per = 3.33
-    landCover_per = 2.5
-    nwi_pwsl_per = 3.33
+    canopyCover_per = 4.25
+    BufflandCover_per = 4.25
+    ParcLandCover_per = 4
+    #nwi_pwsl_per = 3.33
 
     if streams is 0:
         return 0
     else:
-        perCalc = streams*stream_per + canopyCoverP*canopyCover_per + canopyCoverB*canopyCover_per + \
-                  landCoverP*landCover_per + landCoverB*landCover_per + nwi_pwsl * nwi_pwsl_per
+        perCalc = streams*stream_per + canopyCoverB*canopyCover_per + \
+                  landCoverP*ParcLandCover_per + landCoverB*BufflandCover_per
         return perCalc
 
-rank(!Stream_Linear_FeetR!,!Canopy_cover_parcelR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!,!NWI_PWSLR!)
+rank(!Stream_Linear_FeetR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!)
 
 # convert null values to 0 for those fields that we're using to calc ranks
 def calc(field):
