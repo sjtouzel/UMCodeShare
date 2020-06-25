@@ -38,7 +38,7 @@ def priority(rankField):
     else:
         return 'E'
 
-
+priority(!RankingAg_Percentage!)
 
 ##### UPDATE RANK SCORES
 
@@ -93,3 +93,12 @@ def Stream_Linear_Ft_Rank_Calc(Stream):
         return 4
 
 Stream_Linear_Ft_Rank_Calc(!NHD!)
+
+# Calculate Potential field
+def calc(rankfield):
+    if rankfield is None:
+        return "No"
+    else:
+        return "Yes"
+
+calc(!Priority_streams!)
