@@ -70,6 +70,24 @@ OutputTest_Folder = r"C:\Users\jtouzel\AppData\Roaming\Esri\Desktop10.6\ArcMap\C
 for i in os.listdir(OutputTest_Folder):
     print(i)
 
+# Go through each subfolder in a folder and copy all the files to the another folder
+import shutil, os
+downloadDirectory = r"C:\Users\jtouzel\Downloads"
+deleteDirectory = r"C:\Users\jtouzel\Downloads\DELETE"
+imgs = []
+for root, dirs, files in os.walk(downloadDirectory):
+    for item in files:
+        if item.endswith('.doc'):
+            imgs.append(os.path.join(root, item))
+for i in imgs:
+    print(os.path.basename(os.path.normpath(i)))
+    shutil.move(i,os.path.join(deleteDirectory,os.path.basename(os.path.normpath(i))))
+print(imgs)
+
+
+
+p = Path()
+
 # Get list of fields
 descFC = arcpy.Describe(UTM_List[0])
 fieldList = [f.name for f in arcpy.ListFields(ParcelGridFeatureLayer)]
