@@ -224,7 +224,7 @@ def main():
     arcpy.AddMessage("Calculate Buffer LULC Ranking")  # Print the Ranking info
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
-            rank_val = LULC_Buffer_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceuous", "Shrub/Scrub", "Emergent Herbaceuous Wetlands", "Cultivated Crops", "Hay/Pasture")
+            rank_val = LULC_Buffer_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Shrub/Scrub", "Grassland/Herbaceous", "Hay/Pasture", "Cultivated Crops", "Woody Wetlands", "Emergent Herbaceous Wetlands")
             row[1] = rank_val
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
@@ -234,7 +234,7 @@ def main():
     arcpy.AddMessage("Calculate Parcel LULC Ranking")  # Print the Ranking info
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
         for row in cursor:
-            rank_val = LULC_Parcel_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Woody Wetlands", "Herbaceuous", "Shrub/Scrub", "Emergent Herbaceuous Wetlands", "Cultivated Crops", "Hay/Pasture")
+            rank_val = LULC_Parcel_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Shrub/Scrub", "Grassland/Herbaceous", "Hay/Pasture", "Cultivated Crops", "Woody Wetlands", "Emergent Herbaceous Wetlands")
             row[1] = rank_val
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
