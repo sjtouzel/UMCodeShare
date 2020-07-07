@@ -49,14 +49,10 @@ def Add_Rank_Fields(parcel_input):
 
 def Canopy_Parcel_Rank_Calc(Canopy_Mean):
 
-    val = 1
-
     if Canopy_Mean < 50:
-        val = 3
+        return 3
     elif Canopy_Mean >= 50:
-        val = 1
-
-    return val
+        return 1
 
 def Canopy_Buffer_Rank_Calc(Canopy_Buffer_Mean):
 
