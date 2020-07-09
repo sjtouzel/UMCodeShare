@@ -93,6 +93,8 @@ def LULC_Buffer_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc1
         return 3
     if(lulc == lc12 or lulc == lc13):
         return 4
+    else:
+        return 0
 
 def LULC_Parcel_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc10, lc11, lc12, lc13, lc14, lc15):
 
@@ -106,6 +108,8 @@ def LULC_Parcel_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc1
         return 3
     if(lulc == lc12 or lulc == lc13):
         return 4
+    else:
+        return 0
 
 def NWI_PWSL_Rank_Calc(Tot_ac_pot):
 
