@@ -27,8 +27,7 @@ Inputs:
 
 
 def Add_Rank_Fields(parcel_input):
-    new_fields = ['Canopy_cover_parcelR',
-                  'Canopy_cover_riparian_bufferR',
+    new_fields = ['Canopy_cover_riparian_bufferR',
                   'NHDR',
                   'LULC_bufferR',
                   'LULC_parcelR',]
@@ -38,7 +37,8 @@ def Add_Rank_Fields(parcel_input):
                   # 'WetlandPresR',
                   # 'LF_Strm_HWR',
                   # 'NHDR',
-                  # 'PriorityR']
+                  # 'PriorityR'
+                  # 'Canopy_cover_parcelR',]
 
     attribute_type = 'SHORT'
     for field in new_fields:
@@ -57,9 +57,13 @@ def Canopy_Parcel_Rank_Calc(Canopy_Mean):
 
 def Canopy_Buffer_Rank_Calc(Canopy_Buffer_Mean):
 
-    if Canopy_Buffer_Mean < 50:
+    if Canopy_Buffer_Mean <= 20:
+        return 4
+    elif Canopy_Buffer_Mean < 40:
         return 3
-    elif Canopy_Buffer_Mean >= 50:
+    elif Canopy_Buffer_Mean < 70:
+        return 2
+    else:
         return 1
 
 def Stream_Linear_Ft_Rank_Calc(Stream):
@@ -176,7 +180,7 @@ def main():
     # Write to Log
     arcpy.AddMessage('')
     arcpy.AddMessage("===================================================================")
-    sVersionInfo = 'LSS_RankScript_SanGabriel.py, v20200707'
+    sVersionInfo = 'LSS_RankScript_LamarCounty.py, v20200709'
     arcpy.AddMessage('LSS Ranking Script, {}'.format(sVersionInfo))
     arcpy.AddMessage("")
     arcpy.AddMessage("Support: jtouzel@res.us, 281-715-9109")
@@ -189,15 +193,15 @@ def main():
 
     Add_Rank_Fields(county_parcel_data)
 
-    fields = ['Canopy_cover_parcel', 'Canopy_cover_parcelR']
-    arcpy.AddMessage("===================================================================")
-    arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking")  # Print the Ranking info for Parcel Canopy
-    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
-        for row in cursor:
-            rank_val = Canopy_Parcel_Rank_Calc(row[0])
-            row[1] = rank_val
-            cursor.updateRow(row)
-    time.sleep(1)  # gives a 1 second pause before going to the next step
+    # fields = ['Canopy_cover_parcel', 'Canopy_cover_parcelR']
+    # arcpy.AddMessage("===================================================================")
+    # arcpy.AddMessage("Calculate Parcel Canopy Cover Ranking")  # Print the Ranking info for Parcel Canopy
+    # with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+    #     for row in cursor:
+    #         rank_val = Canopy_Parcel_Rank_Calc(row[0])
+    #         row[1] = rank_val
+    #         cursor.updateRow(row)
+    # time.sleep(1)  # gives a 1 second pause before going to the next step
 
     fields = ['Canopy_cover_riparian_buffer', 'Canopy_cover_riparian_bufferR']
     arcpy.AddMessage("===================================================================")
