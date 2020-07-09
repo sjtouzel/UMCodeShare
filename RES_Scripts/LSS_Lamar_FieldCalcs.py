@@ -27,7 +27,7 @@ def calc(field):
 def priority(rankField):
     if rankField == 0:
         return None
-    elif rankField >= 95:
+    elif rankField >= 90:
         return 'A'
     elif rankField >= 80:
         return 'B'
