@@ -1,16 +1,16 @@
 # Return a score that combines all our ranking fields
-def rank(streams, canopyCoverP, canopyCoverB, landCoverP, landCoverB):
+def rank(streams, canopyCoverB, landCoverP, landCoverB):
     # Set percentage multipliers
     stream_per = 12.5
-    canopyCover_per = 4.17
-    BufflandCover_per = 3.125
-    ParcLandCover_per = 3.125
+    canopyCover_per = 4.15
+    BufflandCover_per = 4.15
+    ParcLandCover_per = 4.15
     #nwi_pwsl_per = 3.33
 
     if streams is 0:
         return 0
     else:
-        perCalc = streams*stream_per + canopyCoverP*canopyCover_per + canopyCoverB*canopyCover_per + \
+        perCalc = streams*stream_per + canopyCoverB*canopyCover_per + \
                   landCoverP*ParcLandCover_per + landCoverB*BufflandCover_per
         return perCalc
 
