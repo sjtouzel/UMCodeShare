@@ -30,7 +30,7 @@ def Add_Rank_Fields(parcel_input):
     new_fields = ['Canopy_cover_riparian_bufferR',
                   'NHDR',
                   'LULC_bufferR',
-                  'LULC_parcelR',]
+                  'LULC_parcelR']
                   # 'NWI_PWSLR',
                   # 'Stream_Linear_FeetR',
                   # 'WetlandRestR',
