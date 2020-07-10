@@ -14,7 +14,7 @@ def rank(streams, canopyCoverB, landCoverP, landCoverB):
                   landCoverP*ParcLandCover_per + landCoverB*BufflandCover_per
         return perCalc
 
-rank(!Stream_Linear_FeetR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!)
+rank(!NHDR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!)
 
 # convert null values to 0 for those fields that we're using to calc ranks
 def calc(field):
@@ -38,7 +38,7 @@ def priority(rankField):
     else:
         return 'E'
 
-priority(!RankingAg_Percentage!)
+priority(!AggregateScore!)
 
 ##### UPDATE RANK SCORES
 
