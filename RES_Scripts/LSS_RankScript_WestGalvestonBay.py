@@ -99,9 +99,9 @@ def LULC_Buffer_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc1
         val = 1
     if(lulc == lc7 or lulc == lc8 or lulc == lc9):
         val = 2
-    if(lulc == lc11 or lulc == lc12):
+    if(lulc == lc10 or lulc == lc11):
         val = 3
-    if(lulc == lc14 or lulc == lc15):
+    if(lulc == lc12 or lulc == lc13):
         val = 4
 
     return val
@@ -116,9 +116,9 @@ def LULC_Parcel_Rank_Calc(lulc, lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9, lc1
         val = 1
     if(lulc == lc7 or lulc == lc8 or lulc == lc9):
         val = 2
-    if(lulc == lc11 or lulc == lc12):
+    if(lulc == lc10 or lulc == lc11):
         val = 3
-    if(lulc == lc14 or lulc == lc15):
+    if(lulc == lc12 or lulc == lc13):
         val = 4
 
     return val
@@ -243,17 +243,6 @@ def main():
             row[1] = rank_val
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
-
-    if (lulc == lc1 or lulc == lc4 or lulc == lc5):
-        val = 0
-    if (lulc == lc2 or lulc == lc3 or lulc == lc6 or lulc == lc14 or lulc == lc15):
-        val = 1
-    if (lulc == lc7 or lulc == lc8 or lulc == lc9):
-        val = 2
-    if (lulc == lc11 or lulc == lc12):
-        val = 3
-    if (lulc == lc14 or lulc == lc15):
-        val = 4
 
     fields = ['LULC_riparian_buffer', 'LULC_bufferR']
     arcpy.AddMessage("===================================================================")
