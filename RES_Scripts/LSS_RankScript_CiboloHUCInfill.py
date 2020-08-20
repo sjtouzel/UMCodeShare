@@ -182,7 +182,7 @@ def NHD_Calc(NHD):
         return 2
     elif NHD < 7000:
         return 3
-    elif NHD >= 8000:
+    elif NHD >= 7000:
         return 4
 
 def main():
