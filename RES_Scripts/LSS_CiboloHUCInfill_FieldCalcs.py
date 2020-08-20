@@ -8,7 +8,7 @@ def rank(streams, canopyCoverB, landCoverP, landCoverB, Ecoregion):
     if streams is 0:
         return 0
     else:
-        perCalc = streams*stream_per + canopyCoverP*other_per + canopyCoverB*other_per + \
+        perCalc = streams*stream_per +  canopyCoverB*other_per + \
                   landCoverP*other_per + landCoverB*other_per + Ecoregion * eco_per
         return perCalc
 
