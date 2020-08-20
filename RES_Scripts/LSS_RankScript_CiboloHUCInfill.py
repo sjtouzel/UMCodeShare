@@ -174,15 +174,15 @@ def LF_Strm_HW_Calc(LF_Strm_HW):
 
 def NHD_Calc(NHD):
 
-    if NHD < 10000:
+    if NHD < 4000:
         return 0
-    elif NHD < 11000:
+    elif NHD < 5000:
         return 1
-    elif NHD < 12000:
+    elif NHD < 6000:
         return 2
-    elif NHD < 13000:
+    elif NHD < 7000:
         return 3
-    elif NHD >= 13000:
+    elif NHD >= 8000:
         return 4
 
 def main():
