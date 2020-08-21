@@ -32,7 +32,8 @@ def Add_Rank_Fields(parcel_input):
                   'NHDR',
                   'LULC_bufferR',
                   'LULC_parcelR',
-                  'EcoregionR']
+                  'EcoregionR',
+                  'AggregateScore']
                   # 'NWI_PWSLR',
                   # 'Stream_Linear_FeetR',
                   # 'WetlandRestR',
@@ -185,6 +186,19 @@ def NHD_Calc(NHD):
     elif NHD >= 7000:
         return 4
 
+def agScore(streams, canopyCoverB, landCoverP, landCoverB, Ecoregion):
+    # Set percentage multipliers
+    stream_per = 10
+    other_per = 3.33
+    eco_per = 20
+
+    if streams is 0:
+        return 0
+    else:
+        perCalc = streams * stream_per + canopyCoverB * other_per + \
+                  landCoverP * other_per + landCoverB * other_per + Ecoregion * eco_per
+        return perCalc
+
 def main():
 
     county_parcel_data = arcpy.GetParameterAsText(0)
@@ -262,6 +276,16 @@ def main():
         for row in cursor:
             rank_val = LULC_Parcel_Rank_Calc(row[0], "Open Water", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land", "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Shrub/Scrub", "Grassland/Herbaceous", "Hay/Pasture", "Cultivated Crops", "Woody Wetlands", "Emergent Herbaceous Wetlands")
             row[1] = rank_val
+            cursor.updateRow(row)
+    time.sleep(1)  # gives a 1 second pause before going to the next step
+
+    fields = ['AggregateScore','NHDR','Canopy_cover_riparian_bufferR','LULC_parcelR!','!LULC_bufferR','EcoregionR']
+    arcpy.AddMessage("===================================================================")
+    arcpy.AddMessage("Calculate Aggregate Score")  # Print the Ranking info
+    with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
+        for row in cursor:
+            rank_val = agScore(row[1],row[2],row[3],row[4],row[5])
+            row[0] = rank_val
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
