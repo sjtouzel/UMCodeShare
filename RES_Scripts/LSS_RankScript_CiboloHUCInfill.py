@@ -279,7 +279,7 @@ def main():
             cursor.updateRow(row)
     time.sleep(1)  # gives a 1 second pause before going to the next step
 
-    fields = ['AggregateScore','NHDR','Canopy_cover_riparian_bufferR','LULC_parcelR!','!LULC_bufferR','EcoregionR']
+    fields = ['AggregateScore','NHDR','Canopy_cover_riparian_bufferR','LULC_parcelR','LULC_bufferR','EcoregionR']
     arcpy.AddMessage("===================================================================")
     arcpy.AddMessage("Calculate Aggregate Score")  # Print the Ranking info
     with arcpy.da.UpdateCursor(county_parcel_data, fields) as cursor:
