@@ -27,11 +27,11 @@ def priority(rankField):
         return None
     elif rankField >= 90:
         return 'A'
-    elif rankField >= 70:
+    elif rankField >= 80:
         return 'B'
-    elif rankField >= 60:
+    elif rankField >= 70:
         return 'C'
-    elif rankField >= 50:
+    elif rankField >= 60:
         return 'D'
     else:
         return 'E'
