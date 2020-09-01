@@ -321,3 +321,24 @@ newlist = []
 for i in testList:
     newlist.append("!" + i + "!")
 expressionString = ' + "   " + '.join(newlist)
+
+# Download files from FTP
+import urllib
+from ftplib import FTP
+import os, sys, os.path
+
+ddir = r"C:\Users\jtouzel\Downloads\SnyderLiDAR"
+os.chdir(ddir)
+ftp = FTP('ftp://ftp.pasda.psu.edu/pub/pasda/usgs/')
+directory = '\\LiDAR2017\\Bare_Earth_DEM\\'
+ftp.cwd(directory)
+
+filenames = ftp.nlst() #get filenames within the directory
+print(filenames)
+for filename in filenames:
+    local_filename = os.path.join(ddir, filename)
+    file = open(local_filename, 'wb')
+    ftp.retrbinary('RETR ' + filename, file.write)
+
+    file.close()
+ftp.quit()
