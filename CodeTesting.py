@@ -298,9 +298,23 @@ for i in arcpy.ListFeatureClasses():
 
 #check field type
 import arcpy
-FeatureClassTest = r"C:\Users\jtouzel\Desktop\TEMP\Pro_Default.gdb\ParcelFilterFC_20200326"
+FeatureClassTest = r"C:\Users\jtouzel\Desktop\PythonTempInput\ParcelData.gdb\BullockUpdate_Formatted"
+OriginalFieldObjects = arcpy.ListFields(FeatureClassTest)
+for item in OriginalFieldObjects:
+    print("Field Name: " + item.name + " field type: " + item.type)
+    if item.type == "String":
+        print("Yes")
+    if item.type != "String":
+        NewName = item.name + "_str"
+        print(NewName)
+
+OwnerAddressColumnsList = []
 for f in arcpy.ListFields(FeatureClassTest):
-    print("Field Name: " + f.name + " field type: " + f.type)
+    OwnerAddressColumnsList.append(f.name)
+
+for index, item in enumerate(OwnerAddressColumnsList):
+    if item.type != "String":
+        print("Yes")
 
 # Truncate a string
 data = "Canopy_cover_riparian_buffer_RES"
@@ -329,8 +343,9 @@ import os, sys, os.path
 
 ddir = r"C:\Users\jtouzel\Downloads\SnyderLiDAR"
 os.chdir(ddir)
-ftp = FTP('ftp://ftp.pasda.psu.edu/pub/pasda/usgs/')
-directory = '\\LiDAR2017\\Bare_Earth_DEM\\'
+ftp = FTP('ftp.pasda.psu.edu')
+ftp = FTP('ftp.nasdaqtrader.com')
+directory = '\\pub\\pasda\\usgs\\LiDAR2017\\Bare_Earth_DEM\\'
 ftp.cwd(directory)
 
 filenames = ftp.nlst() #get filenames within the directory
@@ -342,3 +357,11 @@ for filename in filenames:
 
     file.close()
 ftp.quit()
+
+# testing int to str
+a = 5
+b = str(a)
+
+# update list item
+listtesting = ["ham", "bone", "butts"]
+listtesting[0] = "joe"
