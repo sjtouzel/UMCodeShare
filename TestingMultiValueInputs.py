@@ -12,7 +12,10 @@ NewList = []
 for i in WetlandTypesList:
     NewList.append(i.replace("'",""))
 arcpy.AddMessage(NewList)
-TypeListConcat = ",".join(NewList)
+QuoteList = []
+for i in NewList:
+    QuoteList.append("'" + i + "'")
+TypeListConcat = ",".join(QuoteList)
 NWI_Query = '"' + ListOfFields + '"' + " NOT IN (" + TypeListConcat + ")" # create the query
 arcpy.AddMessage('Query is: {}'.format(NWI_Query))
 
