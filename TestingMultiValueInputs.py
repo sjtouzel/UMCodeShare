@@ -7,6 +7,7 @@ ListOfFieldTypes = arcpy.GetParameterAsText(2)
 
 arcpy.AddMessage(ListOfFields)
 arcpy.AddMessage(ListOfFieldTypes)
-for i in ListOfFieldTypes:
+WetlandTypesList = ListOfFieldTypes.split(";")
+for i in WetlandTypesList:
     arcpy.AddMessage(i.replace("'",""))
 
