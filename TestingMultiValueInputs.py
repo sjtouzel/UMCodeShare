@@ -7,3 +7,5 @@ ListOfFieldTypes = arcpy.GetParameterAsText(2)
 
 arcpy.AddMessage(ListOfFields)
 arcpy.AddMessage(ListOfFieldTypes)
+for i in ListOfFieldTypes:
+    print(i.replace("'",""))
