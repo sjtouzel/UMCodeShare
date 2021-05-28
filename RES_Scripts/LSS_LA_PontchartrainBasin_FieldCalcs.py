@@ -1,17 +1,18 @@
 # Return a score that combines all our ranking fields
-def rank(coastalzoneR, LCR, NWIPWSLR, RestorationR, PreservationR):
+def rank(coastalzoneR, LCR, NWIPWSLR, RestorationR, PreservationR, ManagedLandR, RestrictedR, ParcelsAcreageR):
     # Set percentage multipliers
     restoration_per = 7.5
     other_per = 2.5
 
-    if streams is 0:
+    if 0 in (coastalzoneR, LCR, NWIPWSLR, RestorationR, PreservationR, ManagedLandR, RestrictedR, ParcelsAcreageR):
         return 0
     else:
-        perCalc = streams*stream_per +  canopyCoverB*other_per + \
-                  landCoverP*other_per + landCoverB*other_per + Ecoregion * eco_per
+        perCalc = RestorationR*restoration_per +  coastalzoneR*other_per + \
+                  LCR*other_per + NWIPWSLR*other_per + PreservationR*other_per + ManagedLandR*other_per + \
+                  RestrictedR*other_per + ParcelsAcreageR*other_per
         return perCalc
 
-rank(!NHDR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!, !EcoregionR!)
+rank(!CoastalZone_R!,!LandCover_R!,!NWI_PWSL_R!,!RestorationAcres_R!,!PreservationAcres_R!,!ManagedLand_R!,!Restricted_R!,!ParcelAcreage_R!)
 
 # convert null values to 0 for those fields that we're using to calc ranks
 def calc(field):
@@ -34,4 +35,13 @@ def priority(rankField):
         return 'D'
     else:
         return 'E'
+
+
+# testing biz
+a = 1
+b=2
+c=4
+
+if 0 in (a,b,c):
+    print("YEs")
 
