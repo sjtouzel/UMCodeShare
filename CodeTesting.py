@@ -308,9 +308,26 @@ for item in OriginalFieldObjects:
         NewName = item.name + "_str"
         print(NewName)
 
-OwnerAddressColumnsList = []
+import arcpy
+import csv
+import os
+os.getcwd()
+os.chdir(r"C:\Users\jtouzel\Desktop")
+FeatureClassTest = r"C:\Users\jtouzel\Documents\ArcGIS\Projects\ProjectTemplate\ProjectTemplate.gdb\TestingParcelsFormatted"
+FieldAlias = []
+FieldName = []
+FieldType = []
+FieldLength = []
 for f in arcpy.ListFields(FeatureClassTest):
-    OwnerAddressColumnsList.append(f.name)
+    FieldAlias.append(f.aliasName)
+    FieldName.append(f.name)
+    FieldType.append(f.type)
+    FieldLength.append(f.length)
+with open('fields.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Alias", "Field Name", "Field Type", "Field Length"])
+    for i in range(0,len(FieldAlias)):
+        writer.writerow([FieldAlias[i],FieldName[i],FieldType[i],FieldLength[i]])
 
 for index, item in enumerate(OwnerAddressColumnsList):
     if item.type != "String":
@@ -365,3 +382,5 @@ b = str(a)
 # update list item
 listtesting = ["ham", "bone", "butts"]
 listtesting[0] = "joe"
+
+
