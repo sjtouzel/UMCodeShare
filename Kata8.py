@@ -136,4 +136,19 @@ def super_size(n):
 def integrate(coefficient, exponent):
     return ''.join([str(int(coefficient/(exponent+1))),'x^',str(exponent+1)])
 
-# Sleigh Authentication - create a method for a class that tells us
+# Write function bmi that calculates body mass index (bmi = weight / height2).
+def bmi(weight, height):
+    bmicalc = weight/(height*height)
+    if bmicalc <= 18.5:
+        return "Underweight"
+    elif bmicalc <= 25.0:
+        return "Normal"
+    elif bmicalc <= 30:
+        return "Overweight"
+    else:
+        return "Obese"
+
+# best solution
+def bmi(weight, height):
+    b = weight / height ** 2
+    return ['Underweight', 'Normal', 'Overweight', 'Obese'][(b > 30) + (b > 25) + (b > 18.5)]

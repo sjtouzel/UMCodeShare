@@ -309,4 +309,42 @@ def solution(string, ending):
 
 # sort numbers so that the lowest number is in the middle and then alternate increasing numbers on each side of that middle low number
 def make_valley(arr):
+    arr.sort()
+    newarr = []
+    if len(arr) % 2 == 0:
+        for i in range(0, len(arr)):
+            if i % 2 == 0:
+                newarr.append(arr[i])
+            else:
+                newarr.insert(0,arr[i])
+    else:
+        for i in range(0, len(arr)):
+            if i % 2 == 0:
+                newarr.insert(0,arr[i])
+            else:
+                newarr.append(arr[i])
+    return newarr
 
+make_valley([79,35,54,19,35,25])
+make_valley([67, 93, 100, -16, 65, 97, 92])
+
+# best solution
+def make_valley(arr):
+    arr = sorted(arr, reverse = True)
+    return arr[::2] + arr[1::2][::-1]
+
+# A Nice array is defined to be an array where for every value n in the array,
+# there is also an element n - 1 or n + 1 in the array.
+def is_nice(arr):
+    numbersneededlist = []
+    for i in arr:
+        numbersneededlist.append(i - 1)
+        numbersneededlist.append(i + 1)
+    print(arr)
+    print(numbersneededlist)
+    if set(arr).issubset(set(numbersneededlist)):
+        print("True")
+        return True
+    else:
+        print("False")
+        return False
