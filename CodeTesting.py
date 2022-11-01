@@ -226,6 +226,18 @@ def typefun(rankfield):
         return "Class 2"
     else:
         return "Class 3"
+    print("hambone")
+
+def typefun(rankfield):
+    if rankfield == "high":
+        print("Class 1")
+    elif rankfield == "mod":
+        print("Class 2")
+    else:
+        print("Class 3")
+    print("hambone")
+
+typefun(rankfield="Butts")
 
 def calcsqft1(rankfield):
     c1 = 4
@@ -383,4 +395,10 @@ b = str(a)
 listtesting = ["ham", "bone", "butts"]
 listtesting[0] = "joe"
 
-
+# Sound testing
+import os
+os.popen("start C:\Windows\Media\Alarm01.wav")
+os.popen("")
+print('\007')
+ord('7')
+os.system("beep -f 2000 -l 1500")

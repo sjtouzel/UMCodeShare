@@ -296,3 +296,17 @@ def add_letters(*letters):
 def add_letters(*letters):
     return chr((sum(ord(c)-96 for c in letters)-1)%26 + 97)
 
+# Returns true if the first argument(string) passed in ends with the 2nd argument (also a string).
+def solution(string, ending):
+    if string[-(len(ending)):] == ending or ending == '':
+        return True
+    else:
+        return False
+
+#best method
+def solution(string, ending):
+    return string.endswith(ending)
+
+# sort numbers so that the lowest number is in the middle and then alternate increasing numbers on each side of that middle low number
+def make_valley(arr):
+

@@ -1,4 +1,4 @@
-import arcpy
+﻿import arcpy
 import os, time, datetime
 
 FeatureClass = arcpy.GetParameterAsText(0)
@@ -18,4 +18,6 @@ arcpy.AddMessage(NewList)
 TypeListConcat = ",".join(NewList)
 NWI_Query = '"' + ListOfFields + '"' + " NOT IN (" + TypeListConcat + ")" # create the query
 arcpy.AddMessage('Query is: {}'.format(NWI_Query))
+
+os.popen('\007')
 

@@ -102,3 +102,31 @@ def calc(rankfield):
         return "Yes"
 
 calc(!Priority_streams!)
+
+
+def rank(R1, R2, R3):
+    # Set percentage multipliers
+    multiplier = 8.33
+
+    if 0 in (R1,R2,R3):
+        return 0
+    else:
+        return R1 * multiplier + R2 * multiplier + R3 * multiplier
+
+
+rank(!NHDR!,!Canopy_cover_riparian_bufferR!,!LULC_parcelR!,!LULC_bufferR!)
+
+
+a=1
+b=1
+c=1
+
+def priority(rankField):
+    if rankField == 0:
+        return None
+    elif rankField >= 90:
+        return '1'
+    elif rankField >= 80:
+        return '2'
+    else:
+        return '3'
