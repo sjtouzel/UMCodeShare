@@ -152,3 +152,15 @@ def bmi(weight, height):
 def bmi(weight, height):
     b = weight / height ** 2
     return ['Underweight', 'Normal', 'Overweight', 'Obese'][(b > 30) + (b > 25) + (b > 18.5)]
+
+# create a program that will take two lists of integers, a and b.
+# Each list will consist of 3 positive integers above 0, representing the dimensions of cuboids a and b.
+# You must find the difference of the cuboids' volumes regardless of which is bigger.
+def find_difference(a,b):
+    prod1 = 1
+    for x in a:
+        prod1 *= x
+    prod2 = 1
+    for x in b:
+        prod2 *= x
+    return abs(prod2-prod1)

@@ -348,3 +348,42 @@ def is_nice(arr):
     else:
         print("False")
         return False
+
+# Best Solution
+def is_nice(arr):
+    s = set(arr)
+    return bool(arr) and all( n+1 in s or n-1 in s for n in s) # how does this work
+
+# sort again like the valley but with less restrictions
+def pendulum(a):
+    a = sorted(a)
+    return a[::2][::-1] + a[1::2]
+
+butts = [0,30,4,5,6,7,8]
+butts.sort() # this will sort the list
+butts[::2][::-1] # this will get every even index value including zero and then sort descending
+butts[1::2] # this will get every odd index value
+
+# My function
+def pendulum(arr):
+    arr.sort()
+    newarr = []
+    for i in range(0, len(arr)):
+        if i % 2 == 0:
+            newarr.insert(0,arr[i])
+        else:
+            newarr.append(arr[i])
+    return newarr
+
+
+# Given an array of integers , Find the maximum product obtained from multiplying 2 adjacent numbers in the array.
+def adjacent_element_product(array):
+    prod = []
+    for x in range(0,len(array)-1):
+        prod.append(array[x] * array[x+1])
+    return max(prod)
+
+# best solution
+def adjacent_element_product(array):
+    return max( a*b for a, b in zip(array, array[1:]) )
+
