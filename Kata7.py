@@ -387,3 +387,24 @@ def adjacent_element_product(array):
 def adjacent_element_product(array):
     return max( a*b for a, b in zip(array, array[1:]) )
 
+
+# Can we divide it - check to make sure a given number can be evenly divided
+def is_divide_by(number,a,b):
+    return all((number % a == 0, number % b == 0))  # all of the statements must be true
+
+# Find all pairs - count how many matching pairs in a given array
+def duplicates(arr):
+    match_count = 0
+    for i in set(arr):
+        matching_nums = arr.count(i)
+        new_matches = matching_nums//2
+        match_count += new_matches
+    return match_count
+
+# best solution
+def duplicates(arr):
+    return sum(arr.count(i)//2 for i in set(arr))
+
+butts = [0,2,3,4,2,2,2,4,4]
+butts_set = set(butts)
+
